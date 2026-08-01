@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Model Selection Guide — Jul 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+  @theme {
+    --color-ow: #2962ff;
+    --color-ow-light: #e8edff;
+    --color-bg: #f2f4f8;
+    --color-muted: #6b7085;
+
+    /* Type scale: raised floor for a dense data dashboard — 12px was the
+       de facto body size everywhere (tables, cards, descriptions), below
+       comfortable reading size. Nothing on the page should read smaller
+       than 12.5px now; that size is reserved for badges/footnotes only. */
+    --text-xs: 0.78125rem;     /* 12.5px — badges, table headers, footnotes */
+    --text-xs--line-height: 1.45;
+    --text-sm: 0.875rem;       /* 14px — table cells, card body, default UI text */
+    --text-sm--line-height: 1.55;
+    --text-base: 0.9375rem;    /* 15px — emphasized body, primary picks */
+    --text-base--line-height: 1.6;
+    --text-lg: 1.0625rem;      /* 17px — card/section titles */
+    --text-lg--line-height: 1.45;
+    --text-xl: 1.1875rem;      /* 19px — panel headers (h2) */
+    --text-xl--line-height: 1.4;
+    --text-2xl: 1.5rem;        /* 24px — stat tile numbers */
+    --text-2xl--line-height: 1.25;
+    --text-3xl: 1.875rem;      /* 30px — h1 mobile */
+    --text-3xl--line-height: 1.2;
+    --text-4xl: 2.25rem;       /* 36px — h1 desktop */
+    --text-4xl--line-height: 1.15;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-feature-settings:'cv11','ss01';
+    line-height:1.5;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing:antialiased;
+  }
+  table{font-variant-numeric:tabular-nums;}
+  h1,h2,h3{text-wrap:balance;}
+  code{font-feature-settings:'zero';}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block;animation:fadeSlide .3s ease}
+  @keyframes fadeSlide{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)}}
+  .tab-btn{transition:all .15s ease;cursor:pointer;border-radius:8px;user-select:none}
+  .tab-btn.active{background:#2962ff;color:#fff;font-weight:600;box-shadow:0 1px 3px rgba(41,98,255,.25)}
+  .tab-btn:not(.active){color:#5a5f73}
+  .tab-btn:not(.active):hover{background:#f2f4f8;color:#121420}
+  .tabs-wrap{scrollbar-width:none;-ms-overflow-style:none}
+  .tabs-wrap::-webkit-scrollbar{display:none}
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .table-scroll::-webkit-scrollbar{height:4px}
+  .table-scroll::-webkit-scrollbar-track{background:#eceef4;border-radius:4px}
+  .table-scroll::-webkit-scrollbar-thumb{background:#c5cad6;border-radius:4px}
+  table th{position:sticky;top:0;z-index:2}
+  .score-bar{height:6px;border-radius:4px;transition:width .6s ease}
+  .task-card{transition:all .15s ease}
+  .result-card{transition:all .2s ease}
+  .result-card:hover{transform:translateY(-2px)}
+  .spinner{width:20px;height:20px;border:2.5px solid #e2e5ec;border-top-color:#2962ff;border-radius:50%;animation:spin .6s linear infinite;display:inline-block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .task-check:checked+label{background:#e8edff;border-color:#2962ff;color:#1a3da0}
+  .pulse{animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .badge-free{background:#d5f5f0;color:#0a6e65}
+  .dsw-bub{cursor:pointer;transition:opacity .2s}
+  .dsw-bub.dsw-hov circle{filter:brightness(1.12)}
+  .dsw-bub.dsw-hov circle.dsw-fill{stroke-width:4;stroke:#111827}
+</style>
+</head>
+<body class="bg-[#f2f4f8] text-[#121420] antialiased">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+<!-- ═══════ HEADER ═══════ -->
+<div class="flex flex-wrap items-center justify-between gap-3 mb-1">
+  <div>
+    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-tight">Model Selection Guide</h1>
+    <p class="text-[#5a5f73] text-sm sm:text-base max-w-[640px] mt-1 leading-relaxed">Every major model — Claude, Gemini, GPT-5.6, Grok, Cursor, free/OSS. Prices &amp; benchmarks verified <strong class="text-[#121420]">August 1, 2026</strong>.</p>
+  </div>
+</div>
+
+<div class="flex flex-wrap items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-[#e2e5ec] rounded-xl mb-4 text-xs">
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-[#2962ff]/10 text-[#2962ff] border border-[#2962ff]/20">📅 v1.1 &middot; Aug 1</span>
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">📈 DeepSWE v1.1 &middot; Jul 25</span>
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-pink-50 text-pink-800 border border-pink-200">🆕 Opus 5 &mdash; 4 days old</span>
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-gradient-to-r from-red-50 to-amber-50 text-red-800 border border-red-200">🔶 GPT-5.6 GA Jul 9</span>
+  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-semibold bg-amber-50 text-amber-800 border border-amber-200 hidden sm:inline-flex">⏰ Sonnet 5 intro ends Aug 31</span>
+</div>
+
+<!-- ═══════ TABS ═══════ -->
+<div class="bg-white/90 backdrop-blur-sm border-b border-[#e2e5ec] sticky top-0 z-10">
+  <div class="tabs-wrap overflow-x-auto overflow-y-hidden">
+    <div class="flex items-center gap-1 px-3 py-2" role="tablist">
+      <button class="tab-btn active px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0" data-tab="tab-dashboard" role="tab">📊 Dashboard</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0" data-tab="tab-bytask" role="tab">🎯 By Task</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0" data-tab="tab-finder" role="tab">🔍 Finder</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-claude" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l7 5v6l-7 5-7-5V7l7-5z"/></svg> Claude</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-openai" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor"><circle cx="10" cy="3" r="1.8"/><circle cx="10" cy="17" r="1.8"/><circle cx="3" cy="10" r="1.8"/><circle cx="17" cy="10" r="1.8"/><circle cx="5" cy="5" r="1.8"/><circle cx="15" cy="15" r="1.8"/><circle cx="5" cy="15" r="1.8"/><circle cx="15" cy="5" r="1.8"/></svg> OpenAI</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-gemini" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2l2.5 5.5L18 10l-5.5 2.5L10 18l-2.5-5.5L2 10l5.5-2.5L10 2z"/></svg> Gemini</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-grok" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M4 4l12 12M16 4l-12 12"/></svg> Grok</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-cursor" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3l13 8-4.5 1.5L11 17 4 3z"/></svg> Cursor</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-free" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M10 4c0 0-1.5 6-1.5 7.5S9.5 17 10 17s1.5-3 1.5-4.5S10 4 10 4z"/></svg> Free/OSS</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0" data-tab="tab-matrix" role="tab">⚡ Matrix</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0 inline-flex items-center gap-1" data-tab="tab-deepswe" role="tab"><svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="6" r="3"/><circle cx="14" cy="8" r="2"/><circle cx="10" cy="15" r="1.6"/></svg> DeepSWE Chart</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0" data-tab="tab-price" role="tab">📜 Price History</button>
+      <button class="tab-btn px-3 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm font-medium whitespace-nowrap shrink-0" data-tab="tab-refs" role="tab">📚 References</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TAB: DASHBOARD ═══════ -->
+<div class="tab-panel active" id="tab-dashboard" role="tabpanel">
+
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-4">
+  <div class="bg-white border border-[#e2e5ec] rounded-xl p-4 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default"><div class="text-lg mb-1">🏆</div><div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#2962ff] to-[#7c3aed] bg-clip-text text-transparent">#1</div><div class="text-xs uppercase tracking-wider font-semibold text-[#6b7085] mt-0.5">Overall</div><div class="text-xs text-[#5a5f73] mt-1">Opus 5 · AA 61</div></div>
+  <div class="bg-white border border-[#e2e5ec] rounded-xl p-4 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default"><div class="text-lg mb-1">🆓</div><div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#0d9488] to-[#059669] bg-clip-text text-transparent">$0</div><div class="text-xs uppercase tracking-wider font-semibold text-[#6b7085] mt-0.5">Best Free</div><div class="text-xs text-[#5a5f73] mt-1">DeepSeek V4 Flash</div></div>
+  <div class="bg-white border border-[#e2e5ec] rounded-xl p-4 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default"><div class="text-lg mb-1">⚡</div><div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#2962ff] to-[#4f46e5] bg-clip-text text-transparent">$0.44</div><div class="text-xs uppercase tracking-wider font-semibold text-[#6b7085] mt-0.5">Best $/Task</div><div class="text-xs text-[#5a5f73] mt-1">Composer 2.5</div></div>
+  <div class="bg-white border border-[#e2e5ec] rounded-xl p-4 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default"><div class="w-7 h-7 mx-auto text-[#d97706]"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="w-full h-full"><path d="M4 4l12 12M16 4l-12 12"/></svg></div><div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#d97706] to-[#ea580c] bg-clip-text text-transparent">$1.51</div><div class="text-xs uppercase tracking-wider font-semibold text-[#6b7085] mt-0.5">Best Agentic $</div><div class="text-xs text-[#5a5f73] mt-1">Grok 4.5 · AA 54</div></div>
+  <div class="bg-white border border-[#e2e5ec] rounded-xl p-4 text-center shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-default"><div class="text-lg mb-1">💻</div><div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-[#7c3aed] to-[#4338ca] bg-clip-text text-transparent">91.9%</div><div class="text-xs uppercase tracking-wider font-semibold text-[#6b7085] mt-0.5">Terminal-Bench</div><div class="text-xs text-[#5a5f73] mt-1">GPT-5.6 Sol Ultra</div></div>
+</div>
+
+<!-- All Models table + Pricing & CursorBench loaded by JS -->
+<div id="dashboard-table"></div>
+
+</div>
+
+<!-- ═══════ TAB: BY TASK ═══════ -->
+<div class="tab-panel" id="tab-bytask" role="tabpanel"><div id="bytask-content" class="mt-4"></div></div>
+
+<!-- ═══════ TAB: MODEL FINDER ═══════ -->
+<div class="tab-panel" id="tab-finder" role="tabpanel">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-4">
+    <div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm">
+      <div class="px-5 py-3.5 border-b border-[#eceef4] flex items-center gap-2">
+        <h2 class="text-lg sm:text-xl font-semibold tracking-tight">🔍 Model Finder</h2>
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-blue-50 text-blue-800">Select → Compare</span>
+      </div>
+      <div class="p-4 space-y-4">
+        <div>
+          <label class="text-sm font-semibold text-[#5a5f73] block mb-2">What tasks are you doing?</label>
+          <div id="finder-tasks" class="space-y-1.5 max-h-[360px] overflow-y-auto pr-1"></div>
+        </div>
+        <hr class="border-[#eceef4]">
+        <div class="px-1 text-xs text-[#5a5f73] leading-relaxed">Cost is based on <strong class="text-[#121420]">per-MTok pricing</strong> (input + 3× output). No need to estimate token counts — the finder compares blended rates directly.</div>
+        <div>
+          <label class="text-xs font-semibold text-[#5a5f73] block mb-2">Priority</label>
+          <div class="flex gap-2">
+            <label class="flex items-center gap-1.5 px-3 py-1.5 border border-[#e2e5ec] rounded-lg text-xs cursor-pointer hover:bg-[#f8f9fc] has-[:checked]:bg-[#e8edff] has-[:checked]:border-[#2962ff] has-[:checked]:text-[#1a3da0] transition-colors"><input type="radio" name="priority" value="cost" class="accent-[#2962ff]"> 💰 Cost</label>
+            <label class="flex items-center gap-1.5 px-3 py-1.5 border border-[#e2e5ec] rounded-lg text-xs cursor-pointer hover:bg-[#f8f9fc] has-[:checked]:bg-[#e8edff] has-[:checked]:border-[#2962ff] has-[:checked]:text-[#1a3da0] transition-colors"><input type="radio" name="priority" value="quality" class="accent-[#2962ff]"> 🏆 Quality</label>
+            <label class="flex items-center gap-1.5 px-3 py-1.5 border border-[#e2e5ec] rounded-lg text-xs cursor-pointer hover:bg-[#f8f9fc] has-[:checked]:bg-[#e8edff] has-[:checked]:border-[#2962ff] has-[:checked]:text-[#1a3da0] transition-colors"><input type="radio" name="priority" value="balanced" checked class="accent-[#2962ff]"> ⚖️ Balanced</label>
+          </div>
+        </div>
+        <button id="fi-btn" class="w-full py-2.5 bg-[#2962ff] hover:bg-[#1a4fdb] text-white font-semibold rounded-lg text-sm transition-colors cursor-pointer flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Find Best Models
+        </button>
+      </div>
+    </div>
+    <div id="finder-results" class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm">
+      <div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📋 Recommendations</h2></div>
+      <div id="fi-results-inner" class="p-6 text-center text-[#6b7085] text-sm flex flex-col items-center justify-center min-h-[300px]">
+        <svg class="w-12 h-12 mb-3 text-[#d1d5db]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        <p>Select tasks and set priority,<br>then click <strong class="text-[#2962ff]">Find Best Models</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ TABS: PROVIDERS ═══════ -->
+<div class="tab-panel" id="tab-claude" role="tabpanel"><div id="tab-claude-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-openai" role="tabpanel"><div id="tab-openai-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-gemini" role="tabpanel"><div id="tab-gemini-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-grok" role="tabpanel"><div id="tab-grok-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-cursor" role="tabpanel"><div id="tab-cursor-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-free" role="tabpanel"><div id="tab-free-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-matrix" role="tabpanel"><div id="tab-matrix-inner" class="mt-4"></div></div>
+<div class="tab-panel" id="tab-deepswe" role="tabpanel"><div id="tab-deepswe-inner" class="mt-4"></div></div>
+
+<div class="tab-panel" id="tab-price" role="tabpanel"><div id="tab-price-inner" class="mt-4"></div></div>
+
+<!-- ═══════ TAB: REFERENCES ═══════ -->
+<div class="tab-panel" id="tab-refs" role="tabpanel"><div id="tab-refs-inner" class="mt-4"></div></div>
+
+<div class="text-center text-xs text-[#6b7085] pt-4 mt-6 border-t border-[#eceef4] leading-relaxed">
+  Prices &amp; benchmarks verified <strong>Aug 1, 2026</strong> &middot; OpenAI cut Luna −80% / Terra −20% Jul 30 &middot; Sonnet 5 intro pricing ends Aug 31 &middot; Opus 5 released Jul 24 &middot; GPT-5.6 GA Jul 9 &middot; Grok 4.5 Jul 8 &middot; DeepSWE v1.1 leaderboard Jul 25
+  <br class="sm:hidden">
+  <span class="hidden sm:inline">&middot;</span> Verify current pricing before scale deployment.
+</div>
+
+<div class="text-center text-[0.6875rem] text-[#a0a5b5] mt-3 leading-relaxed max-w-[720px] mx-auto px-4">
+  <strong>Disclaimer:</strong> Prices, benchmarks, and availability are as of the date shown and may change without notice. Data is sourced from vendor publications and third-party benchmarks — accuracy is not guaranteed. Always verify with official provider pricing before making procurement decisions. All trademarks and model names belong to their respective owners. This guide is for informational purposes only and does not constitute professional or financial advice. Use at your own risk.
+</div>
+</div>
+
+<script src="modelguide.js"></script>
+</body>
+</html>
