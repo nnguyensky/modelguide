@@ -112,25 +112,37 @@ const TG = [
 const AFT = [];
 TG.forEach(g=>{g.tasks.forEach(t=>{AFT.push({id:t.t.replace(/[^a-z0-9]/gi,'_'),label:t.t,group:g.name,pr:t.pr,alts:t.alts});});});
 
-// ─── Tab switching ───
+// ─── Sidebar Mobile Drawer & Tab switching ───
+const sidebarPanel = document.getElementById('sidebar-panel');
+const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebarClose = document.getElementById('sidebar-close');
+
+function openSidebar(){
+  if(sidebarPanel) sidebarPanel.classList.remove('-translate-x-full');
+  if(sidebarBackdrop) sidebarBackdrop.classList.remove('hidden');
+}
+
+function closeSidebar(){
+  if(sidebarPanel) sidebarPanel.classList.add('-translate-x-full');
+  if(sidebarBackdrop) sidebarBackdrop.classList.add('hidden');
+}
+
+if(sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+if(sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+if(sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
 const tabBtns = document.querySelectorAll('.tab-btn');
 function switchTab(el){
   document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById(el.dataset.tab).classList.add('active');
+  const target = document.getElementById(el.dataset.tab);
+  if(target) target.classList.add('active');
   try{ localStorage.setItem('mg-active-tab', el.dataset.tab); }catch(e){}
+  closeSidebar();
 }
 tabBtns.forEach(b=>{ b.addEventListener('click', ()=>switchTab(b)); });
-
-// Restore last active tab
-try{
-  const saved = localStorage.getItem('mg-active-tab');
-  if(saved){
-    const el = document.querySelector(`.tab-btn[data-tab="${saved}"]`);
-    if(el) switchTab(el);
-  }
-}catch(e){}
 
 // Keyboard shortcuts: Ctrl+1..0 (or Cmd+1..0)
 document.addEventListener('keydown',e=>{
@@ -182,7 +194,7 @@ renderDash();
 
 // ─── Render By Task ───
 function renderByTask(){
-  let h = '<div class="px-4 sm:px-5 py-2.5 text-xs text-[#6b7085] bg-[#f8f9fc] border border-[#e2e5ec] rounded-t-xl -mb-1">Costs = <strong>estimated $ per task</strong> at the listed effort, using current prices (Aug 1, 2026). "~" = rough estimate.</div>';
+  let h = '<div class="px-4 sm:px-5 py-2.5 text-xs text-[#6b7085] bg-[#f8f9fc] border border-[#e2e5ec] rounded-t-xl -mb-1">Costs = <strong>estimated $ per task</strong> at the listed effort, using current prices (Aug 6, 2026). "~" = rough estimate.</div>';
   TG.forEach(g=>{
     h += `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm overflow-hidden ${g.co}" style="border-left-width:4px">`;
     h += `<div class="${g.hb} ${g.hc} px-4 sm:px-5 py-3 font-semibold text-sm sm:text-base flex items-center gap-2 border-b border-[#eceef4]"><span>${g.name}</span><span class="ml-auto text-xs font-medium opacity-60">${g.tasks.length} tasks</span></div>`;
@@ -325,7 +337,7 @@ function renderProviders(){
   ];
   let mxHtml = `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold">⚡ Quick Matrix</h2></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[600px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Task</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Effort</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Cost</th><th class="hidden md:table-cell p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Cheaper alt</th><th class="hidden md:table-cell p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Better</th></tr></thead><tbody class="divide-y divide-[#eceef4]">`;
   mx.forEach(r=>{mxHtml+=`<tr class="hover:bg-[#f8f9fc]"><td class="p-2.5 font-medium">${r[0]}</td><td class="p-2.5 text-[#2962ff] font-medium">${r[1]}</td><td class="p-2.5 text-[#6b7085] font-mono">${r[2]}</td><td class="p-2.5">${r[3]}</td><td class="hidden md:table-cell p-2.5 text-[#5a5f73]">${r[4]}</td><td class="hidden md:table-cell p-2.5 text-[#5a5f73]">${r[5]}</td></tr>`;});
-  mxHtml += `</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">Cost = estimated $/task at listed effort, current prices (Aug 1, 2026).</div></div>`;
+  mxHtml += `</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">Cost = estimated $/task at listed effort, current prices (Aug 6, 2026).</div></div>`;
   // Golden rules
   mxHtml += `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold">🥇 Golden Rules</h2></div><ol class="p-4 space-y-2 text-xs sm:text-sm"><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">1.</span><strong>Never let a thread validate its own work.</strong> Write with Sonnet/DeepSeek/Grok; validate with Opus 5.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">2.</span><strong>Escalate model, not effort.</strong> Sonnet @ xhigh costs more than Opus 5 @ high for worse results.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">3.</span><strong>Set effort explicitly on every call.</strong> Defaults lie. Route per-task.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">4.</span><strong>Opus 4.8 is dead.</strong> Opus 5 costs the same and is better everywhere.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">5.</span><strong>Don't overpay for Luna at long context.</strong> MRCR 41.3% past 100K.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">6.</span><strong>Free = good but not all the time.</strong> Don't rely on Big Pickle or Hy3 Free in production.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">7.</span><strong>Test on your data.</strong> Benchmarks are directional.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">8.</span><strong>Pin your model ID.</strong> <code class="bg-[#eceef4] px-1 rounded">gpt-5.6</code> → Sol. Use <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-terra</code>.</li></ol></div>`;
   // Effort ref
@@ -613,7 +625,7 @@ ${[
 }
 renderDeepSWE();
 
-// ─── Price Changes History (verified Aug 1, 2026) ───
+// ─── Price Changes History (verified Aug 6, 2026) ───
 function renderPriceHistory(){
   const NEW = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800 ml-1.5">New</span>';
   const tl = [
@@ -642,14 +654,14 @@ function renderPriceHistory(){
     ['Gemini 3.5 Flash','$1.50','$9','superseded'],
     ['Gemini 3.1 Pro','$2','$12','$4/$18 &gt;200K'],
     ['DeepSeek V4 Flash','$0.14','$0.28',''],
-    ['DeepSeek V4 Pro','$0.435','$0.87','corrected Aug 1'],
+    ['DeepSeek V4 Pro','$0.435','$0.87','verified Aug 6'],
     ['Kimi K3','$3','$15',''],
     ['GLM-5.2','$1.34','$4',''],
-    ['MiniMax M3','$0.30','$1.20','corrected Aug 1'],
+    ['MiniMax M3','$0.30','$1.20','verified Aug 6'],
     ['Muse Spark 1.1 (Meta)','$1.25','$4.25',''],
   ];
   const dot = {emerald:'bg-emerald-500',blue:'bg-blue-500',violet:'bg-violet-500',gray:'bg-gray-400'};
-  let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since the guide\'s Jul 28 verification.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (Sonnet 5 intro pricing ends Aug 31; DeepSeek peak-hour pricing).</li></ul><p class="text-xs text-[#6b7085] mt-2">All prices verified <strong>Aug 1, 2026</strong>. DeepSWE chart costs were measured Jul 25 at pre-cut prices — Luna/Terra are cheaper in real use today.</p></div><div class="p-5">';
+  let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since recent releases.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (Sonnet 5 intro pricing ends Aug 31; DeepSeek peak-hour pricing).</li></ul><p class="text-xs text-[#6b7085] mt-2">All prices verified <strong>Aug 6, 2026</strong>. DeepSWE chart costs were measured Jul 25 at pre-cut prices — Luna/Terra are cheaper in real use today.</p></div><div class="p-5">';
   tl.forEach(r=>{
     h += `<div class="relative pl-9 pb-5 last:pb-0"><span class="absolute left-0 top-1 h-2.5 w-2.5 rounded-full ${dot[r.c]} ring-4 ring-white"></span><span class="absolute left-[5px] top-5 bottom-0 w-px bg-[#eceef4] last:hidden"></span><div class="text-[0.6875rem] font-bold uppercase tracking-wider text-[#6b7085]">${r.d} · ${r.p}${r.n?NEW:''}</div><div class="font-semibold text-sm mt-0.5">${r.t}</div><div class="text-xs text-[#5a5f73] mt-0.5 leading-relaxed">${r.b}</div></div>`;
   });
@@ -667,7 +679,7 @@ renderPriceHistory();
 
 // ─── References ───
 function renderReferences(){
-  const V = '2026-08-01';
+  const V = '2026-08-06';
   const off = [
     {u:'https://platform.claude.com/docs',n:'Anthropic / Claude Platform Docs',d:'Claude model IDs, pricing, effort levels, context sizes, launch announcements'},
     {u:'https://platform.openai.com',n:'OpenAI Platform Docs',d:'GPT-4.1 / GPT-5.6 family pricing, model IDs, Terminal-Bench scores, usage tiers'},
