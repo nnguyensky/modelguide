@@ -8,7 +8,8 @@
 // scheduled change · aa AA index (null = not ranked) · aaCost $/task at best setting ·
 // ladder [[effort, AA, $/task]] · dsw DeepSWE % · ctx · open (weights) · fr 2 = free on Zen ·
 // legacy · official (price read on the vendor page) · srcs (sources agreeing) · v date checked ·
-// long {over, i, o} long-prompt price tier · ref {lit, md} keys in LiteLLM / models.dev (used by tools/check-prices.mjs).
+// long {over, i, o} long-prompt price tier · ref {lit, md, zen, cursor, aaName} names in LiteLLM / models.dev / OpenCode Zen /
+// Cursor docs / Artificial Analysis (used by tools/weekly-check.mjs).
 // ═══════════════════════════════════════════════════════════════════
 var MG = window.MG = {};
 MG.checked = '2026-11-05';
@@ -899,7 +900,8 @@ MG.models = {
   "mono": "G4",
   "ref": {
    "lit": "xai/grok-4.7",
-   "md": "xai/models/grok-4.7"
+   "md": "xai/models/grok-4.7",
+   "cursor": "Grok 4.7"
   },
   "long": {
    "over": 200000,
@@ -976,7 +978,10 @@ MG.models = {
    "Cursor only; not on AA or DeepSWE",
    "~$0.44 per task on CursorBench (Aug)"
   ],
-  "mono": "C2"
+  "mono": "C2",
+  "ref": {
+   "cursor": "Composer 2.5"
+  }
  },
  "kimiK31pro": {
   "n": "Kimi K3.1 Pro",
@@ -1090,7 +1095,8 @@ MG.models = {
   ],
   "mono": "DF",
   "ref": {
-   "lit": "deepseek/deepseek-flash"
+   "lit": "deepseek/deepseek-flash",
+   "zen": "DeepSeek V4.1 Flash Free"
   }
  },
  "dsV4Pro": {
@@ -1189,7 +1195,8 @@ MG.models = {
   "mono": "GF",
   "ref": {
    "lit": "zai/glm-5.3-flash",
-   "md": "zai/models/glm-5.3-flash"
+   "md": "zai/models/glm-5.3-flash",
+   "zen": "GLM-5.3-Flash Free"
   }
  },
  "glm52": {
@@ -1261,7 +1268,8 @@ MG.models = {
   "mono": "MF",
   "ref": {
    "lit": "xiaomi_mimo/mimo-v2.6-flash",
-   "md": "xiaomi/models/mimo-v2.6-flash"
+   "md": "xiaomi/models/mimo-v2.6-flash",
+   "zen": "MiMo-V2.6-Flash Free"
   }
  },
  "minimaxM31f": {
@@ -1398,7 +1406,10 @@ MG.models = {
   "notes": [
    "NVIDIA trial endpoint — no personal data"
   ],
-  "mono": "NV"
+  "mono": "NV",
+  "ref": {
+   "zen": "Nemotron 3.5 Super VL Free"
+  }
  },
  "beam": {
   "n": "Beam 1.0",
@@ -1416,7 +1427,10 @@ MG.models = {
   "aaCost": 0.28,
   "official": true,
   "srcs": 3,
-  "mono": "B1"
+  "mono": "B1",
+  "ref": {
+   "zen": "Beam Free"
+  }
  },
  "bigPickle": {
   "n": "Big Pickle",
@@ -1436,7 +1450,10 @@ MG.models = {
   "notes": [
    "Free on Zen may use your data for training"
   ],
-  "mono": "BP"
+  "mono": "BP",
+  "ref": {
+   "zen": "Big Pickle"
+  }
  },
  "northMini": {
   "n": "North Mini Code",

@@ -1,0 +1,99 @@
+name: Weekly data check
+
+# Every Monday: compare data.js with outside sources (prices, long-prompt tiers,
+# AA scores, DeepSWE, OpenCode Zen free list, new model IDs).
+#  - Price changes that two or more sources agree on → a pull request to review
+#  - Anything else to look at → an issue labelled "data-check" (closed again when all clear)
+#  - The run is recorded on main (checks.js + tools/known-models.json); that commit also
+#    keeps this schedule alive (GitHub pauses scheduled workflows after 60 days without commits)
+on:
+  schedule:
+    - cron: '23 7 * * 1'   # Mondays 07:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: weekly-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Run the checks
+        id: chk
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/weekly-check.mjs --out report.md --apply --update-snapshot --checks-out checks.js
+
+      - name: Set up git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Open a pull request with the agreed price updates
+        if: steps.chk.outputs.applied != '0'
+        run: |
+          node tools/build.mjs
+          br="auto/price-update-$(date -u +%F)"
+          git switch -c "$br"
+          git add data.js feed.xml sw.js
+          git commit -m "Price updates detected $(date -u +%F)"
+          git push -f origin "$br"
+          if gh pr view "$br" --json number >/dev/null 2>&1; then
+            gh pr edit "$br" --body-file report.md
+          else
+            gh pr create --base main --head "$br" --title "Price updates detected $(date -u +%F)" --body-file report.md
+          fi
+          # PRs opened with the workflow token don't start CI on their own — start it explicitly
+          gh workflow run check.yml --ref "$br" || true
+          git switch main
+
+      - name: Open or update the data-check issue
+        if: steps.chk.outputs.findings != '0'
+        run: |
+          gh label create data-check --color FBCA04 --description "Weekly data check found something to review" --force
+          num=$(gh issue list --label data-check --state open --json number --jq '.[0].number')
+          if [ -n "$num" ]; then
+            gh issue comment "$num" --body-file report.md
+          else
+            gh issue create --title "Weekly data check: changes to review" --label data-check --body-file report.md
+          fi
+
+      - name: Close the data-check issue when everything matches
+        if: steps.chk.outputs.findings == '0'
+        run: |
+          for label in data-check price-check; do
+            for num in $(gh issue list --label "$label" --state open --json number --jq '.[].number' 2>/dev/null || true); do
+              gh issue close "$num" --comment "All clear in the $(date -u +%F) weekly check — closing."
+            done
+          done
+
+      - name: Record the run on main (keeps the schedule alive)
+        continue-on-error: true   # e.g. branch protection on main; the report and issue above still go out
+        run: |
+          node tools/build.mjs
+          git add checks.js tools/known-models.json sw.js
+          if git diff --cached --quiet; then
+            echo "Nothing new to record"
+          else
+            git commit -m "Weekly data check $(date -u +%F)"
+            git push origin HEAD:main
+          fi
+
+      - name: Add the report to the run summary
+        if: always()
+        run: test -f report.md && cat report.md >> "$GITHUB_STEP_SUMMARY" || true

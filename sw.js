@@ -1,9 +1,9 @@
 // Offline support for Model Guide.
 // Same-origin files: serve from cache at once, refresh the cache in the background
 // (stale-while-revalidate), so new data shows up on the next visit.
-// Bump VERSION when the list of core files changes.
-const VERSION = 'mg-v2';
-const CORE = ['./', 'index.html', 'styles.css', 'data.js', 'app.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'feed.xml'];
+// VERSION is set by tools/build.mjs (hash of the cached files) — do not edit by hand.
+const VERSION = 'mg-9eae487547';
+const CORE = ['./', 'index.html', 'styles.css', 'data.js', 'app.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'feed.xml', 'checks.js'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
