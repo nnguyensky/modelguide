@@ -14,13 +14,13 @@ const M = {
   fable5:    { n:'Fable 5',       p:'Anthropic',  i:10,  o:50,  aa:60, e:['low','med','high','xhigh','max'],     b:'Legacy. Use Fable 5.1 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
   sonnet5:   { n:'Sonnet 5',      p:'Anthropic',  i:2,   o:10,  aa:53, e:['low','med','high','xhigh','max'],     b:'Legacy. Use Sonnet 5.5 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
   opus48:    { n:'Opus 4.8',      p:'Anthropic',  i:5,   o:25,  aa:56, e:['low','med','high','xhigh','max'],     b:'Legacy. Migrate to Opus 5.5', t:'Superseded', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
-  gptSol:    { n:'GPT-5.6 Sol',   p:'OpenAI',     i:4,   o:20,  aa:59, e:['none','low','med','high','xhigh','max','ultra'], iAfter:5, oAfter:30, priceChangeDate:'2026-11-22', b:'Best agentic coding. TB leader. Promo $4/$20 thru Nov 21', t:'AA Coding #1', c:'blue', fr:0, v:'2026-08-29', sn:'promo thru Nov 21 → $5/$30' },
+  gptSol:    { n:'GPT-5.6 Sol',   p:'OpenAI',     i:4,   o:20,  aa:59, e:['none','low','med','high','xhigh','max','ultra'], iAfter:5, oAfter:30, priceChangeDate:'2026-11-22', b:'Best agentic coding. TB leader. Promo $4/$20 thru Nov 21', bAfter:'Best agentic coding. TB leader. $5/$30 (promo ended Nov 21)', t:'AA Coding #1', c:'blue', fr:0, v:'2026-08-29', sn:'promo thru Nov 21 → $5/$30', snAfter:'promo ended Nov 21' },
   gptTerra:  { n:'GPT-5.6 Terra', p:'OpenAI',     i:2, o:12,  aa:55, e:['none','low','med','high','xhigh','max'], b:'Best value GPT-5.6 family', t:'Best value', c:'green', fr:0, v:'2026-08-29', sn:'cut Jul 30' },
   gptLuna:   { n:'GPT-5.6 Luna',  p:'OpenAI',     i:0.2, o:1.2, aa:51, e:['none','low','med','high','xhigh','max'], b:'Cost champ. ⚠️ Bad at long ctx', t:'Cost champ', c:'orange', fr:0, v:'2026-08-29', sn:'cut Jul 30' },
   grok45:    { n:'Grok 4.5',      p:'xAI',        i:2,   o:6,   aa:54, e:['low','med','high'],                    b:'Best agentic $/task', t:'Agentic value', c:'orange', fr:0, v:'2026-08-29', sn:'cached in $0.50' },
-  gemini36f: { n:'Gemini 3.6 Flash',p:'Google',   i:1.5, o:7.5, aa:50, e:[], b:'Best Gemini default. Computer use', t:'Best Gemini', c:'cyan', fr:0, v:'2026-08-29', sn:'superseded' },
-  gemini35f: { n:'Gemini 3.5 Flash',p:'Google',   i:1.5, o:9,   aa:50, e:[], b:'Superseded. Use 3.6 Flash', t:'Superseded', c:'gray', fr:0, v:'2026-08-29', sn:'superseded' },
-  gemini31p: { n:'Gemini 3.1 Pro',  p:'Google',   i:2,   o:12,  aa:46, e:[], b:'Reasoning specialist. GPQA 94.3%', t:'Reasoning', c:'orange', fr:0, v:'2026-08-29', sn:'$4/$18 &gt;200K' },
+  gemini36f: { n:'Gemini 3.6 Flash',p:'Google',   i:0.75,o:3.75,aa:50, e:[], iAfter:1.5, oAfter:7.5, priceChangeDate:'2027-01-01', b:'Superseded. Use 3.8 Flash (same price)', t:'Superseded', c:'gray', fr:0, v:'2026-11-05', sn:'superseded · intro thru Dec 31', snAfter:'superseded' },
+  gemini35f: { n:'Gemini 3.5 Flash',p:'Google',   i:1.5, o:9,   aa:50, e:[], b:'Superseded. Use 3.8 Flash', t:'Superseded', c:'gray', fr:0, v:'2026-11-05', sn:'superseded' },
+  gemini31p: { n:'Gemini 3.1 Pro',  p:'Google',   i:2,   o:12,  aa:46, e:[], b:'Reasoning specialist (preview). GPQA 94.3%', t:'Reasoning', c:'orange', fr:0, v:'2026-11-05', sn:'$4/$18 &gt;200K' },
   composer25:{ n:'Composer 2.5',    p:'Cursor',    i:0.5, o:2.5, aa:62, aaT:'CAI', e:[], b:'Best coding $/task. Cursor-only', t:'Best $/task', c:'green', fr:0, cu:1, v:'2026-08-29', sn:'Cursor only' }, // ponytail: aa = Coding Agent Index (agent-level, not AA Intelligence Index) — labeled CAI in finder
   dsV4Flash: { n:'DeepSeek V4 Flash',p:'DeepSeek',i:0.14,o:0.28,aa:47, e:['non-think','high','max'], b:'Best free. Near Opus 4.8 quality', t:'Best free', c:'green', fr:2, v:'2026-08-29', sn:'' },
   dsV4Pro:   { n:'DeepSeek V4 Pro',p:'DeepSeek',  i:0.435, o:0.87, aa:44, e:['non-think','high','max'], b:'1.6T MoE, 1M ctx, MIT', t:'MIT', c:'indigo', fr:0, v:'2026-08-29', sn:'' },
@@ -35,13 +35,17 @@ const M = {
   mistralS4: { n:'Mistral Small 4',p:'Mistral',   i:0.2, o:0.6, aa:36, e:[], b:'6B active, 256K ctx, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0, v:'2026-08-29' },
   minimaxM3: { n:'MiniMax M3',     p:'MiniMax',   i:0.3, o:1.2, aa:44, e:[], b:'GPQA 92.9%, multimodal, open', t:'Open', c:'purple', fr:0, v:'2026-08-29', sn:'' },
   grok46:    { n:'Grok 4.6',       p:'xAI',       i:2,   o:6,   aa:55, e:['low','med','high','xhigh'], b:'Updated xAI flagship. DeepSWE 65.9%', t:'Updated flagship', c:'orange', fr:0, v:'2026-08-29', sn:'Aug 12' },
-  gemini37f: { n:'Gemini 3.7 Flash',p:'Google',    i:0.75,o:3.75,aa:52, e:[], iAfter:1.5, oAfter:7.5, priceChangeDate:'2027-01-01', b:'Half the price of 3.6 (intro thru Dec 31). DeepSWE 65.3%', t:'Best value Gemini', c:'cyan', fr:0, v:'2026-08-29', sn:'intro thru Dec 31 → $1.50/$7.50' },
+  gemini37f: { n:'Gemini 3.7 Flash',p:'Google',    i:0.75,o:3.75,aa:52, e:[], iAfter:1.5, oAfter:7.5, priceChangeDate:'2027-01-01', b:'Superseded. Use 3.8 Flash (same price). DeepSWE 65.3%', t:'Superseded', c:'gray', fr:0, v:'2026-11-05', sn:'superseded · intro thru Dec 31', snAfter:'superseded' },
+  gemini38f: { n:'Gemini 3.8 Flash',p:'Google',    i:0.75,o:3.75,aa:59, e:['low','med','high'], iAfter:1.5, oAfter:7.5, priceChangeDate:'2027-01-01', b:'Best Gemini. Intro $0.75/$3.75 thru Dec 31. Computer use', bAfter:'Best Gemini. Computer use', t:'Best value Gemini', c:'cyan', fr:0, v:'2026-11-05', sn:'intro thru Dec 31 → $1.50/$7.50', snAfter:'standard since Jan 1' }, // aa: AA article Sep 2 (same index version as the rest of this page)
+  gemini4argon:{ n:'Gemini 4 Argon',p:'Google',     i:2,   o:10,  aa:null, e:[], iAfter:4, oAfter:20, priceChangeDate:'2026-12-01', b:'New Google flagship. Promo thru Nov 30, then $4/$20. AA v4.3 = 53 (not ranked: no score on this page\'s scale)', bAfter:'New Google flagship. AA v4.3 = 53 (not ranked: no score on this page\'s scale)', t:'Flagship', c:'cyan', fr:0, v:'2026-11-05', sn:'promo thru Nov 30 → $4/$20', snAfter:'standard since Dec 1' },
   glm53:     { n:'GLM-5.3',        p:'Z.ai',      i:1.4, o:4.4, aa:53, e:['low','med','high','max'], b:'Top Z.ai. DeepSWE 66.9%', t:'Top Z.ai', c:'indigo', fr:0, v:'2026-08-29', sn:'Aug 14' },
   glm53f:    { n:'GLM-5.3-Flash',  p:'Z.ai',      i:0.15,o:0.5, aa:48, e:[], b:'320B MoE. DeepSWE 63.4%. MIT', t:'Budget OSS', c:'indigo', fr:0, v:'2026-08-29' },
   qwen38max: { n:'Qwen3.8-Max',    p:'Alibaba',   i:1.65,o:4.95,aa:50, e:['low','med','high','xhigh','max'], b:'2.4T MoE. DeepSWE 56.6%', t:'OSS flagship', c:'cyan', fr:0, v:'2026-08-29', sn:'Aug 3' },
   qwen38fn:  { n:'Qwen3.8-Flash-Next',p:'Alibaba',i:0.15,o:0.5, aa:46, e:[], b:'125B. DeepSWE 58.7%. Apache 2.0', t:'Fast OSS', c:'cyan', fr:0, v:'2026-08-29' },
   muse12:    { n:'Muse Spark 1.2', p:'Meta',       i:0.1, o:0.2, aa:49, e:['low','med','high','xhigh'], b:'DeepSWE 59.3%. Budget coding', t:'Budget coding', c:'blue', fr:0, v:'2026-08-29', sn:'Aug 5' },
 };
+// After a scheduled price change, swap in the post-change description/note.
+Object.values(M).forEach(x=>{ if(past(x.priceChangeDate)){ if(x.bAfter) x.b=x.bAfter; if(x.snAfter!==undefined) x.sn=x.snAfter; } });
 // shortcut
 const MArr = Object.keys(M).map(k=>({...M[k],k}));
 
@@ -68,6 +72,7 @@ function effPrice(mk){
   return changed ? {i:x.iAfter??x.i, o:x.oAfter??x.o} : {i:x.i, o:x.o};
 }
 function cost(mk,inT,outT){ const p=effPrice(mk); return (inT/1e6)*p.i+(outT/1e6)*p.o; }
+function past(d){ return !!d && new Date() >= new Date(d+'T00:00:00'); }
 function fmtDate(d){ return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
 function tagH(c,t){ const map={green:'bg-green-50 text-green-800',blue:'bg-blue-50 text-blue-800',orange:'bg-orange-50 text-orange-800',purple:'bg-purple-50 text-purple-800',cyan:'bg-cyan-50 text-cyan-800',indigo:'bg-indigo-50 text-indigo-800',gray:'bg-gray-100 text-gray-700',red:'bg-red-50 text-red-800'}; return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold ${map[c]||map.blue}">${t}</span>`; }
 function freeBadge(s){ return s===2?` <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-100 text-green-800">Free on Zen</span>`:s===1?` <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-100 text-green-800">Free</span>`:''; }
@@ -93,10 +98,10 @@ const TG = [
   {t:'Coding in Cursor (daily)',pr:{m:'composer25',e:'',c:'~$0.44'},alts:[{m:'grok46',e:'high',r:1,l:'Better score',c:'~$1.51'},{m:'sonnet55',e:'med',r:2,l:'Via API',c:'~$0.60'},{m:'opus55',e:'high',r:3,l:'Best via API',c:'~$3.10'}]},
 ]},
 {name:'✍️ Content & Writing',co:'border-l-[#6366f1]',hc:'text-[#4338ca]',hb:'bg-[#e0e7ff]',tasks:[
-  {t:'Write analysis / memo',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gemini37f',e:'',r:1,l:'Cheaper',c:'~$0.40'},{m:'gptTerra',e:'high',r:2,l:'Alt',c:'~$0.71'},{m:'opus55',e:'high',r:3,l:'Premium',c:'~$3.10'}]},
+  {t:'Write analysis / memo',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gemini38f',e:'',r:1,l:'Cheaper',c:'~$0.40'},{m:'gptTerra',e:'high',r:2,l:'Alt',c:'~$0.71'},{m:'opus55',e:'high',r:3,l:'Premium',c:'~$3.10'}]},
   {t:'Translation (bulk)',pr:{m:'sonnet55',e:'low-med',c:'~$0.40-0.80'},alts:[{m:'dsV4Flash',e:'non-think',r:1,l:'Free',c:'~$0'},{m:'qwen3627',e:'',r:2,l:'Open multi-lang',c:'~$0.15'},{m:'gptLuna',e:'low',r:3,l:'Budget API',c:'~$0.03'}]},
   {t:'Classify / extract / format',pr:{m:'sonnet55',e:'low',c:'~$0.40'},alts:[{m:'dsV4Flash',e:'non-think',r:1,l:'Free',c:'~$0'},{m:'gptLuna',e:'low',r:2,l:'Budget',c:'~$0.03'},{m:'haiku55',e:'low',r:3,l:'Cheapest Claude',c:'~$0.02'}]},
-  {t:'Marketing / creative copy',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gptTerra',e:'high',r:1,l:'Creative alt',c:'~$0.71'},{m:'opus55',e:'high',r:2,l:'Premium',c:'~$3.10'},{m:'gemini37f',e:'',r:3,l:'Budget',c:'~$0.40'}]},
+  {t:'Marketing / creative copy',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gptTerra',e:'high',r:1,l:'Creative alt',c:'~$0.71'},{m:'opus55',e:'high',r:2,l:'Premium',c:'~$3.10'},{m:'gemini38f',e:'',r:3,l:'Budget',c:'~$0.40'}]},
 ]},
 {name:'📊 Data & Research',co:'border-l-[#0d9488]',hc:'text-[#0a6e65]',hb:'bg-[#d5f5f0]',tasks:[
   {t:'Analyze data / statistics',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'sonnet55',e:'high',r:1,l:'Budget',c:'~$1.50'},{m:'gptTerra',e:'high',r:2,l:'Alt',c:'~$0.71'},{m:'dsV4Flash',e:'max',r:3,l:'Free',c:'~$0'}]},
@@ -116,11 +121,11 @@ const TG = [
   {t:'Incident response / forensics',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gptSol',e:'high',r:1,l:'Strong alt',c:'~$4.60'},{m:'grok46',e:'high',r:2,l:'Best $/task',c:'~$1.51'},{m:'fable51',e:'xhigh',r:3,l:'Ceiling',c:'~$14'}]},
 ]},
 {name:'👁️ Multimodal & Vision',co:'border-l-[#0891b2]',hc:'text-[#155e75]',hb:'bg-[#d5f6fc]',tasks:[
-  {t:'Vision / chart reading',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gemini37f',e:'',r:1,l:'Budget',c:'~$0.40'},{m:'mimoV25',e:'',r:2,l:'Free',c:'~$0'},{m:'kimiK3',e:'high',r:3,l:'Open',c:'~$6'}]},
-  {t:'Document OCR + analysis',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini37f',e:'',r:2,l:'Budget',c:'~$0.40'},{m:'minimaxM3',e:'',r:3,l:'Open',c:'~$0.30'}]},
-  {t:'Screenshot → code',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini37f',e:'',r:2,l:'Budget',c:'~$0.40'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
-  {t:'Computer use / GUI',pr:{m:'gemini37f',e:'',c:'~$0.40'},alts:[{m:'opus55',e:'high',r:1,l:'Better',c:'~$3.10'},{m:'gptSol',e:'high',r:2,l:'Alt',c:'~$3.90'}]},
-  {t:'Multimodal (img+audio+video)',pr:{m:'mimoV25',e:'',c:'~$0'},alts:[{m:'gemini37f',e:'',r:1,l:'Budget',c:'~$0.40'},{m:'minimaxM3',e:'',r:2,l:'Open',c:'~$0.30'},{m:'opus55',e:'high',r:3,l:'Best img+txt',c:'~$3.10'}]},
+  {t:'Vision / chart reading',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gemini38f',e:'',r:1,l:'Budget',c:'~$0.40'},{m:'mimoV25',e:'',r:2,l:'Free',c:'~$0'},{m:'kimiK3',e:'high',r:3,l:'Open',c:'~$6'}]},
+  {t:'Document OCR + analysis',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini38f',e:'',r:2,l:'Budget',c:'~$0.40'},{m:'minimaxM3',e:'',r:3,l:'Open',c:'~$0.30'}]},
+  {t:'Screenshot → code',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini38f',e:'',r:2,l:'Budget',c:'~$0.40'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
+  {t:'Computer use / GUI',pr:{m:'gemini38f',e:'',c:'~$0.40'},alts:[{m:'opus55',e:'high',r:1,l:'Better',c:'~$3.10'},{m:'gptSol',e:'high',r:2,l:'Alt',c:'~$3.90'}]},
+  {t:'Multimodal (img+audio+video)',pr:{m:'mimoV25',e:'',c:'~$0'},alts:[{m:'gemini38f',e:'',r:1,l:'Budget',c:'~$0.40'},{m:'minimaxM3',e:'',r:2,l:'Open',c:'~$0.30'},{m:'opus55',e:'high',r:3,l:'Best img+txt',c:'~$3.10'}]},
 ]},
 {name:'🔒 Local / Private',co:'border-l-[#7c3aed]',hc:'text-[#5b21b6]',hb:'bg-[#ede9fe]',tasks:[
   {t:'Local code agent (no cloud)',pr:{m:'northMini',e:'',c:'~$0'},alts:[{m:'qwen3627',e:'',r:1,l:'Stronger local',c:'~$0.15'},{m:'gemma431',e:'',r:2,l:'Open alt',c:'~$0.10'},{m:'opus55',e:'high',r:3,l:'Cloud (if ok)',c:'~$3.10'}]},
@@ -175,25 +180,25 @@ document.addEventListener('keydown',e=>{
 
 // ─── Render Dashboard ───
 // Explicit ordering for the main table (not pure AA sort — groups paid frontier/value tiers together).
-const DASH_ORDER = ['opus55','sonnet55','fable51','gptSol','gptTerra','grok46','gptLuna','haiku55','gemini37f','kimiK3','glm53','opus5'];
+const DASH_ORDER = ['opus55','sonnet55','fable51','gptSol','gemini38f','gptTerra','grok46','gptLuna','haiku55','kimiK3','glm53','gemini4argon','opus5'];
 const DASH_FREE_ORDER = ['dsV4Flash','hy3Free','mimoV25','northMini'];
 function renderDash(){
-  const maxAa = Math.max(...MArr.map(m=>m.aa));
+  const maxAa = Math.max(...MArr.filter(m=>m.aa!=null).map(m=>m.aa));
   function dashRow(mk,free){
     const m = M[mk]; if(!m) return '';
     const pr = priceHtml(mk);
-    const scorePct = Math.round(m.aa/maxAa*100);
+    const scorePct = m.aa==null ? 0 : Math.round(m.aa/maxAa*100);
     const grad = free ? '#6ee7b7' : (barGrad[m.c]||'#a5b4fc');
     const bestFor = (m.t?tagH(m.c,m.t)+' ':'')+m.b;
     const rowCls = free ? 'bg-[#f0fdf4] hover:bg-[#e8f8f2] transition-colors' : 'hover:bg-[#f8f9fc] transition-colors';
     const nameCls = free ? 'p-2.5 sm:p-3 font-semibold border-l-3 border-[#0d9488] pl-3' : 'p-2.5 sm:p-3 font-semibold';
-    return `<tr class="${rowCls}"><td class="${nameCls}">${m.n}</td><td class="p-2.5 sm:p-3 text-[#5a5f73]">${m.p}</td><td class="p-2.5 sm:p-3 font-mono">${pr.i}</td><td class="p-2.5 sm:p-3 font-mono">${pr.o}</td><td class="p-2.5 sm:p-3 font-semibold">${m.aa}</td><td class="hidden md:table-cell p-2.5 sm:p-3"><div class="flex items-center gap-1.5"><div class="flex-1 h-1.5 bg-[#eceef4] rounded-full overflow-hidden"><div class="score-bar h-full rounded-full" style="width:${scorePct}%;background:${grad}"></div></div></div></td><td class="p-2.5 sm:p-3 text-[#5a5f73] text-xs">${bestFor}</td><td class="hidden lg:table-cell p-2.5 sm:p-3 text-[#6b7085] text-xs whitespace-nowrap">${m.v?fmtDate(m.v):'—'}</td></tr>`;
+    return `<tr class="${rowCls}"><td class="${nameCls}">${m.n}</td><td class="p-2.5 sm:p-3 text-[#5a5f73]">${m.p}</td><td class="p-2.5 sm:p-3 font-mono">${pr.i}</td><td class="p-2.5 sm:p-3 font-mono">${pr.o}</td><td class="p-2.5 sm:p-3 font-semibold">${m.aa==null?'<span class="text-[#9aa0b0]" title="No score on this page\'s AA scale">—</span>':m.aa}</td><td class="hidden md:table-cell p-2.5 sm:p-3"><div class="flex items-center gap-1.5"><div class="flex-1 h-1.5 bg-[#eceef4] rounded-full overflow-hidden"><div class="score-bar h-full rounded-full" style="width:${scorePct}%;background:${grad}"></div></div></div></td><td class="p-2.5 sm:p-3 text-[#5a5f73] text-xs">${bestFor}</td><td class="hidden lg:table-cell p-2.5 sm:p-3 text-[#6b7085] text-xs whitespace-nowrap">${m.v?fmtDate(m.v):'—'}</td></tr>`;
   }
 
   let html = '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="flex items-center gap-2 px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📊 All Models</h2><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-blue-50 text-blue-800">Sorted by AA Index</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-green-50 text-green-800">Free highlighted</span></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[620px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Provider</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">In $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Out $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">AA</th><th class="hidden md:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Score</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Best For</th><th class="hidden lg:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Checked</th></tr></thead><tbody class="divide-y divide-[#eceef4]">';
   DASH_ORDER.forEach(mk=>{html+=dashRow(mk,false);});
   DASH_FREE_ORDER.forEach(mk=>{html+=dashRow(mk,true);});
-  html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">* Green rows = free on OpenCode Zen. Prices in $/MTok.</div></div>';
+  html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">* Green rows = free on OpenCode Zen. Prices in $/MTok. <code>$a→b</code> = scheduled price change. AA “—” = listed but not ranked.</div></div>';
 
   // Pricing & CursorBench side-by-side
   html += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">';
@@ -211,11 +216,14 @@ function renderDash(){
   document.getElementById('dashboard-table').innerHTML = html;
 
   // Stat tile: #1 overall = highest AA among current (non-legacy, AA-scored) models
-  const top = MArr.filter(m=>!m.aaT && !['Legacy','Superseded'].includes(m.t)).sort((a,b)=>b.aa-a.aa)[0];
+  const top = MArr.filter(m=>m.aa!=null && !m.aaT && !['Legacy','Superseded'].includes(m.t)).sort((a,b)=>b.aa-a.aa)[0];
   const tile = document.getElementById('tile-top');
   if(tile && top) tile.textContent = `${top.n} · AA ${top.aa}`;
 }
 renderDash();
+// Static HTML with data-after="YYYY-MM-DD": swap to data-after-html once that date has passed.
+// Repeat so a swapped-in snippet can carry its own later data-after step.
+for(let i=0;i<3;i++) document.querySelectorAll('[data-after]').forEach(el=>{ if(past(el.dataset.after)){ el.removeAttribute('data-after'); el.innerHTML = el.dataset.afterHtml; } });
 
 // ─── Render By Task ───
 function renderByTask(){
@@ -269,21 +277,22 @@ function renderProviders(){
   document.getElementById('tab-openai-inner').innerHTML = `
 <div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm">
 <div class="px-5 py-3.5 border-b border-[#eceef4] flex items-center gap-2">${iconSvg('openai','w-5 h-5')}<h2 class="text-lg sm:text-xl font-semibold">GPT-5.6 Family</h2><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-indigo-50 text-indigo-800">Paid</span><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-pink-50 text-pink-800">GA Jul 9</span><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-50 text-green-800">Sol cut Aug 21</span></div>
-<div class="p-4 text-xs sm:text-sm text-[#5a5f73] px-5">Three tiers: Sol (flagship), Terra (balanced), Luna (fast/cheap). Shared 1.05M context, 128K max output, Feb 16, 2026 cutoff. Prices = <strong>$ per 1M tokens</strong> (in / out). <strong class="text-[#121420]">Sol cut Aug 21:</strong> $4/$20 (promo thru Nov 21). <strong class="text-[#121420]">Luna −80%, Terra −20% Jul 30.</strong></div>
+<div class="p-4 text-xs sm:text-sm text-[#5a5f73] px-5">Three tiers: Sol (flagship), Terra (balanced), Luna (fast/cheap). Shared 1.05M context, 128K max output, Feb 16, 2026 cutoff. Prices = <strong>$ per 1M tokens</strong> (in / out). ${past('2026-11-22') ? '<strong class="text-[#121420]">Sol promo ended Nov 21:</strong> back to $5/$30.' : '<strong class="text-[#121420]">Sol cut Aug 21:</strong> $4/$20 (promo thru Nov 21).'} <strong class="text-[#121420]">Luna −80%, Terra −20% Jul 30.</strong></div>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-4 pt-0">
-<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Sol ${tagH('blue','Flagship')}</div><div class="text-xs text-[#5a5f73] mt-1"><s>$5/$30</s> → <strong class="text-green-700">$4/$20</strong> promo thru Nov 21 · AA 59 · AA Coding 80 (#1) · 6 levels + Ultra</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>Terminal-Bench 88.8% (91.9% Ultra)</li><li>DeepSWE 72.7% (v1.1)</li><li><span class="text-red-600">Long ctx surcharge above 272K</span></li></ul></div>
+<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Sol ${tagH('blue','Flagship')}</div><div class="text-xs text-[#5a5f73] mt-1">${past('2026-11-22') ? '$5/$30 (promo ended Nov 21)' : '<s>$5/$30</s> → <strong class="text-green-700">$4/$20</strong> promo thru Nov 21'} · AA 59 · AA Coding 80 (#1) · 6 levels + Ultra</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>Terminal-Bench 88.8% (91.9% Ultra)</li><li>DeepSWE 72.7% (v1.1)</li><li><span class="text-red-600">Long ctx surcharge above 272K</span></li></ul></div>
 <div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Terra ${tagH('green','Best value')}</div><div class="text-xs text-[#5a5f73] mt-1">$2/$12 · AA 55 · AA Coding 77.4 · 6 lvls</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>GPT-5.5-class at 40% of the price</li><li>DeepSWE 69.6% (v1.1, ties Fable 5 @ max)</li><li>Within 3 pts of Sol on DeepSWE at 40% cost</li></ul></div>
 <div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Luna ${tagH('orange','Cost champ')}</div><div class="text-xs text-[#5a5f73] mt-1">$0.20/$1.20 · AA 51 · 92% of Sol's coding at 4% cost</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li><span class="text-red-600">⚠️ MRCR 41.3%</span> — bad at long ctx</li><li>Fine for ≤100K tasks</li></ul></div>
 </div>
-<div class="px-5 py-3 bg-amber-50 border-t border-amber-200 text-xs text-amber-800 rounded-b-xl"><strong>⚠️ Trap:</strong> bare <code class="bg-amber-100 px-1 rounded">gpt-5.6</code> routes to Sol ($4/$20 promo). Pin <code class="bg-amber-100 px-1 rounded">gpt-5.6-terra</code> or <code class="bg-amber-100 px-1 rounded">gpt-5.6-luna</code>. Sol promo expires Nov 21 — re-check pricing then.</div></div>`;
+<div class="px-5 py-3 bg-amber-50 border-t border-amber-200 text-xs text-amber-800 rounded-b-xl"><strong>⚠️ Trap:</strong> bare <code class="bg-amber-100 px-1 rounded">gpt-5.6</code> routes to Sol (${past('2026-11-22') ? '$5/$30' : '$4/$20 promo'}). Pin <code class="bg-amber-100 px-1 rounded">gpt-5.6-terra</code> or <code class="bg-amber-100 px-1 rounded">gpt-5.6-luna</code>.${past('2026-11-22') ? '' : ' Sol promo expires Nov 21 — re-check pricing then.'}</div></div>`;
 
   // Gemini
   document.getElementById('tab-gemini-inner').innerHTML = `
 <div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm">
-<div class="px-5 py-3.5 border-b border-[#eceef4] flex items-center gap-2">${iconSvg('gemini','w-5 h-5')}<h2 class="text-lg sm:text-xl font-semibold">Gemini Lineup</h2><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-indigo-50 text-indigo-800">Paid</span><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-50 text-green-800">3.7 Flash Aug 13</span></div><div class="px-5 text-[0.6875rem] text-[#6b7085]">Rates = <strong>$ per 1M tokens</strong> (input / output).</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-3 p-4">
-<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">3.7 Flash ${tagH('green','Best value')} <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-pink-50 text-pink-800">New</span></div><div class="text-xs text-[#5a5f73] mt-1"><strong class="text-green-700">$0.75/$3.75</strong> intro thru Dec 31 · AA 52 · DeepSWE 65.3%</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>Half the price of 3.6 Flash</li><li>Beats 3.1 Pro on every coding benchmark</li><li>Built-in computer use</li></ul></div>
-<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">3.6 Flash ${tagH('gray','Superseded')}</div><div class="text-xs text-[#5a5f73] mt-1">$1.50/$7.50 · Same quality as 3.7 but 2× price.</div><p class="text-xs text-[#5a5f73] mt-2">Use 3.7 Flash — cheaper and better.</p></div>
+<div class="px-5 py-3.5 border-b border-[#eceef4] flex items-center gap-2">${iconSvg('gemini','w-5 h-5')}<h2 class="text-lg sm:text-xl font-semibold">Gemini Lineup</h2><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-indigo-50 text-indigo-800">Paid</span><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-50 text-green-800">4 Argon · 3.8 Flash</span></div><div class="px-5 text-[0.6875rem] text-[#6b7085]">Rates = <strong>$ per 1M tokens</strong> (input / output).</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
+<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">4 Argon ${tagH('blue','Flagship')} <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-pink-50 text-pink-800">New</span></div><div class="text-xs text-[#5a5f73] mt-1">${past('2026-12-01') ? '$4/$20' : '<strong class="text-green-700">$2/$10</strong> promo thru Nov 30 → $4/$20'} · 1M ctx · AA v4.3 53</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>Can write up to 1M-token completions; failed completions over 32K tokens are billed (from Nov 13)</li><li>Not ranked here: no score on this page's AA scale</li></ul></div>
+<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">3.8 Flash ${tagH('green','Best value')} <span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-pink-50 text-pink-800">New</span></div><div class="text-xs text-[#5a5f73] mt-1">${past('2027-01-01') ? '$1.50/$7.50' : '<strong class="text-green-700">$0.75/$3.75</strong> intro thru Dec 31 → $1.50/$7.50'} · AA 59</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>Same price as 3.7 / 3.6 Flash, higher score</li><li>Built-in computer use</li></ul></div>
+<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">3.7 / 3.6 Flash ${tagH('gray','Superseded')}</div><div class="text-xs text-[#5a5f73] mt-1">Same price as 3.8 Flash (${past('2027-01-01') ? '$1.50/$7.50' : '$0.75/$3.75 intro thru Dec 31'}).</div><p class="text-xs text-[#5a5f73] mt-2">Use 3.8 Flash — same price, better.</p></div>
 <div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">3.1 Pro ${tagH('orange','Reasoning')}</div><div class="text-xs text-[#5a5f73] mt-1">$2/$12 ($4/$18 past 200K) · AA 46 · <span class="text-red-600">Jan 2025 cutoff</span></div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>GPQA 94.3% · HLE 44.4%</li><li>Only for PhD-level reasoning</li></ul></div>
 </div></div>`;
 
@@ -355,7 +364,7 @@ function renderProviders(){
   mx.forEach(r=>{mxHtml+=`<tr class="hover:bg-[#f8f9fc]"><td class="p-2.5 font-medium">${r[0]}</td><td class="p-2.5 text-[#2962ff] font-medium">${r[1]}</td><td class="p-2.5 text-[#6b7085] font-mono">${r[2]}</td><td class="p-2.5">${r[3]}</td><td class="hidden md:table-cell p-2.5 text-[#5a5f73]">${r[4]}</td><td class="hidden md:table-cell p-2.5 text-[#5a5f73]">${r[5]}</td></tr>`;});
   mxHtml += `</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">Cost = estimated $/task at listed effort, current prices (Nov 5, 2026).</div></div>`;
   // Golden rules
-  mxHtml += `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold">🥇 Golden Rules</h2></div><ol class="p-4 space-y-2 text-xs sm:text-sm"><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">1.</span><strong>Never let a thread validate its own work.</strong> Write with Sonnet/DeepSeek/Grok; validate with Opus 5.5.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">2.</span><strong>Escalate model, not effort.</strong> Sonnet 5.5 @ max costs more per task than Opus 5.5 ($7.60 vs $5.98 on AA) for worse results.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">3.</span><strong>Set effort explicitly on every call.</strong> Defaults lie. Route per-task.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">4.</span><strong>Move off Opus 5 / 4.8.</strong> Opus 5.5 is 20% cheaper ($4/$20) and better.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">5.</span><strong>Don't overpay for Luna at long context.</strong> MRCR 41.3% past 100K.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">6.</span><strong>Sol and Opus 5.5 now cost the same</strong> ($4/$20). Sol promo expires Nov 21 → $5/$30; after that Opus 5.5 is cheaper.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">7.</span><strong>Free = good but not all the time.</strong> Don't rely on Big Pickle or Hy3 Free in production.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">8.</span><strong>Pin your model ID.</strong> <code class="bg-[#eceef4] px-1 rounded">gpt-5.6</code> → Sol. Use <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-terra</code>.</li></ol></div>`;
+  mxHtml += `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold">🥇 Golden Rules</h2></div><ol class="p-4 space-y-2 text-xs sm:text-sm"><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">1.</span><strong>Never let a thread validate its own work.</strong> Write with Sonnet/DeepSeek/Grok; validate with Opus 5.5.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">2.</span><strong>Escalate model, not effort.</strong> Sonnet 5.5 @ max costs more per task than Opus 5.5 ($7.60 vs $5.98 on AA) for worse results.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">3.</span><strong>Set effort explicitly on every call.</strong> Defaults lie. Route per-task.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">4.</span><strong>Move off Opus 5 / 4.8.</strong> Opus 5.5 is 20% cheaper ($4/$20) and better.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">5.</span><strong>Don't overpay for Luna at long context.</strong> MRCR 41.3% past 100K.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">6.</span>${past('2026-11-22') ? '<strong>Opus 5.5 is cheaper than Sol</strong> ($4/$20 vs $5/$30 since the Sol promo ended Nov 21).' : '<strong>Sol and Opus 5.5 now cost the same</strong> ($4/$20). Sol promo expires Nov 21 → $5/$30; after that Opus 5.5 is cheaper.'}</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">7.</span><strong>Free = good but not all the time.</strong> Don't rely on Big Pickle or Hy3 Free in production.</li><li class="flex gap-2"><span class="text-[#2962ff] font-bold shrink-0">8.</span><strong>Pin your model ID.</strong> <code class="bg-[#eceef4] px-1 rounded">gpt-5.6</code> → Sol. Use <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-terra</code>.</li></ol></div>`;
   // Effort ref
   mxHtml += `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold">Effort Levels Reference</h2></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[400px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Level</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Effect</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Use</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Cost ×</th></tr></thead><tbody class="divide-y divide-[#eceef4]">`;
   const eff=[['low','Minimal thinking','Classification, formatting','1×'],['medium','Moderate reasoning','Routine coding, drafting','~1.5-2×'],['high','Full reasoning','<strong class="text-[#121420]">Default.</strong> Analysis, code','~3-4×'],['xhigh','Heavy reasoning','Pipeline-critical, hard agents','~6-9×'],['max','Unconstrained','Frontier problems only','~8-12×']];
@@ -534,21 +543,41 @@ ${[
     svg += `<g><line x1="${DL+4}" y1="${DT+13}" x2="${DL+40}" y2="${DT+13}" stroke="#2962ff" stroke-width="2" stroke-dasharray="6 4" opacity=".6"/><text x="${DL+48}" y="${DT+16}" font-size="10.5" font-weight="600" fill="#2962ff">Dashed = value frontier — best score at each price point (⭐ picks)</text></g>`;
     fr.forEach(m=> svg += `<circle cx="${px(m.c)}" cy="${py(m.st)}" r="4" fill="#fff" stroke="#2962ff" stroke-width="1.5"/>`);
   }
+  // Label placement: most important first (frontier, then score); try right/left/above/below;
+  // skip a label if every spot hits another label or bubble — it then shows on hover only.
+  const LBL = {}, boxes = [];
+  const bubbles = DSW.map(m=>({id:m.id,x:px(m.c),y:py(m.st),r:rad(m)}));
+  const hitsBox = b => boxes.some(o=> b.x1<o.x2 && b.x2>o.x1 && b.y1<o.y2 && b.y2>o.y1);
+  const hitsBub = (b,id) => bubbles.some(c=> c.id!==id && c.x+c.r>b.x1 && c.x-c.r<b.x2 && c.y+c.r>b.y1 && c.y-c.r<b.y2);
+  [...DSW].filter(m=>!dim(m.p)).sort((a,b)=>(DSW_FRONTIER.has(b.id)-DSW_FRONTIER.has(a.id))||(b.s-a.s)).forEach(m=>{
+    const x=px(m.c), y=py(m.st), r=rad(m);
+    const sub = `${m.e} · $${m.c.toFixed(2)} · ${m.t}k tok · ${m.st} steps`;
+    const w = Math.max(((DSW_FRONTIER.has(m.id)?3:0)+m.n.length)*6.6, sub.length*4.6), hgt = 24;
+    const spots = [
+      {lx:x+r+6, ly:y+2, a:'start', b:{x1:x+r+4, x2:x+r+6+w, y1:y-10, y2:y-10+hgt}},
+      {lx:x-r-6, ly:y+2, a:'end',   b:{x1:x-r-6-w, x2:x-r-4, y1:y-10, y2:y-10+hgt}},
+      {lx:x, ly:y-r-17, a:'middle', b:{x1:x-w/2, x2:x+w/2, y1:y-r-29, y2:y-r-29+hgt}},
+      {lx:x, ly:y+r+12, a:'middle', b:{x1:x-w/2, x2:x+w/2, y1:y+r, y2:y+r+hgt}},
+    ].filter(sp=> sp.b.x1>=DL-40 && sp.b.x2<=DW-4 && sp.b.y1>=DT && sp.b.y2<=DT+ih+4);
+    const ok = spots.find(sp=>!hitsBox(sp.b) && !hitsBub(sp.b,m.id)) || (DSW_FRONTIER.has(m.id) || m.s===_dswBest ? spots.find(sp=>!hitsBox(sp.b)) : null);
+    if(ok){ boxes.push(ok.b); LBL[m.id]={...ok, show:true}; }
+    else { const sp = spots[0]||{lx:x+r+6,ly:y+2,a:'start'}; LBL[m.id]={...sp, show:false}; }
+  });
+  let lbls = '';  // labels go in a layer above all bubbles so no bubble covers a label
   DSW.forEach(m=>{
     const x=px(m.c), y=py(m.st), r=rad(m), o=dim(m.p)?0.12:1;
     svg += `<g class="dsw-bub" data-id="${m.id}" opacity="${o}">`;
     svg += `<circle class="dsw-fill" cx="${x}" cy="${y}" r="${r}" fill="${dswColor(m.s)}" fill-opacity=".85" stroke="${DSW_PC[m.p]}" stroke-width="2"/>`;
     if(DSW_FRONTIER.has(m.id)) svg += `<circle cx="${x}" cy="${y}" r="${r+3}" fill="none" stroke="#2962ff" stroke-width="1.2" stroke-dasharray="3 3"/>`;
     if(r>13) svg += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="9.5" font-weight="700" fill="#fff" pointer-events="none">${m.s}</text>`;
-    const left = x > DL+iw*0.62, above = y > DT+ih*0.52 && x < DL+iw*0.55;
-    const lx = above ? x : left ? x-r-6 : x+r+6;
-    const anchor = above ? 'middle' : left ? 'end' : 'start';
-    const ly = above ? y-r-5 : y+2;
-    svg += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" font-size="11.5" font-weight="600" fill="#3c4152" stroke="#fff" stroke-width="3" paint-order="stroke" pointer-events="none">${DSW_FRONTIER.has(m.id)?'⭐ ':''}${m.n}</text>`;
-    svg += `<text x="${lx}" y="${ly+12}" text-anchor="${anchor}" font-size="9" fill="#9aa0b0" stroke="#fff" stroke-width="2.5" paint-order="stroke" pointer-events="none">${m.e} · $${m.c.toFixed(2)} · ${m.t}k tok · ${m.st} steps</text>`;
+    const L = LBL[m.id] || {lx:x+r+6, ly:y+2, a:'start', show:false};
+    const lx=L.lx, ly=L.ly, anchor=L.a;
+    lbls += `<g class="dsw-lbl${L.show?'':' dsw-lbl-hide'}" data-id="${m.id}" opacity="${o}">`;
+    lbls += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" font-size="11.5" font-weight="600" fill="#3c4152" stroke="#fff" stroke-width="3" paint-order="stroke" pointer-events="none">${DSW_FRONTIER.has(m.id)?'⭐ ':''}${m.n}</text>`;
+    lbls += `<text x="${lx}" y="${ly+12}" text-anchor="${anchor}" font-size="9" fill="#9aa0b0" stroke="#fff" stroke-width="2.5" paint-order="stroke" pointer-events="none">${m.e} · $${m.c.toFixed(2)} · ${m.t}k tok · ${m.st} steps</text></g>`;
     svg += `</g>`;
   });
-  svg += '</svg>';
+  svg += `<g pointer-events="none">${lbls}</g></svg>`;
   h += svg;
   h += `<div id="dsw-tip" class="hidden absolute z-20 pointer-events-none bg-white border border-[#e2e5ec] rounded-xl shadow-xl p-3 w-64"></div>`;
   h += `<div class="px-5 py-3 border-t border-[#eceef4] flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-[#5a5f73]">
@@ -641,11 +670,11 @@ ${[
     let best = null, bd = 1e9;
     DSW.forEach(m=>{ const d = Math.hypot(vx-px(m.c), vy-py(m.st)); if(d<bd){ bd=d; best=m; } });
     const hit = best && bd < rad(best)+14 && !dim(best.p);
-    document.querySelectorAll('.dsw-bub').forEach(g=> g.classList.toggle('dsw-hov', hit && g.dataset.id===best.id));
+    document.querySelectorAll('.dsw-bub,.dsw-lbl').forEach(g=> g.classList.toggle('dsw-hov', hit && g.dataset.id===best.id));
     if(hit){ if(hoverId!==best.id){ hoverId=best.id; showTip(best, ev.clientX, ev.clientY); } else { const r2 = wrap.getBoundingClientRect(); tip.style.left=(ev.clientX-r2.left+14)+'px'; tip.style.top=(ev.clientY-r2.top-10)+'px'; } }
     else { hoverId=null; tip.classList.add('hidden'); }
   });
-  svgEl.addEventListener('mouseleave', ()=>{ hoverId=null; tip.classList.add('hidden'); document.querySelectorAll('.dsw-bub').forEach(g=>g.classList.remove('dsw-hov')); });
+  svgEl.addEventListener('mouseleave', ()=>{ hoverId=null; tip.classList.add('hidden'); document.querySelectorAll('.dsw-bub,.dsw-lbl').forEach(g=>g.classList.remove('dsw-hov')); });
   document.querySelectorAll('.dsw-chip').forEach(b=> b.addEventListener('click', ()=>{ dswProv = b.dataset.prov || null; renderDeepSWE(); }));
 }
 renderDeepSWE();
@@ -654,9 +683,11 @@ renderDeepSWE();
 function renderPriceHistory(){
   const NEW = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800 ml-1.5">New</span>';
   const tl = [
+    {d:'~Oct 13, 2026', p:'Google', c:'blue', t:'🔵 Gemini 4 Argon launch', b:'<strong>$2/$10</strong> promo (50% credit back) thru Nov 30, then <strong>$4/$20</strong>. 1M ctx. AA v4.3 = 53.', n:1},
     {d:'~Oct 7, 2026', p:'Anthropic', c:'violet', t:'🟣 Haiku 5.5 launch', b:'<strong>$0.10/$0.50</strong> for prompts up to 100K tokens, <strong>$0.50/$2.50</strong> above. 1M ctx. Replaces Haiku 4.5 ($1/$5) at 90% less.', n:1},
     {d:'~Sep 28, 2026', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5.5 launch', b:'<strong>$2/$10</strong> — same as Sonnet 5. AA v4.3 #2 (56). Sonnet 5 becomes legacy.', n:1},
     {d:'Sep 22, 2026', p:'Anthropic', c:'violet', t:'🟣 Opus 5.5 launch', b:'<strong>$4/$20</strong> — 20% cheaper than Opus 5 ($5/$25). AA v4.3 #1 (58). Fast mode $8/$40. Opus 5 becomes legacy.', n:1},
+    {d:'~Sep 2, 2026', p:'Google', c:'blue', t:'🔵 Gemini 3.8 Flash launch', b:'<strong>$0.75/$3.75</strong> intro thru Dec 31, then $1.50/$7.50. AA 59. Gemini 3.6 Flash also moved to the same intro price. 3.7 / 3.6 Flash superseded.', n:1},
     {d:'Sep 1, 2026', p:'Anthropic', c:'violet', t:'🟣 Fable 5.1', b:'<strong>$10/$50</strong> unchanged. Cache hit drops $1 → $0.25.', n:1},
     {d:'Aug 26, 2026', p:'Datacurve', c:'blue', t:'🔵 DeepSWE v1.1 leaderboard refresh', b:'Leaderboard updated to 27 models. New entries: Grok 4.6 (65.9%), Gemini 3.7 Flash (65.3%), GLM-5.3 (66.9%), GLM-5.3-Flash (63.4%), Muse Spark 1.2 (59.3%), Qwen3.8 family. Opus 5 holds #1 at 73.6%.'},
     {d:'Aug 21, 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 Sol price cut', b:'<strong>Sol −20%/−33%:</strong> $5/$30 → <strong>$4/$20</strong> (promo thru Nov 21). First time Sol undercuts Opus 5 on both input AND output. Terra and Luna unchanged.'},
@@ -678,7 +709,7 @@ function renderPriceHistory(){
   const money=v=>v?('$'+(v<1?String(+v.toFixed(3)):v)):'Free';
   const snap = MArr.filter(m=>m.sn!==undefined).map(m=>{const p=effPrice(m.k);return [m.n,money(p.i),money(p.o),m.sn+(m.v?` <span class="text-[#a0a5b5]">· checked ${fmtDate(m.v)}</span>`:'')];}).concat(SNAP_EXTRA);
   const dot = {emerald:'bg-emerald-500',blue:'bg-blue-500',violet:'bg-violet-500',gray:'bg-gray-400'};
-  let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since recent releases.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (Sol promo ends Nov 21; Gemini 3.7 Flash intro ends Dec 31; DeepSeek peak-hour pricing).</li></ul><p class="text-xs text-[#6b7085] mt-2">Claude prices verified <strong>Nov 5, 2026</strong> (official docs). Other vendors last verified Aug 29, 2026.</p></div><div class="p-5">';
+  let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since recent releases.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (promo and intro prices ending; DeepSeek peak-hour pricing). Past items drop off automatically.</li></ul><p class="text-xs text-[#6b7085] mt-2">Claude prices verified <strong>Nov 5, 2026</strong> (official docs). Google verified Nov 5, 2026 (cloud.google.com). OpenAI, xAI, DeepSeek and others last verified Aug 29, 2026.</p></div><div class="p-5">';
   tl.forEach(r=>{
     h += `<div class="relative pl-9 pb-5 last:pb-0"><span class="absolute left-0 top-1 h-2.5 w-2.5 rounded-full ${dot[r.c]} ring-4 ring-white"></span><span class="absolute left-[5px] top-5 bottom-0 w-px bg-[#eceef4] last:hidden"></span><div class="text-[0.6875rem] font-bold uppercase tracking-wider text-[#6b7085]">${r.d} · ${r.p}${r.n?NEW:''}</div><div class="font-semibold text-sm mt-0.5">${r.t}</div><div class="text-xs text-[#5a5f73] mt-0.5 leading-relaxed">${r.b}</div></div>`;
   });
@@ -688,7 +719,7 @@ function renderPriceHistory(){
     h += `<tr class="hover:bg-[#f8f9fc]"><td class="p-2.5 font-medium">${r[0]}</td><td class="p-2.5 font-mono">${r[1]}</td><td class="p-2.5 font-mono">${r[2]}</td><td class="p-2.5 text-[#6b7085]">${r[3]}</td></tr>`;
   });
   h += '</tbody></table></div></div>';
-  h += '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">⏰ Watchlist &amp; Gotchas</h2></div><ul class="p-4 space-y-2 text-xs sm:text-sm text-[#5a5f73]"><li>🔔 <strong>Nov 21:</strong> GPT-5.6 Sol promo pricing ($4/$20) expires → reverts to $5/$30. Re-check model selection then.</li><li>🔔 <strong>Dec 31:</strong> Gemini 3.7 Flash intro pricing ($0.75/$3.75) expires → doubles to $1.50/$7.50.</li><li>🔔 <strong>TBA:</strong> DeepSeek 2× peak-hour pricing (Beijing 09:00–12:00 &amp; 14:00–18:00). Off-peak stays $0.14/$0.28.</li><li>⚡ <strong>Fast mode</strong> replaces Priority Processing on GPT-5.6 — 2× price for 2.5× speed. Same model ID, explicit flag.</li><li>📍 <strong>Pin your IDs:</strong> bare <code class="bg-[#eceef4] px-1 rounded">gpt-5.6</code> routes to Sol ($4/$20 promo). Use <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-terra</code> / <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-luna</code>.</li><li>🆕 <strong>Reported Oct releases — not yet verified, not in rankings:</strong> GPT-6 Astra, GPT-6.1 Terra ($1/$5, Oct 26), Gemini 3.8 Flash, Gemini 4 Argon ($2/$10, Oct 13), Kimi K3.1 Pro ($2/$10, Oct 23), DeepSeek V4.1 Flash ($0.30/$1.20, Oct 17). Source: third-party trackers only — check vendor pages before use.</li><li>📍 <strong>Claude IDs:</strong> <code class="bg-[#eceef4] px-1 rounded">claude-opus-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-sonnet-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-haiku-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-fable-5-1</code>.</li><li>🔧 <strong>Corrections applied Aug 1:</strong> DeepSeek V4 Pro <s>$0.50/$1.50</s> → $0.435/$0.87 · MiniMax M3 <s>$0.50/$2.00</s> → $0.30/$1.20 (matches vendor rate cards).</li></ul></div>';
+  h += '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">⏰ Watchlist &amp; Gotchas</h2></div><ul class="p-4 space-y-2 text-xs sm:text-sm text-[#5a5f73]">'+(past('2026-11-22')?'':'<li>🔔 <strong>Nov 21:</strong> GPT-5.6 Sol promo pricing ($4/$20) expires → reverts to $5/$30. Re-check model selection then.</li>')+(past('2026-12-01')?'':'<li>🔔 <strong>Nov 30:</strong> Gemini 4 Argon promo ($2/$10) ends → $4/$20.</li>')+(past('2027-01-01')?'':'<li>🔔 <strong>Dec 31:</strong> Gemini 3.8 / 3.7 / 3.6 Flash intro pricing ($0.75/$3.75) ends → doubles to $1.50/$7.50.</li>')+'<li>🔔 <strong>TBA:</strong> DeepSeek 2× peak-hour pricing (Beijing 09:00–12:00 &amp; 14:00–18:00). Off-peak stays $0.14/$0.28.</li><li>⚡ <strong>Fast mode</strong> replaces Priority Processing on GPT-5.6 — 2× price for 2.5× speed. Same model ID, explicit flag.</li><li>📍 <strong>Pin your IDs:</strong> bare <code class="bg-[#eceef4] px-1 rounded">gpt-5.6</code> routes to Sol ($4/$20 promo). Use <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-terra</code> / <code class="bg-[#eceef4] px-1 rounded">gpt-5.6-luna</code>.</li><li>🆕 <strong>Reported Oct releases — not yet verified, not in rankings:</strong> GPT-6 Astra, GPT-6.1 Terra ($1/$5, Oct 26), Kimi K3.1 Pro ($2/$10, Oct 23), DeepSeek V4.1 Flash ($0.30/$1.20, Oct 17). Source: third-party trackers only — check vendor pages before use.</li><li>📍 <strong>Claude IDs:</strong> <code class="bg-[#eceef4] px-1 rounded">claude-opus-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-sonnet-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-haiku-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-fable-5-1</code>.</li><li>🔧 <strong>Corrections applied Aug 1:</strong> DeepSeek V4 Pro <s>$0.50/$1.50</s> → $0.435/$0.87 · MiniMax M3 <s>$0.50/$2.00</s> → $0.30/$1.20 (matches vendor rate cards).</li></ul></div>';
   h += '</div></div>';
   document.getElementById('tab-price-inner').innerHTML = h;
 }

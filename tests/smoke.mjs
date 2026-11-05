@@ -51,9 +51,22 @@ const dataErrors = errors.length ? [] : await page.evaluate(() => {
 });
 errors.push(...dataErrors);
 
+// Re-load on the day after every scheduled price change, so date-switched text paths run too
+if (!errors.length) {
+  const dates = await page.evaluate(() => [...new Set(Object.values(M).map(m => m.priceChangeDate).filter(Boolean))]);
+  for (const d of dates) {
+    const p2 = await browser.newPage();
+    p2.on('pageerror', e => errors.push(`pageerror on ${d}: ${e.message}`));
+    await p2.clock.setFixedTime(new Date(d + 'T12:00:00'));
+    await p2.goto(url, { waitUntil: 'load' });
+    for (const t of tabs) await p2.click(`.tab-btn[data-tab="${t}"]`);
+    await p2.close();
+  }
+}
+
 await browser.close();
 if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  '));
   process.exit(1);
 }
-console.log(`✓ page loads, ${tabs.length} tabs render, finder works, data references OK`);
+console.log(`✓ page loads, ${tabs.length} tabs render, finder works, data references OK, future-date views OK`);
