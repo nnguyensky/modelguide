@@ -6,10 +6,14 @@
 import { chromium } from 'playwright';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { createRequire } from 'node:module';
+import { readFileSync } from 'node:fs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const url = pathToFileURL(path.join(root, 'index.html')).href;
-const ROUTES = ['recommend', 'explore', 'value', 'insights', 'changes'];
+const ROUTES = ['recommend', 'explore', 'compare', 'value', 'insights', 'changes'];
+const require = createRequire(import.meta.url);
+let axePath = null; try { axePath = require.resolve('axe-core/axe.min.js'); } catch (e) { /* optional */ }
 
 const browser = await chromium.launch();
 const errors = [];
@@ -50,6 +54,16 @@ if (!errors.length) {
     }
   }
   for (const v of ['10', '1000', '100']) await page.click(`[data-vol="${v}"]`);
+  // Shareable link: opening it restores task + mode
+  await page.click('[data-group="1"]'); await page.click('[data-mode="cheap"]');
+  const shared = await page.evaluate(() => location.hash);
+  if (!/^#recommend\/[a-z0-9-]+\/cheap$/.test(shared)) errors.push(`recommend link not shareable: ${shared}`);
+  const p3 = await browser.newPage(); await p3.route('**/fonts.googleapis.com/**', (r) => r.abort());
+  await p3.goto(url + shared);
+  const pressed = await p3.$eval('[data-mode][aria-pressed="true"]', (b) => b.dataset.mode);
+  if (pressed !== 'cheap') errors.push('opening a shared recommend link did not restore the mode');
+  await p3.close();
+  await page.click('#share');
 
   // Explore: filters, search, sort, select a row
   await page.evaluate(() => { location.hash = 'explore'; });
@@ -61,6 +75,26 @@ if (!errors.length) {
   for (const s of ['value', 'cost', 'price', 'aa']) await page.selectOption('#sort', s);
   await page.click('#rows tr[data-k]:nth-child(3)');
   if (!(await page.$('#detail .detail'))) errors.push('explore detail panel missing');
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#csv')]);
+  const csv = readFileSync(await dl.path(), 'utf8');
+  if (!/^Model,Provider,/.test(csv) || csv.trim().split('\n').length < 10) errors.push('CSV export is empty or malformed');
+  await page.click('#detail [data-cmp]');
+
+  // Explore on a phone: tapping a row brings the details into view
+  const ph = await browser.newPage({ viewport: { width: 390, height: 844 } }); await ph.route('**/fonts.googleapis.com/**', (r) => r.abort());
+  await ph.goto(url + '#explore'); await ph.waitForSelector('#rows tr[data-k]');
+  await ph.click('#rows tr[data-k]:nth-child(8)'); await ph.waitForTimeout(800);
+  const inView = await ph.$eval('#detail', (el) => { const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; });
+  if (!inView) errors.push('explore (phone): details not scrolled into view after tapping a row');
+  await ph.close();
+
+  // Compare: three models, calculator, long-prompt tier
+  await page.evaluate(() => { location.hash = 'compare/gpt61sol,opus55,haiku55'; });
+  await page.waitForSelector('.cmp-table');
+  if ((await page.$$('.cmp-table thead th')).length !== 4) errors.push('compare did not show three models');
+  await page.fill('#inTok', '300000');
+  if (!(await page.$('#calc-out .tag.warn'))) errors.push('compare calculator did not apply the long-prompt price tier');
+  await page.fill('#inTok', '20000');
 
   // Value map: both sources, 3D toggle
   await page.evaluate(() => { location.hash = 'value'; });
@@ -70,6 +104,35 @@ if (!errors.length) {
   if ((await page.$$('.vm-dot')).length < 10) errors.push('value map (AA) shows too few points');
   await page.click('#d3'); await page.click('#d3');
 }
+
+// 1b. Stale-data banner shows when the data is old, and not when it is fresh
+if (!errors.length) {
+  if (await page.$('.stale')) errors.push('stale banner shown on fresh data');
+  const old = await page.evaluate(() => window.MG.checked);
+  const p4 = await browser.newPage(); await p4.route('**/fonts.googleapis.com/**', (r) => r.abort());
+  await p4.clock.setFixedTime(new Date(new Date(old + 'T12:00:00').getTime() + 45 * 864e5));
+  await p4.goto(url);
+  if (!(await p4.$('.stale'))) errors.push('stale banner missing 45 days after the data date');
+  await p4.close();
+}
+
+// 1c. Accessibility (axe-core): no serious or critical issues on any page, light and dark
+if (!errors.length && axePath) {
+  for (const theme of ['light', 'dark']) {
+    const pa = await browser.newPage({ colorScheme: theme }); await pa.route('**/fonts.googleapis.com/**', (r) => r.abort());
+    await pa.goto(url);
+    for (const r of ROUTES) {
+      await pa.evaluate((h) => { location.hash = h; }, r);
+      await pa.waitForTimeout(150);
+      if (!(await pa.evaluate(() => !!window.axe))) await pa.addScriptTag({ path: axePath });
+      const v = await pa.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations
+        .filter((x) => x.impact === 'serious' || x.impact === 'critical')
+        .map((x) => `${x.id} (${x.impact}) x${x.nodes.length}: ${x.nodes.slice(0, 2).map((n) => n.target.join(' ')).join(' | ')}`));
+      v.forEach((x) => errors.push(`a11y ${theme} #${r}: ${x}`));
+    }
+    await pa.close();
+  }
+} else if (!axePath) console.warn('axe-core not installed — accessibility check skipped (npm install --no-save axe-core@4.14.0)');
 
 // 2. Data integrity
 if (!errors.length) {
@@ -106,4 +169,4 @@ if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  '));
   process.exit(1);
 }
-console.log('✓ all routes render, every task/mode works, Explore + Value map controls work, data references OK, future-date views OK');
+console.log(`✓ all routes render, every task/mode works, share links, CSV, compare + calculator, phone details, stale banner${axePath ? ', accessibility (axe)' : ''}, data references, future-date views OK`);

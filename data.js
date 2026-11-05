@@ -2,15 +2,18 @@
 // MODEL GUIDE — DATA (all numbers live here; app.js only renders)
 // Checked Nov 5, 2026. Sources: vendor price pages (Claude, Google Cloud, xAI,
 // DeepSeek, Z.ai, Cursor, OpenCode), Artificial Analysis (AA index, cost per task),
-// LiteLLM open price database (cross-check), Datacurve DeepSWE v1.1 (Sep 22).
+// LiteLLM + models.dev open price databases (cross-check), Datacurve DeepSWE v1.1 (Sep 22).
 //
 // Model fields: n name · p provider · i/o $ per 1M in/out · iAfter/oAfter/priceChangeDate
 // scheduled change · aa AA index (null = not ranked) · aaCost $/task at best setting ·
 // ladder [[effort, AA, $/task]] · dsw DeepSWE % · ctx · open (weights) · fr 2 = free on Zen ·
-// legacy · official (price read on the vendor page) · srcs (sources agreeing) · v date checked.
+// legacy · official (price read on the vendor page) · srcs (sources agreeing) · v date checked ·
+// long {over, i, o} long-prompt price tier · ref {lit, md} keys in LiteLLM / models.dev (used by tools/check-prices.mjs).
 // ═══════════════════════════════════════════════════════════════════
 var MG = window.MG = {};
 MG.checked = '2026-11-05';
+// Show a warning on the page when the data is older than this many days
+MG.staleDays = 30;
 MG.models = {
  "opus55": {
   "n": "Opus 5.5",
@@ -60,7 +63,11 @@ MG.models = {
    "Not on DeepSWE yet (Opus 5 scored 73.6%)",
    "Fast mode $8 / $40"
   ],
-  "mono": "O5"
+  "mono": "O5",
+  "ref": {
+   "lit": "claude-opus-5-5",
+   "md": "anthropic/models/claude-opus-5-5"
+  }
  },
  "sonnet55": {
   "n": "Sonnet 5.5",
@@ -109,7 +116,11 @@ MG.models = {
   "notes": [
    "At max effort it costs as much as Opus 5.5 at max"
   ],
-  "mono": "S5"
+  "mono": "S5",
+  "ref": {
+   "lit": "claude-sonnet-5-5",
+   "md": "anthropic/models/claude-sonnet-5-5"
+  }
  },
  "fable51": {
   "n": "Fable 5.1",
@@ -158,7 +169,11 @@ MG.models = {
   "notes": [
    "Scores below Opus 5.5 on AA at 2–5× the price"
   ],
-  "mono": "F5"
+  "mono": "F5",
+  "ref": {
+   "lit": "claude-fable-5-1",
+   "md": "anthropic/models/claude-fable-5-1"
+  }
  },
  "haiku55": {
   "n": "Haiku 5.5",
@@ -207,7 +222,16 @@ MG.models = {
   "notes": [
    "Prompts over 100K tokens cost 5× ($0.50 / $2.50)"
   ],
-  "mono": "H5"
+  "mono": "H5",
+  "ref": {
+   "lit": "claude-haiku-5-5",
+   "md": "anthropic/models/claude-haiku-5-5"
+  },
+  "long": {
+   "over": 100000,
+   "i": 0.5,
+   "o": 2.5
+  }
  },
  "opus5": {
   "n": "Opus 5",
@@ -226,7 +250,11 @@ MG.models = {
   "dsw": 73.6,
   "official": true,
   "srcs": 3,
-  "mono": "O5"
+  "mono": "O5",
+  "ref": {
+   "lit": "claude-opus-5",
+   "md": "anthropic/models/claude-opus-5"
+  }
  },
  "fable5": {
   "n": "Fable 5",
@@ -245,7 +273,11 @@ MG.models = {
   "dsw": 69.9,
   "official": true,
   "srcs": 3,
-  "mono": "F5"
+  "mono": "F5",
+  "ref": {
+   "lit": "claude-fable-5",
+   "md": "anthropic/models/claude-fable-5"
+  }
  },
  "sonnet5": {
   "n": "Sonnet 5",
@@ -264,7 +296,11 @@ MG.models = {
   "dsw": 53.8,
   "official": true,
   "srcs": 3,
-  "mono": "S5"
+  "mono": "S5",
+  "ref": {
+   "lit": "claude-sonnet-5",
+   "md": "anthropic/models/claude-sonnet-5"
+  }
  },
  "opus48": {
   "n": "Opus 4.8",
@@ -329,12 +365,21 @@ MG.models = {
   "aaCost": 6.24,
   "dsw": 74.1,
   "official": false,
-  "srcs": 3,
+  "srcs": 4,
   "notes": [
    "DeepSWE #1 (74.1%, ~29 agent steps)",
    "Above 272K tokens: $20 / $75"
   ],
-  "mono": "A6"
+  "mono": "A6",
+  "ref": {
+   "lit": "gpt-6-astra",
+   "md": "openai/models/gpt-6-astra"
+  },
+  "long": {
+   "over": 272000,
+   "i": 20,
+   "o": 75
+  }
  },
  "gpt61sol": {
   "n": "GPT-6.1 Sol",
@@ -379,12 +424,21 @@ MG.models = {
   ],
   "aaCost": 1.27,
   "official": false,
-  "srcs": 3,
+  "srcs": 4,
   "notes": [
    "Not on DeepSWE yet — coding score is AA only",
    "Above 272K tokens: $4 / $15"
   ],
-  "mono": "S6"
+  "mono": "S6",
+  "ref": {
+   "lit": "gpt-6.1-sol",
+   "md": "openai/models/gpt-6.1-sol"
+  },
+  "long": {
+   "over": 272000,
+   "i": 4,
+   "o": 15
+  }
  },
  "gpt61terra": {
   "n": "GPT-6.1 Terra",
@@ -392,11 +446,11 @@ MG.models = {
   "i": 1,
   "o": 5,
   "aa": 51,
-  "b": "Budget OpenAI. AA 51 for ~$0.96/task. $2 input past 272K",
+  "b": "Budget OpenAI. AA 51 for ~$0.96/task. $2/$7.50 past 272K",
   "t": "Budget",
   "fr": 0,
   "v": "2026-11-05",
-  "sn": "Oct · $2 input &gt;272K",
+  "sn": "Oct · $2/$7.50 &gt;272K",
   "legacy": false,
   "ctx": "1M",
   "open": false,
@@ -429,12 +483,21 @@ MG.models = {
   ],
   "aaCost": 0.96,
   "official": false,
-  "srcs": 2,
+  "srcs": 3,
   "notes": [
    "Not on DeepSWE yet",
-   "Above 272K tokens: $2 input"
+   "Above 272K tokens: $2 / $7.50"
   ],
-  "mono": "T6"
+  "mono": "T6",
+  "ref": {
+   "lit": "gpt-6.1-terra",
+   "md": "openai/models/gpt-6.1-terra"
+  },
+  "long": {
+   "over": 272000,
+   "i": 2,
+   "o": 7.5
+  }
  },
  "gpt6luna": {
   "n": "GPT-6 Luna",
@@ -479,12 +542,21 @@ MG.models = {
   ],
   "aaCost": 0.15,
   "official": false,
-  "srcs": 3,
+  "srcs": 4,
   "notes": [
    "Low score — simple, high-volume work only",
    "Above 272K tokens: $0.20 / $0.75"
   ],
-  "mono": "L6"
+  "mono": "L6",
+  "ref": {
+   "lit": "gpt-6-luna",
+   "md": "openai/models/gpt-6-luna"
+  },
+  "long": {
+   "over": 272000,
+   "i": 0.2,
+   "o": 0.75
+  }
  },
  "gptSol": {
   "n": "GPT-5.6 Sol",
@@ -507,11 +579,20 @@ MG.models = {
   "open": false,
   "dsw": 72.7,
   "official": false,
-  "srcs": 2,
+  "srcs": 4,
   "notes": [
    "Promo $4 / $20 ends Nov 21 → $5 / $30"
   ],
-  "mono": "S5"
+  "mono": "S5",
+  "ref": {
+   "lit": "gpt-5.6-sol",
+   "md": "openai/models/gpt-5.6-sol"
+  },
+  "long": {
+   "over": 272000,
+   "i": 8,
+   "o": 30
+  }
  },
  "gptTerra": {
   "n": "GPT-5.6 Terra",
@@ -529,8 +610,17 @@ MG.models = {
   "open": false,
   "dsw": 69.6,
   "official": false,
-  "srcs": 2,
-  "mono": "T5"
+  "srcs": 3,
+  "mono": "T5",
+  "ref": {
+   "lit": "gpt-5.6-terra",
+   "md": "openai/models/gpt-5.6-terra"
+  },
+  "long": {
+   "over": 272000,
+   "i": 4,
+   "o": 18
+  }
  },
  "gptLuna": {
   "n": "GPT-5.6 Luna",
@@ -548,8 +638,17 @@ MG.models = {
   "open": false,
   "dsw": 67.2,
   "official": false,
-  "srcs": 2,
-  "mono": "L5"
+  "srcs": 3,
+  "mono": "L5",
+  "ref": {
+   "lit": "gpt-5.6-luna",
+   "md": "openai/models/gpt-5.6-luna"
+  },
+  "long": {
+   "over": 272000,
+   "i": 0.4,
+   "o": 1.8
+  }
  },
  "gemini4carbon": {
   "n": "Gemini 4 Carbon",
@@ -617,7 +716,11 @@ MG.models = {
    "Promo price ends Nov 30",
    "Completions over 32K tokens are billed even if they fail"
   ],
-  "mono": "A4"
+  "mono": "A4",
+  "ref": {
+   "lit": "gemini/gemini-4-argon",
+   "md": "google/models/gemini-4-argon"
+  }
  },
  "gemini38f": {
   "n": "Gemini 3.8 Flash",
@@ -658,7 +761,11 @@ MG.models = {
    "DeepSWE #2 (73.8%) despite a low AA score",
    "Text, image, video and audio input; built-in computer use"
   ],
-  "mono": "F3"
+  "mono": "F3",
+  "ref": {
+   "lit": "gemini-3.8-flash",
+   "md": "google/models/gemini-3.8-flash"
+  }
  },
  "gemini37f": {
   "n": "Gemini 3.7 Flash",
@@ -742,7 +849,12 @@ MG.models = {
   "dsw": 11.7,
   "official": true,
   "srcs": 3,
-  "mono": "P3"
+  "mono": "P3",
+  "long": {
+   "over": 200000,
+   "i": 4,
+   "o": 18
+  }
  },
  "grok47": {
   "n": "Grok 4.7",
@@ -782,7 +894,16 @@ MG.models = {
    "Above 200K tokens: $4 / $12",
    "Weak value on AA: GPT-6.1 Sol scores higher for less"
   ],
-  "mono": "G4"
+  "mono": "G4",
+  "ref": {
+   "lit": "xai/grok-4.7",
+   "md": "xai/models/grok-4.7"
+  },
+  "long": {
+   "over": 200000,
+   "i": 4,
+   "o": 12
+  }
  },
  "grok46": {
   "n": "Grok 4.6",
@@ -801,7 +922,12 @@ MG.models = {
   "dsw": 67.5,
   "official": true,
   "srcs": 3,
-  "mono": "G4"
+  "mono": "G4",
+  "long": {
+   "over": 200000,
+   "i": 4,
+   "o": 12
+  }
  },
  "grok45": {
   "n": "Grok 4.5",
@@ -820,7 +946,12 @@ MG.models = {
   "dsw": 53.8,
   "official": true,
   "srcs": 3,
-  "mono": "G4"
+  "mono": "G4",
+  "long": {
+   "over": 200000,
+   "i": 4,
+   "o": 12
+  }
  },
  "composer25": {
   "n": "Composer 2.5",
@@ -861,11 +992,15 @@ MG.models = {
   "open": false,
   "aaCost": 3.68,
   "official": false,
-  "srcs": 2,
+  "srcs": 3,
   "notes": [
-   "Vendor page not reachable — price from 2 trackers"
+   "Vendor page not reachable — price from 3 independent sources"
   ],
-  "mono": "K3"
+  "mono": "K3",
+  "ref": {
+   "lit": "moonshot/kimi-k3.1-pro",
+   "md": "moonshotai/models/kimi-k3.1-pro"
+  }
  },
  "museWonder": {
   "n": "Muse Wonder",
@@ -883,8 +1018,12 @@ MG.models = {
   "open": false,
   "aaCost": 6.95,
   "official": false,
-  "srcs": 2,
-  "mono": "MW"
+  "srcs": 4,
+  "mono": "MW",
+  "ref": {
+   "lit": "meta/muse-wonder-1.0",
+   "md": "meta/models/muse-wonder-1.0"
+  }
  },
  "qwen38max": {
   "n": "Qwen3.8 Max",
@@ -903,8 +1042,11 @@ MG.models = {
   "aaCost": 10.02,
   "dsw": 57.5,
   "official": false,
-  "srcs": 2,
-  "mono": "QM"
+  "srcs": 3,
+  "mono": "QM",
+  "ref": {
+   "md": "alibaba/models/qwen3.8-max"
+  }
  },
  "dsV41Flash": {
   "n": "DeepSeek V4.1 Flash",
@@ -944,7 +1086,10 @@ MG.models = {
    "2× price at peak hours (01–04, 06–10 UTC, Mon–Fri)",
    "Free on Zen for now — zero data retention"
   ],
-  "mono": "DF"
+  "mono": "DF",
+  "ref": {
+   "lit": "deepseek/deepseek-flash"
+  }
  },
  "dsV4Pro": {
   "n": "DeepSeek V4 Pro",
@@ -980,7 +1125,10 @@ MG.models = {
    "2× price at peak hours",
    "Price went up since Aug ($0.435 / $0.87)"
   ],
-  "mono": "DP"
+  "mono": "DP",
+  "ref": {
+   "lit": "deepseek/deepseek-v4-pro"
+  }
  },
  "glm53": {
   "n": "GLM-5.3",
@@ -1012,7 +1160,11 @@ MG.models = {
   "dsw": 69,
   "official": true,
   "srcs": 3,
-  "mono": "G5"
+  "mono": "G5",
+  "ref": {
+   "lit": "zai/glm-5.3",
+   "md": "zai/models/glm-5.3"
+  }
  },
  "glm53f": {
   "n": "GLM-5.3-Flash",
@@ -1032,7 +1184,11 @@ MG.models = {
   "dsw": 63.4,
   "official": true,
   "srcs": 3,
-  "mono": "GF"
+  "mono": "GF",
+  "ref": {
+   "lit": "zai/glm-5.3-flash",
+   "md": "zai/models/glm-5.3-flash"
+  }
  },
  "glm52": {
   "n": "GLM-5.2",
@@ -1051,7 +1207,11 @@ MG.models = {
   "dsw": 43.8,
   "official": true,
   "srcs": 3,
-  "mono": "G5"
+  "mono": "G5",
+  "ref": {
+   "lit": "zai/glm-5.2",
+   "md": "zai/models/glm-5.2"
+  }
  },
  "mimoV26pro": {
   "n": "MiMo V2.6 Pro",
@@ -1069,8 +1229,12 @@ MG.models = {
   "open": true,
   "aaCost": 0.26,
   "official": false,
-  "srcs": 2,
-  "mono": "MP"
+  "srcs": 3,
+  "mono": "MP",
+  "ref": {
+   "lit": "xiaomi_mimo/mimo-v2.6-pro",
+   "md": "xiaomi/models/mimo-v2.6-pro"
+  }
  },
  "mimoV26f": {
   "n": "MiMo V2.6 Flash",
@@ -1088,11 +1252,15 @@ MG.models = {
   "open": true,
   "aaCost": 0.13,
   "official": false,
-  "srcs": 2,
+  "srcs": 3,
   "notes": [
    "Free on Zen may use your data for training"
   ],
-  "mono": "MF"
+  "mono": "MF",
+  "ref": {
+   "lit": "xiaomi_mimo/mimo-v2.6-flash",
+   "md": "xiaomi/models/mimo-v2.6-flash"
+  }
  },
  "minimaxM31f": {
   "n": "MiniMax M3.1 Flash",
@@ -1111,7 +1279,10 @@ MG.models = {
   "aaCost": 0.49,
   "official": false,
   "srcs": 2,
-  "mono": "MM"
+  "mono": "MM",
+  "ref": {
+   "md": "minimax/models/MiniMax-M3.1-Flash"
+  }
  },
  "mistralL4": {
   "n": "Mistral Large 4",
@@ -1141,8 +1312,12 @@ MG.models = {
   ],
   "aaCost": 2.06,
   "official": false,
-  "srcs": 2,
-  "mono": "ML"
+  "srcs": 3,
+  "mono": "ML",
+  "ref": {
+   "lit": "mistral/mistral-large-4",
+   "md": "mistral/models/mistral-large-4"
+  }
  },
  "mistralS4": {
   "n": "Mistral Small 4",
@@ -1196,8 +1371,11 @@ MG.models = {
   ],
   "aaCost": 3.53,
   "official": false,
-  "srcs": 1,
-  "mono": "Q2"
+  "srcs": 2,
+  "mono": "Q2",
+  "ref": {
+   "md": "alibaba/models/qwen3.8-27b"
+  }
  },
  "nemotron35svl": {
   "n": "Nemotron 3.5 Super VL",
@@ -2331,5 +2509,6 @@ MG.sources = [
  {u:'https://artificialanalysis.ai/leaderboards/models', n:'Artificial Analysis', d:'AA Intelligence Index, cost per task by effort, prices for GPT-6, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen'},
  {u:'https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json', n:'LiteLLM price database', d:'Open price list used to cross-check prices and long-context tiers'},
  {u:'https://deepswe.datacurve.ai', n:'DeepSWE v1.1 (Datacurve)', d:'Coding benchmark: score, cost per task, tokens, agent steps'},
- {u:'https://openai.com/api/pricing/', n:'OpenAI Pricing', d:'Not read (bot check) — GPT-6 prices from AA, matched by LiteLLM and OpenCode'},
+ {u:'https://github.com/sst/models.dev', n:'models.dev', d:'Open model database (sst / OpenCode team), updated daily. Second cross-check for prices and long-context tiers'},
+ {u:'https://openai.com/api/pricing/', n:'OpenAI Pricing', d:'Not read (bot check) — GPT-6 prices from AA, matched by LiteLLM, models.dev and OpenCode'},
 ];
