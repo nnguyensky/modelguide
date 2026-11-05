@@ -6,41 +6,41 @@
 const M = {
   // Claude 5.5 family — prices from platform.claude.com (Nov 5, 2026). aa = estimate on this page's scale:
   // Artificial Analysis moved to index v4.3 (harsher, ~7 pts lower). v4.3 raw: Opus 5.5 58 · Sonnet 5.5 56 · Fable 5.1 53 · Haiku 5.5 43.
-  opus55:    { n:'Opus 5.5',      p:'Anthropic',  i:4,   o:20,  aa:65, e:['low','med','high','xhigh','max'],     b:'New #1. Fable-level quality at Opus price. AA v4.3 = 58', t:'#1 overall', c:'purple', fr:0 },
-  fable51:   { n:'Fable 5.1',     p:'Anthropic',  i:10,  o:50,  aa:60, e:['low','med','high','xhigh','max'],     b:'Ceiling model. Long autonomy. AA v4.3 = 53', t:'Ceiling', c:'purple', fr:0 },
-  sonnet55:  { n:'Sonnet 5.5',    p:'Anthropic',  i:2,   o:10,  aa:63, e:['low','med','high','xhigh','max'],     b:'Best daily driver. AA v4.3 = 56 (#2)', t:'Best daily', c:'green', fr:0 },
-  haiku55:   { n:'Haiku 5.5',     p:'Anthropic',  i:0.1, o:0.5, aa:50, e:['low','med','high'],                   b:'Cheapest Claude. $0.50/$2.50 past 100K prompt. AA v4.3 = 43', t:'Budget', c:'orange', fr:0 },
-  opus5:     { n:'Opus 5',        p:'Anthropic',  i:5,   o:25,  aa:61, e:['low','med','high','xhigh','max'],     b:'Legacy. Opus 5.5 is cheaper and better', t:'Legacy', c:'gray', fr:0 },
-  fable5:    { n:'Fable 5',       p:'Anthropic',  i:10,  o:50,  aa:60, e:['low','med','high','xhigh','max'],     b:'Legacy. Use Fable 5.1 (same price)', t:'Legacy', c:'gray', fr:0 },
-  sonnet5:   { n:'Sonnet 5',      p:'Anthropic',  i:2,   o:10,  aa:53, e:['low','med','high','xhigh','max'],     b:'Legacy. Use Sonnet 5.5 (same price)', t:'Legacy', c:'gray', fr:0 },
-  opus48:    { n:'Opus 4.8',      p:'Anthropic',  i:5,   o:25,  aa:56, e:['low','med','high','xhigh','max'],     b:'Legacy. Migrate to Opus 5.5', t:'Superseded', c:'gray', fr:0 },
-  gptSol:    { n:'GPT-5.6 Sol',   p:'OpenAI',     i:4,   o:20,  aa:59, e:['none','low','med','high','xhigh','max','ultra'], b:'Best agentic coding. TB leader. Promo $4/$20 thru Nov 21', t:'AA Coding #1', c:'blue', fr:0 },
-  gptTerra:  { n:'GPT-5.6 Terra', p:'OpenAI',     i:2, o:12,  aa:55, e:['none','low','med','high','xhigh','max'], b:'Best value GPT-5.6 family', t:'Best value', c:'green', fr:0 },
-  gptLuna:   { n:'GPT-5.6 Luna',  p:'OpenAI',     i:0.2, o:1.2, aa:51, e:['none','low','med','high','xhigh','max'], b:'Cost champ. ⚠️ Bad at long ctx', t:'Cost champ', c:'orange', fr:0 },
-  grok45:    { n:'Grok 4.5',      p:'xAI',        i:2,   o:6,   aa:54, e:['low','med','high'],                    b:'Best agentic $/task', t:'Agentic value', c:'orange', fr:0 },
-  gemini36f: { n:'Gemini 3.6 Flash',p:'Google',   i:1.5, o:7.5, aa:50, e:[], b:'Best Gemini default. Computer use', t:'Best Gemini', c:'cyan', fr:0 },
-  gemini35f: { n:'Gemini 3.5 Flash',p:'Google',   i:1.5, o:9,   aa:50, e:[], b:'Superseded. Use 3.6 Flash', t:'Superseded', c:'gray', fr:0 },
-  gemini31p: { n:'Gemini 3.1 Pro',  p:'Google',   i:2,   o:12,  aa:46, e:[], b:'Reasoning specialist. GPQA 94.3%', t:'Reasoning', c:'orange', fr:0 },
-  composer25:{ n:'Composer 2.5',    p:'Cursor',    i:0.5, o:2.5, aa:62, aaT:'CAI', e:[], b:'Best coding $/task. Cursor-only', t:'Best $/task', c:'green', fr:0, cu:1 }, // ponytail: aa = Coding Agent Index (agent-level, not AA Intelligence Index) — labeled CAI in finder
-  dsV4Flash: { n:'DeepSeek V4 Flash',p:'DeepSeek',i:0.14,o:0.28,aa:47, e:['non-think','high','max'], b:'Best free. Near Opus 4.8 quality', t:'Best free', c:'green', fr:2 },
-  dsV4Pro:   { n:'DeepSeek V4 Pro',p:'DeepSeek',  i:0.435, o:0.87, aa:44, e:['non-think','high','max'], b:'1.6T MoE, 1M ctx, MIT', t:'MIT', c:'indigo', fr:0 },
-  hy3Free:   { n:'Hy3 Free',       p:'Tencent',   i:0,   o:0,   aa:41, e:['no_think','low','high'], b:'295B MoE. Free tier may have expired', t:'Was free', c:'orange', fr:1 },
-  mimoV25:   { n:'MiMo v2.5',      p:'Xiaomi',    i:0.14,o:0.28,aa:37, e:[], b:'Native multimodal. Free on Zen', t:'Multimodal', c:'cyan', fr:2 },
-  northMini: { n:'North Mini Code',p:'Cohere',    i:0.2, o:0.8, aa:27.6,e:[], b:'Local coder. Fits RTX 4090', t:'Local', c:'purple', fr:2 },
-  bigPickle: { n:'Big Pickle',     p:'OpenCode Zen',i:0, o:0,  aa:47, e:[], b:'Smoke tests. Routes DeepSeek V4', t:'Smoke tests', c:'gray', fr:1 },
-  kimiK3:    { n:'Kimi K3',        p:'Moonshot',  i:3,   o:15,  aa:57, e:['low','med','high','max'], b:'Best OSS overall. 2.8T params', t:'Best OSS', c:'purple', fr:0 },
-  glm52:     { n:'GLM-5.2',        p:'Z.ai',      i:1.34,o:4,   aa:51, e:['low','med','high','max'], b:'Strongest OSS coder. 1M ctx MIT', t:'Top OSS coder', c:'indigo', fr:0 },
-  gemma431:  { n:'Gemma 4 31B',    p:'Google',    i:0.2, o:0.8, aa:43, e:[], b:'LCB 80%, AIME 89.2%, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0 },
-  qwen3627:  { n:'Qwen3.6-27B',    p:'Alibaba',   i:0.25,o:1,   aa:42, e:[], b:'SWE-bench 77.2%, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0 },
-  mistralS4: { n:'Mistral Small 4',p:'Mistral',   i:0.2, o:0.6, aa:36, e:[], b:'6B active, 256K ctx, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0 },
-  minimaxM3: { n:'MiniMax M3',     p:'MiniMax',   i:0.3, o:1.2, aa:44, e:[], b:'GPQA 92.9%, multimodal, open', t:'Open', c:'purple', fr:0 },
-  grok46:    { n:'Grok 4.6',       p:'xAI',       i:2,   o:6,   aa:55, e:['low','med','high','xhigh'], b:'Updated xAI flagship. DeepSWE 65.9%', t:'Updated flagship', c:'orange', fr:0 },
-  gemini37f: { n:'Gemini 3.7 Flash',p:'Google',    i:0.75,o:3.75,aa:52, e:[], b:'Half the price of 3.6. DeepSWE 65.3%', t:'Best value Gemini', c:'cyan', fr:0 },
-  glm53:     { n:'GLM-5.3',        p:'Z.ai',      i:1.4, o:4.4, aa:53, e:['low','med','high','max'], b:'Top Z.ai. DeepSWE 66.9%', t:'Top Z.ai', c:'indigo', fr:0 },
-  glm53f:    { n:'GLM-5.3-Flash',  p:'Z.ai',      i:0.15,o:0.5, aa:48, e:[], b:'320B MoE. DeepSWE 63.4%. MIT', t:'Budget OSS', c:'indigo', fr:0 },
-  qwen38max: { n:'Qwen3.8-Max',    p:'Alibaba',   i:1.65,o:4.95,aa:50, e:['low','med','high','xhigh','max'], b:'2.4T MoE. DeepSWE 56.6%', t:'OSS flagship', c:'cyan', fr:0 },
-  qwen38fn:  { n:'Qwen3.8-Flash-Next',p:'Alibaba',i:0.15,o:0.5, aa:46, e:[], b:'125B. DeepSWE 58.7%. Apache 2.0', t:'Fast OSS', c:'cyan', fr:0 },
-  muse12:    { n:'Muse Spark 1.2', p:'Meta',       i:0.1, o:0.2, aa:49, e:['low','med','high','xhigh'], b:'DeepSWE 59.3%. Budget coding', t:'Budget coding', c:'blue', fr:0 },
+  opus55:    { n:'Opus 5.5',      p:'Anthropic',  i:4,   o:20,  aa:65, e:['low','med','high','xhigh','max'],     b:'New #1. Fable-level quality at Opus price. AA v4.3 = 58', t:'#1 overall', c:'purple', fr:0, v:'2026-11-05', sn:'Sep 22 · #1 overall' },
+  fable51:   { n:'Fable 5.1',     p:'Anthropic',  i:10,  o:50,  aa:60, e:['low','med','high','xhigh','max'],     b:'Ceiling model. Long autonomy. AA v4.3 = 53', t:'Ceiling', c:'purple', fr:0, v:'2026-11-05', sn:'Sep 1' },
+  sonnet55:  { n:'Sonnet 5.5',    p:'Anthropic',  i:2,   o:10,  aa:63, e:['low','med','high','xhigh','max'],     b:'Best daily driver. AA v4.3 = 56 (#2)', t:'Best daily', c:'green', fr:0, v:'2026-11-05', sn:'~Sep 28' },
+  haiku55:   { n:'Haiku 5.5',     p:'Anthropic',  i:0.1, o:0.5, aa:50, e:['low','med','high'],                   b:'Cheapest Claude. $0.50/$2.50 past 100K prompt. AA v4.3 = 43', t:'Budget', c:'orange', fr:0, v:'2026-11-05', sn:'≤100K prompt; $0.50/$2.50 above' },
+  opus5:     { n:'Opus 5',        p:'Anthropic',  i:5,   o:25,  aa:61, e:['low','med','high','xhigh','max'],     b:'Legacy. Opus 5.5 is cheaper and better', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
+  fable5:    { n:'Fable 5',       p:'Anthropic',  i:10,  o:50,  aa:60, e:['low','med','high','xhigh','max'],     b:'Legacy. Use Fable 5.1 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
+  sonnet5:   { n:'Sonnet 5',      p:'Anthropic',  i:2,   o:10,  aa:53, e:['low','med','high','xhigh','max'],     b:'Legacy. Use Sonnet 5.5 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
+  opus48:    { n:'Opus 4.8',      p:'Anthropic',  i:5,   o:25,  aa:56, e:['low','med','high','xhigh','max'],     b:'Legacy. Migrate to Opus 5.5', t:'Superseded', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
+  gptSol:    { n:'GPT-5.6 Sol',   p:'OpenAI',     i:4,   o:20,  aa:59, e:['none','low','med','high','xhigh','max','ultra'], iAfter:5, oAfter:30, priceChangeDate:'2026-11-22', b:'Best agentic coding. TB leader. Promo $4/$20 thru Nov 21', t:'AA Coding #1', c:'blue', fr:0, v:'2026-08-29', sn:'promo thru Nov 21 → $5/$30' },
+  gptTerra:  { n:'GPT-5.6 Terra', p:'OpenAI',     i:2, o:12,  aa:55, e:['none','low','med','high','xhigh','max'], b:'Best value GPT-5.6 family', t:'Best value', c:'green', fr:0, v:'2026-08-29', sn:'cut Jul 30' },
+  gptLuna:   { n:'GPT-5.6 Luna',  p:'OpenAI',     i:0.2, o:1.2, aa:51, e:['none','low','med','high','xhigh','max'], b:'Cost champ. ⚠️ Bad at long ctx', t:'Cost champ', c:'orange', fr:0, v:'2026-08-29', sn:'cut Jul 30' },
+  grok45:    { n:'Grok 4.5',      p:'xAI',        i:2,   o:6,   aa:54, e:['low','med','high'],                    b:'Best agentic $/task', t:'Agentic value', c:'orange', fr:0, v:'2026-08-29', sn:'cached in $0.50' },
+  gemini36f: { n:'Gemini 3.6 Flash',p:'Google',   i:1.5, o:7.5, aa:50, e:[], b:'Best Gemini default. Computer use', t:'Best Gemini', c:'cyan', fr:0, v:'2026-08-29', sn:'superseded' },
+  gemini35f: { n:'Gemini 3.5 Flash',p:'Google',   i:1.5, o:9,   aa:50, e:[], b:'Superseded. Use 3.6 Flash', t:'Superseded', c:'gray', fr:0, v:'2026-08-29', sn:'superseded' },
+  gemini31p: { n:'Gemini 3.1 Pro',  p:'Google',   i:2,   o:12,  aa:46, e:[], b:'Reasoning specialist. GPQA 94.3%', t:'Reasoning', c:'orange', fr:0, v:'2026-08-29', sn:'$4/$18 &gt;200K' },
+  composer25:{ n:'Composer 2.5',    p:'Cursor',    i:0.5, o:2.5, aa:62, aaT:'CAI', e:[], b:'Best coding $/task. Cursor-only', t:'Best $/task', c:'green', fr:0, cu:1, v:'2026-08-29', sn:'Cursor only' }, // ponytail: aa = Coding Agent Index (agent-level, not AA Intelligence Index) — labeled CAI in finder
+  dsV4Flash: { n:'DeepSeek V4 Flash',p:'DeepSeek',i:0.14,o:0.28,aa:47, e:['non-think','high','max'], b:'Best free. Near Opus 4.8 quality', t:'Best free', c:'green', fr:2, v:'2026-08-29', sn:'' },
+  dsV4Pro:   { n:'DeepSeek V4 Pro',p:'DeepSeek',  i:0.435, o:0.87, aa:44, e:['non-think','high','max'], b:'1.6T MoE, 1M ctx, MIT', t:'MIT', c:'indigo', fr:0, v:'2026-08-29', sn:'' },
+  hy3Free:   { n:'Hy3 Free',       p:'Tencent',   i:0,   o:0,   aa:41, e:['no_think','low','high'], b:'295B MoE. Free tier may have expired', t:'Was free', c:'orange', fr:1, v:'2026-08-29' },
+  mimoV25:   { n:'MiMo v2.5',      p:'Xiaomi',    i:0.14,o:0.28,aa:37, e:[], b:'Native multimodal. Free on Zen', t:'Multimodal', c:'cyan', fr:2, v:'2026-08-29' },
+  northMini: { n:'North Mini Code',p:'Cohere',    i:0.2, o:0.8, aa:27.6,e:[], b:'Local coder. Fits RTX 4090', t:'Local', c:'purple', fr:2, v:'2026-08-29' },
+  bigPickle: { n:'Big Pickle',     p:'OpenCode Zen',i:0, o:0,  aa:47, e:[], b:'Smoke tests. Routes DeepSeek V4', t:'Smoke tests', c:'gray', fr:1, v:'2026-08-29' },
+  kimiK3:    { n:'Kimi K3',        p:'Moonshot',  i:3,   o:15,  aa:57, e:['low','med','high','max'], b:'Best OSS overall. 2.8T params', t:'Best OSS', c:'purple', fr:0, v:'2026-08-29', sn:'' },
+  glm52:     { n:'GLM-5.2',        p:'Z.ai',      i:1.34,o:4,   aa:51, e:['low','med','high','max'], b:'Strongest OSS coder. 1M ctx MIT', t:'Top OSS coder', c:'indigo', fr:0, v:'2026-08-29', sn:'' },
+  gemma431:  { n:'Gemma 4 31B',    p:'Google',    i:0.2, o:0.8, aa:43, e:[], b:'LCB 80%, AIME 89.2%, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0, v:'2026-08-29' },
+  qwen3627:  { n:'Qwen3.6-27B',    p:'Alibaba',   i:0.25,o:1,   aa:42, e:[], b:'SWE-bench 77.2%, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0, v:'2026-08-29' },
+  mistralS4: { n:'Mistral Small 4',p:'Mistral',   i:0.2, o:0.6, aa:36, e:[], b:'6B active, 256K ctx, Apache 2.0', t:'Apache 2.0', c:'cyan', fr:0, v:'2026-08-29' },
+  minimaxM3: { n:'MiniMax M3',     p:'MiniMax',   i:0.3, o:1.2, aa:44, e:[], b:'GPQA 92.9%, multimodal, open', t:'Open', c:'purple', fr:0, v:'2026-08-29', sn:'' },
+  grok46:    { n:'Grok 4.6',       p:'xAI',       i:2,   o:6,   aa:55, e:['low','med','high','xhigh'], b:'Updated xAI flagship. DeepSWE 65.9%', t:'Updated flagship', c:'orange', fr:0, v:'2026-08-29', sn:'Aug 12' },
+  gemini37f: { n:'Gemini 3.7 Flash',p:'Google',    i:0.75,o:3.75,aa:52, e:[], iAfter:1.5, oAfter:7.5, priceChangeDate:'2027-01-01', b:'Half the price of 3.6 (intro thru Dec 31). DeepSWE 65.3%', t:'Best value Gemini', c:'cyan', fr:0, v:'2026-08-29', sn:'intro thru Dec 31 → $1.50/$7.50' },
+  glm53:     { n:'GLM-5.3',        p:'Z.ai',      i:1.4, o:4.4, aa:53, e:['low','med','high','max'], b:'Top Z.ai. DeepSWE 66.9%', t:'Top Z.ai', c:'indigo', fr:0, v:'2026-08-29', sn:'Aug 14' },
+  glm53f:    { n:'GLM-5.3-Flash',  p:'Z.ai',      i:0.15,o:0.5, aa:48, e:[], b:'320B MoE. DeepSWE 63.4%. MIT', t:'Budget OSS', c:'indigo', fr:0, v:'2026-08-29' },
+  qwen38max: { n:'Qwen3.8-Max',    p:'Alibaba',   i:1.65,o:4.95,aa:50, e:['low','med','high','xhigh','max'], b:'2.4T MoE. DeepSWE 56.6%', t:'OSS flagship', c:'cyan', fr:0, v:'2026-08-29', sn:'Aug 3' },
+  qwen38fn:  { n:'Qwen3.8-Flash-Next',p:'Alibaba',i:0.15,o:0.5, aa:46, e:[], b:'125B. DeepSWE 58.7%. Apache 2.0', t:'Fast OSS', c:'cyan', fr:0, v:'2026-08-29' },
+  muse12:    { n:'Muse Spark 1.2', p:'Meta',       i:0.1, o:0.2, aa:49, e:['low','med','high','xhigh'], b:'DeepSWE 59.3%. Budget coding', t:'Budget coding', c:'blue', fr:0, v:'2026-08-29', sn:'Aug 5' },
 };
 // shortcut
 const MArr = Object.keys(M).map(k=>({...M[k],k}));
@@ -61,7 +61,14 @@ function iconSvg(name, sz = 'w-4 h-4') {
   return s ? s.replace('<svg', `<svg class="${sz} shrink-0"`) : '';
 }
 
-function cost(mk,inT,outT){ const x=M[mk]; return x?((inT/1e6)*x.i+(outT/1e6)*x.o):0; }
+// Price in effect today: switches to iAfter/oAfter on priceChangeDate (promo ends, intro pricing ends).
+function effPrice(mk){
+  const x=M[mk]; if(!x) return {i:0,o:0};
+  const changed = x.priceChangeDate && new Date() >= new Date(x.priceChangeDate);
+  return changed ? {i:x.iAfter??x.i, o:x.oAfter??x.o} : {i:x.i, o:x.o};
+}
+function cost(mk,inT,outT){ const p=effPrice(mk); return (inT/1e6)*p.i+(outT/1e6)*p.o; }
+function fmtDate(d){ return new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
 function tagH(c,t){ const map={green:'bg-green-50 text-green-800',blue:'bg-blue-50 text-blue-800',orange:'bg-orange-50 text-orange-800',purple:'bg-purple-50 text-purple-800',cyan:'bg-cyan-50 text-cyan-800',indigo:'bg-indigo-50 text-indigo-800',gray:'bg-gray-100 text-gray-700',red:'bg-red-50 text-red-800'}; return `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold ${map[c]||map.blue}">${t}</span>`; }
 function freeBadge(s){ return s===2?` <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-100 text-green-800">Free on Zen</span>`:s===1?` <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-green-100 text-green-800">Free</span>`:''; }
 function priceHtml(mk){
@@ -81,39 +88,39 @@ const TG = [
   {t:'Write critical code',pr:{m:'opus55',e:'xhigh',c:'~$5.90'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free alt',c:'~$0'},{m:'gptSol',e:'high',r:2,l:'Strong alt',c:'~$4.60'},{m:'fable51',e:'xhigh',r:3,l:'Ceiling',c:'~$14'}]},
   {t:'Pipeline-critical multi-file',pr:{m:'opus55',e:'xhigh',c:'~$5.90'},alts:[{m:'gptTerra',e:'high',r:1,l:'Budget',c:'~$0.71'},{m:'gptSol',e:'max',r:2,l:'Stronger',c:'~$6.40'},{m:'fable51',e:'max',r:3,l:'Best',c:'~$14'}]},
   {t:'Debug a hard bug',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free alt',c:'~$0'},{m:'sonnet55',e:'xhigh',r:2,l:'Budget',c:'~$1.50'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
-  {t:'Review / validate code',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free',c:'~$0'},{m:'glm52',e:'high',r:2,l:'Open alt',c:'~$0.80'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
-  {t:'Multi-step agent workflow',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'grok45',e:'high',r:1,l:'Best $/task',c:'~$1.51'},{m:'gptTerra',e:'xhigh',r:2,l:'Budget',c:'~$0.71-1.20'},{m:'gptSol',e:'high',r:3,l:'Stronger',c:'~$4.60'}]},
-  {t:'Coding in Cursor (daily)',pr:{m:'composer25',e:'',c:'~$0.44'},alts:[{m:'grok45',e:'high',r:1,l:'Better score',c:'~$1.51'},{m:'sonnet55',e:'med',r:2,l:'Via API',c:'~$0.60'},{m:'opus55',e:'high',r:3,l:'Best via API',c:'~$3.10'}]},
+  {t:'Review / validate code',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free',c:'~$0'},{m:'glm53',e:'high',r:2,l:'Open alt',c:'~$0.85'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
+  {t:'Multi-step agent workflow',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'grok46',e:'high',r:1,l:'Best $/task',c:'~$1.51'},{m:'gptTerra',e:'xhigh',r:2,l:'Budget',c:'~$0.71-1.20'},{m:'gptSol',e:'high',r:3,l:'Stronger',c:'~$4.60'}]},
+  {t:'Coding in Cursor (daily)',pr:{m:'composer25',e:'',c:'~$0.44'},alts:[{m:'grok46',e:'high',r:1,l:'Better score',c:'~$1.51'},{m:'sonnet55',e:'med',r:2,l:'Via API',c:'~$0.60'},{m:'opus55',e:'high',r:3,l:'Best via API',c:'~$3.10'}]},
 ]},
 {name:'✍️ Content & Writing',co:'border-l-[#6366f1]',hc:'text-[#4338ca]',hb:'bg-[#e0e7ff]',tasks:[
-  {t:'Write analysis / memo',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gemini36f',e:'',r:1,l:'Cheaper',c:'~$0.80'},{m:'gptTerra',e:'high',r:2,l:'Alt',c:'~$0.71'},{m:'opus55',e:'high',r:3,l:'Premium',c:'~$3.10'}]},
+  {t:'Write analysis / memo',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gemini37f',e:'',r:1,l:'Cheaper',c:'~$0.40'},{m:'gptTerra',e:'high',r:2,l:'Alt',c:'~$0.71'},{m:'opus55',e:'high',r:3,l:'Premium',c:'~$3.10'}]},
   {t:'Translation (bulk)',pr:{m:'sonnet55',e:'low-med',c:'~$0.40-0.80'},alts:[{m:'dsV4Flash',e:'non-think',r:1,l:'Free',c:'~$0'},{m:'qwen3627',e:'',r:2,l:'Open multi-lang',c:'~$0.15'},{m:'gptLuna',e:'low',r:3,l:'Budget API',c:'~$0.03'}]},
   {t:'Classify / extract / format',pr:{m:'sonnet55',e:'low',c:'~$0.40'},alts:[{m:'dsV4Flash',e:'non-think',r:1,l:'Free',c:'~$0'},{m:'gptLuna',e:'low',r:2,l:'Budget',c:'~$0.03'},{m:'haiku55',e:'low',r:3,l:'Cheapest Claude',c:'~$0.02'}]},
-  {t:'Marketing / creative copy',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gptTerra',e:'high',r:1,l:'Creative alt',c:'~$0.71'},{m:'opus55',e:'high',r:2,l:'Premium',c:'~$3.10'},{m:'gemini36f',e:'',r:3,l:'Budget',c:'~$0.80'}]},
+  {t:'Marketing / creative copy',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'gptTerra',e:'high',r:1,l:'Creative alt',c:'~$0.71'},{m:'opus55',e:'high',r:2,l:'Premium',c:'~$3.10'},{m:'gemini37f',e:'',r:3,l:'Budget',c:'~$0.40'}]},
 ]},
 {name:'📊 Data & Research',co:'border-l-[#0d9488]',hc:'text-[#0a6e65]',hb:'bg-[#d5f5f0]',tasks:[
   {t:'Analyze data / statistics',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'sonnet55',e:'high',r:1,l:'Budget',c:'~$1.50'},{m:'gptTerra',e:'high',r:2,l:'Alt',c:'~$0.71'},{m:'dsV4Flash',e:'max',r:3,l:'Free',c:'~$0'}]},
   {t:'Research / lit review',pr:{m:'opus55',e:'xhigh',c:'~$5.90'},alts:[{m:'gemini31p',e:'',r:1,l:'Budget',c:'~$2-4'},{m:'kimiK3',e:'max',r:2,l:'Open alt',c:'~$6'},{m:'fable51',e:'xhigh',r:3,l:'Best',c:'~$14'}]},
   {t:'Low-cost bulk processing',pr:{m:'dsV4Flash',e:'high',c:'~$0'},alts:[{m:'northMini',e:'',r:1,l:'Free local',c:'~$0'},{m:'gptLuna',e:'low',r:2,l:'API',c:'~$0.03'},{m:'mimoV25',e:'',r:3,l:'Free multi',c:'~$0'}]},
-  {t:'Database query generation',pr:{m:'sonnet55',e:'med',c:'~$0.60'},alts:[{m:'dsV4Flash',e:'high',r:1,l:'Free',c:'~$0'},{m:'gptTerra',e:'med',r:2,l:'Alt',c:'~$0.56'},{m:'glm52',e:'med',r:3,l:'Open',c:'~$0.50'}]},
+  {t:'Database query generation',pr:{m:'sonnet55',e:'med',c:'~$0.60'},alts:[{m:'dsV4Flash',e:'high',r:1,l:'Free',c:'~$0'},{m:'gptTerra',e:'med',r:2,l:'Alt',c:'~$0.56'},{m:'glm53',e:'med',r:3,l:'Open',c:'~$0.55'}]},
 ]},
 {name:'🧠 Reasoning & Analysis',co:'border-l-[#d97706]',hc:'text-[#7a4a02]',hb:'bg-[#fef3cd]',tasks:[
   {t:'Math proof / hard reasoning',pr:{m:'opus55',e:'max',c:'~$6.60'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free',c:'~$0'},{m:'gptSol',e:'max',r:2,l:'Strong',c:'~$6.40'},{m:'fable51',e:'max',r:3,l:'Ceiling',c:'~$14'}]},
-  {t:'Agent orchestration prompts',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'sonnet55',e:'high',r:1,l:'Budget',c:'~$1.50'},{m:'gptSol',e:'high',r:2,l:'Strong',c:'~$3.90'},{m:'glm52',e:'high',r:3,l:'Open',c:'~$0.80'}]},
-  {t:'Logic / puzzle solving',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free',c:'~$0'},{m:'grok45',e:'high',r:2,l:'Value',c:'~$1.51'},{m:'kimiK3',e:'high',r:3,l:'Open',c:'~$6'}]},
+  {t:'Agent orchestration prompts',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'sonnet55',e:'high',r:1,l:'Budget',c:'~$1.50'},{m:'gptSol',e:'high',r:2,l:'Strong',c:'~$3.90'},{m:'glm53',e:'high',r:3,l:'Open',c:'~$0.85'}]},
+  {t:'Logic / puzzle solving',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'dsV4Flash',e:'max',r:1,l:'Free',c:'~$0'},{m:'grok46',e:'high',r:2,l:'Value',c:'~$1.51'},{m:'kimiK3',e:'high',r:3,l:'Open',c:'~$6'}]},
 ]},
 {name:'🛡️ Security',co:'border-l-[#dc2626]',hc:'text-[#991b1b]',hb:'bg-[#fee2e2]',tasks:[
   {t:'Security code audit',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gptSol',e:'high',r:1,l:'TB leader',c:'~$4.60'},{m:'dsV4Flash',e:'max',r:2,l:'Free alt',c:'~$0'},{m:'fable51',e:'xhigh',r:3,l:'Ceiling',c:'~$14'}]},
   {t:'Vulnerability research / CVE',pr:{m:'gptSol',e:'max',c:'~$6.40'},alts:[{m:'opus55',e:'xhigh',r:1,l:'Strong reasoning',c:'~$5.90'},{m:'dsV4Flash',e:'max',r:2,l:'Free alt',c:'~$0'},{m:'kimiK3',e:'max',r:3,l:'Open alt',c:'~$6'}]},
   {t:'Secure code generation',pr:{m:'sonnet55',e:'high',c:'~$1.50'},alts:[{m:'dsV4Flash',e:'high',r:1,l:'Free',c:'~$0'},{m:'gptTerra',e:'high',r:2,l:'Budget',c:'~$0.71'},{m:'opus55',e:'high',r:3,l:'Premium',c:'~$3.10'}]},
-  {t:'Incident response / forensics',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gptSol',e:'high',r:1,l:'Strong alt',c:'~$4.60'},{m:'grok45',e:'high',r:2,l:'Best $/task',c:'~$1.51'},{m:'fable51',e:'xhigh',r:3,l:'Ceiling',c:'~$14'}]},
+  {t:'Incident response / forensics',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gptSol',e:'high',r:1,l:'Strong alt',c:'~$4.60'},{m:'grok46',e:'high',r:2,l:'Best $/task',c:'~$1.51'},{m:'fable51',e:'xhigh',r:3,l:'Ceiling',c:'~$14'}]},
 ]},
 {name:'👁️ Multimodal & Vision',co:'border-l-[#0891b2]',hc:'text-[#155e75]',hb:'bg-[#d5f6fc]',tasks:[
-  {t:'Vision / chart reading',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gemini36f',e:'',r:1,l:'Budget',c:'~$0.80'},{m:'mimoV25',e:'',r:2,l:'Free',c:'~$0'},{m:'kimiK3',e:'high',r:3,l:'Open',c:'~$6'}]},
-  {t:'Document OCR + analysis',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini36f',e:'',r:2,l:'Budget',c:'~$0.80'},{m:'minimaxM3',e:'',r:3,l:'Open',c:'~$0.30'}]},
-  {t:'Screenshot → code',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini36f',e:'',r:2,l:'Budget',c:'~$0.80'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
-  {t:'Computer use / GUI',pr:{m:'gemini36f',e:'',c:'~$0.80'},alts:[{m:'opus55',e:'high',r:1,l:'Better',c:'~$3.10'},{m:'gptSol',e:'high',r:2,l:'Alt',c:'~$3.90'}]},
-  {t:'Multimodal (img+audio+video)',pr:{m:'mimoV25',e:'',c:'~$0'},alts:[{m:'gemini36f',e:'',r:1,l:'Budget',c:'~$0.80'},{m:'minimaxM3',e:'',r:2,l:'Open',c:'~$0.30'},{m:'opus55',e:'high',r:3,l:'Best img+txt',c:'~$3.10'}]},
+  {t:'Vision / chart reading',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'gemini37f',e:'',r:1,l:'Budget',c:'~$0.40'},{m:'mimoV25',e:'',r:2,l:'Free',c:'~$0'},{m:'kimiK3',e:'high',r:3,l:'Open',c:'~$6'}]},
+  {t:'Document OCR + analysis',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini37f',e:'',r:2,l:'Budget',c:'~$0.40'},{m:'minimaxM3',e:'',r:3,l:'Open',c:'~$0.30'}]},
+  {t:'Screenshot → code',pr:{m:'opus55',e:'high',c:'~$3.10'},alts:[{m:'mimoV25',e:'',r:1,l:'Free',c:'~$0'},{m:'gemini37f',e:'',r:2,l:'Budget',c:'~$0.40'},{m:'gptSol',e:'high',r:3,l:'Strong',c:'~$4.60'}]},
+  {t:'Computer use / GUI',pr:{m:'gemini37f',e:'',c:'~$0.40'},alts:[{m:'opus55',e:'high',r:1,l:'Better',c:'~$3.10'},{m:'gptSol',e:'high',r:2,l:'Alt',c:'~$3.90'}]},
+  {t:'Multimodal (img+audio+video)',pr:{m:'mimoV25',e:'',c:'~$0'},alts:[{m:'gemini37f',e:'',r:1,l:'Budget',c:'~$0.40'},{m:'minimaxM3',e:'',r:2,l:'Open',c:'~$0.30'},{m:'opus55',e:'high',r:3,l:'Best img+txt',c:'~$3.10'}]},
 ]},
 {name:'🔒 Local / Private',co:'border-l-[#7c3aed]',hc:'text-[#5b21b6]',hb:'bg-[#ede9fe]',tasks:[
   {t:'Local code agent (no cloud)',pr:{m:'northMini',e:'',c:'~$0'},alts:[{m:'qwen3627',e:'',r:1,l:'Stronger local',c:'~$0.15'},{m:'gemma431',e:'',r:2,l:'Open alt',c:'~$0.10'},{m:'opus55',e:'high',r:3,l:'Cloud (if ok)',c:'~$3.10'}]},
@@ -180,10 +187,10 @@ function renderDash(){
     const bestFor = (m.t?tagH(m.c,m.t)+' ':'')+m.b;
     const rowCls = free ? 'bg-[#f0fdf4] hover:bg-[#e8f8f2] transition-colors' : 'hover:bg-[#f8f9fc] transition-colors';
     const nameCls = free ? 'p-2.5 sm:p-3 font-semibold border-l-3 border-[#0d9488] pl-3' : 'p-2.5 sm:p-3 font-semibold';
-    return `<tr class="${rowCls}"><td class="${nameCls}">${m.n}</td><td class="p-2.5 sm:p-3 text-[#5a5f73]">${m.p}</td><td class="p-2.5 sm:p-3 font-mono">${pr.i}</td><td class="p-2.5 sm:p-3 font-mono">${pr.o}</td><td class="p-2.5 sm:p-3 font-semibold">${m.aa}</td><td class="hidden md:table-cell p-2.5 sm:p-3"><div class="flex items-center gap-1.5"><div class="flex-1 h-1.5 bg-[#eceef4] rounded-full overflow-hidden"><div class="score-bar h-full rounded-full" style="width:${scorePct}%;background:${grad}"></div></div></div></td><td class="p-2.5 sm:p-3 text-[#5a5f73] text-xs">${bestFor}</td></tr>`;
+    return `<tr class="${rowCls}"><td class="${nameCls}">${m.n}</td><td class="p-2.5 sm:p-3 text-[#5a5f73]">${m.p}</td><td class="p-2.5 sm:p-3 font-mono">${pr.i}</td><td class="p-2.5 sm:p-3 font-mono">${pr.o}</td><td class="p-2.5 sm:p-3 font-semibold">${m.aa}</td><td class="hidden md:table-cell p-2.5 sm:p-3"><div class="flex items-center gap-1.5"><div class="flex-1 h-1.5 bg-[#eceef4] rounded-full overflow-hidden"><div class="score-bar h-full rounded-full" style="width:${scorePct}%;background:${grad}"></div></div></div></td><td class="p-2.5 sm:p-3 text-[#5a5f73] text-xs">${bestFor}</td><td class="hidden lg:table-cell p-2.5 sm:p-3 text-[#6b7085] text-xs whitespace-nowrap">${m.v?fmtDate(m.v):'—'}</td></tr>`;
   }
 
-  let html = '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="flex items-center gap-2 px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📊 All Models</h2><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-blue-50 text-blue-800">Sorted by AA Index</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-green-50 text-green-800">Free highlighted</span></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[620px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Provider</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">In $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Out $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">AA</th><th class="hidden md:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Score</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Best For</th></tr></thead><tbody class="divide-y divide-[#eceef4]">';
+  let html = '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="flex items-center gap-2 px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📊 All Models</h2><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-blue-50 text-blue-800">Sorted by AA Index</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-green-50 text-green-800">Free highlighted</span></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[620px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Provider</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">In $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Out $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">AA</th><th class="hidden md:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Score</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Best For</th><th class="hidden lg:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Checked</th></tr></thead><tbody class="divide-y divide-[#eceef4]">';
   DASH_ORDER.forEach(mk=>{html+=dashRow(mk,false);});
   DASH_FREE_ORDER.forEach(mk=>{html+=dashRow(mk,true);});
   html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">* Green rows = free on OpenCode Zen. Prices in $/MTok.</div></div>';
@@ -199,9 +206,14 @@ function renderDash(){
   const cb=[['Composer 2.5','56.1%','<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-green-50 text-green-800">$0.44</span>','$0.008'],['GPT-5.6 Luna Medium †','47.7%','$0.08','$0.002'],['Grok 4.5 Low','63.5%','<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-green-50 text-green-800">$1.22</span>','$0.019'],['Grok 4.5 High ★','66.7%','<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-blue-50 text-blue-800">$1.51</span>','$0.023'],['GPT-5.6 Terra High †','54.2%','$0.71','$0.013'],['Opus 5 High','66.7%','$3.91','$0.059'],['Opus 5 Max','70.0%','$8.23','$0.118']];
   html += '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">⚡ Best Cost/Task</h2></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[400px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Score</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Cost/task</th><th class="hidden sm:table-cell p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">$/pt</th></tr></thead><tbody class="divide-y divide-[#eceef4]">';
   cb.forEach((r,i)=>{const hl=i===3?' bg-[#e8edff]':'';html+=`<tr class="hover:bg-[#f8f9fc]${hl}"><td class="p-2.5 font-medium${hl?' text-[#2962ff]':''}">${r[0]}</td><td class="p-2.5${hl?' text-[#2962ff] font-semibold':''}">${r[1]}</td><td class="p-2.5">${r[2]}</td><td class="hidden sm:table-cell p-2.5 text-[#6b7085]">${r[3]}</td></tr>`;});
-  html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">† GPT-5.6 costs scaled to post-Jul 30 prices (Terra/Luna) and post-Aug 21 prices (Sol promo $4/$20).</div></div></div>';
+  html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">† GPT-5.6 costs scaled to post-Jul 30 prices (Terra/Luna) and post-Aug 21 prices (Sol promo $4/$20). CursorBench ran on Grok 4.5 / Opus 5; Grok 4.6 costs the same, Opus 5.5 is 20% cheaper.</div></div></div>';
 
   document.getElementById('dashboard-table').innerHTML = html;
+
+  // Stat tile: #1 overall = highest AA among current (non-legacy, AA-scored) models
+  const top = MArr.filter(m=>!m.aaT && !['Legacy','Superseded'].includes(m.t)).sort((a,b)=>b.aa-a.aa)[0];
+  const tile = document.getElementById('tile-top');
+  if(tile && top) tile.textContent = `${top.n} · AA ${top.aa}`;
 }
 renderDash();
 
@@ -290,7 +302,7 @@ function renderProviders(){
 <div class="px-5 py-3.5 border-b border-[#eceef4] flex items-center gap-2">${iconSvg('cursor','w-5 h-5')}<h2 class="text-lg sm:text-xl font-semibold">Cursor Models</h2><span class="inline-flex items-center px-2 py-0.5 rounded text-[0.6875rem] font-bold uppercase bg-indigo-50 text-indigo-800">Cursor plan</span></div><div class="px-5 text-[0.6875rem] text-[#6b7085]">Rates = <strong>$ per 1M tokens</strong> (input / output) · task costs are per task.</div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-4">
 <div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Composer 2.5 ${tagH('green','Best $/task')}</div><div class="text-xs text-[#5a5f73] mt-1">$0.50/$2.50 · 200K ctx · ~$0.44/task</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>SWE-Bench ML: 79.8% · CursorBench: 63.2%</li><li><strong>Unlimited on paid plans.</strong> Default for 80-90% of Cursor work.</li></ul></div>
-<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Grok 4.5 (Cursor) ${tagH('blue','Agentic')}</div><div class="text-xs text-[#5a5f73] mt-1">$2/$6 · Joint Cursor + xAI · First-party pool</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>CursorBench 66.7% vs Composer's 56.1%</li><li>Best for long agent sessions, data science</li></ul></div>
+<div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">Grok 4.5 / 4.6 (Cursor) ${tagH('blue','Agentic')}</div><div class="text-xs text-[#5a5f73] mt-1">$2/$6 · Joint Cursor + xAI · First-party pool</div><ul class="text-xs text-[#5a5f73] mt-1.5 ml-4 list-disc"><li>CursorBench 66.7% vs Composer's 56.1%</li><li>Best for long agent sessions, data science</li></ul></div>
 </div></div>`;
 
   // Free
@@ -327,30 +339,18 @@ function renderProviders(){
 <div class="bg-[#f8f9fc] border border-[#eceef4] rounded-lg p-3.5"><div class="font-semibold text-sm">North Mini Code${freeBadge(2)}</div><div class="text-xs text-[#5a5f73] mt-1">Cohere 30B MoE (3B active) · 256K · Fits RTX 4090</div><div class="text-xs text-[#5a5f73] mt-1">SWE-Ver 67.6% · Best local agentic coder</div><div class="text-xs text-green-700 mt-1"><strong>🔄 Daily:</strong> ~200 req on Zen · 🏠 Self-host (3B active)</div></div>
 </div></div>`;
 
-  // Matrix
-  const mx=[
-    ['Classify / extract / format','Sonnet 5.5','low','~$0.40','Haiku 5.5 ~$0.02','DS V4 Flash (free)'],
-    ['Write routine code','Sonnet 5.5','med','~$0.80','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Opus 5.5 ~$3.10'],
-    ['Write critical code','Opus 5.5','xhigh','~$5.90','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','—'],
-    ['Debug a hard bug','Opus 5.5','high','~$3.10','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','—'],
-    ['Review / validate','Opus 5.5','high','~$3.10','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','—'],
-    ['Multi-step agent','Opus 5.5','high','~$3.10','Grok 4.5 ~$1.51','GPT-5.6 Sol'],
-    ['Cursor daily coding','Composer 2.5','—','~$0.44','—','Grok 4.5 (Cursor)'],
-    ['Write analysis / memo','Sonnet 5.5','high','~$1.50','Gemini 3.6 Flash ~$0.80','Opus 5.5 ~$3.10'],
-    ['Research / lit review','Opus 5.5','xhigh','~$5.90','Gemini 3.1 Pro ~$2-4','Fable 5.1'],
-    ['Math proof / hard reasoning','Opus 5.5','max','~$6.60','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Fable 5.1'],
-    ['Vision / chart reading','Opus 5.5','high','~$3.10','Gemini 3.6 Flash ~$0.80','—'],
-    ['Computer use / GUI','Gemini 3.6 Flash','—','~$0.80','—','Opus 5.5'],
-    ['Document OCR + analysis','Opus 5.5','high','~$3.10','MiMo v2.5 <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','—'],
-    ['Screenshot → code','Opus 5.5','high','~$3.10','MiMo v2.5 <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','—'],
-    ['Bulk processing','DS V4 Flash','high','<span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','North Mini <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','GPT-5.6 Luna'],
-    ['Security code audit','Opus 5.5','high','~$3.10','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Fable 5.1 ~$14'],
-    ['Vulnerability research / CVE','GPT-5.6 Sol','max','~$6.40','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Fable 5.1 ~$14'],
-    ['Secure code generation','Sonnet 5.5','high','~$1.50','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Opus 5.5 ~$3.10'],
-    ['Incident response / forensics','Opus 5.5','high','~$3.10','Grok 4.5 ~$1.51','Fable 5.1 ~$14'],
-    ['Translation (bulk)','Sonnet 5.5','low-med','~$0.40-0.80','DS V4 Flash <span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Opus 5.5'],
-    ['Local code agent','North Mini Code','—','<span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>','Qwen3.6-27B (local)','Opus 5.5 (cloud)'],
-  ];
+  // Matrix — generated from TG so it never drifts from the By Task tab.
+  // Budget = cheapest alternative (blended $/MTok); Upgrade = highest-AA alternative that beats the pick.
+  const FREE_B='<span class="badge-free px-1.5 py-0.5 rounded text-[0.6875rem] font-bold">Free</span>';
+  const blendP=mk=>{const p=effPrice(mk);return p.i+p.o*3;};
+  const altTxt=a=>{const m=M[a.m]; return m.fr ? `${m.n} ${FREE_B}` : `${m.n} ${a.c||''}`;};
+  const mx=AFT.map(t=>{
+    const pm=M[t.pr.m];
+    const alts=t.alts.filter(a=>M[a.m]&&a.m!==t.pr.m);
+    const cheaper=alts.filter(a=>blendP(a.m)<blendP(t.pr.m)).sort((x,y)=>blendP(x.m)-blendP(y.m))[0];
+    const better=alts.filter(a=>M[a.m].aa>pm.aa).sort((x,y)=>M[y.m].aa-M[x.m].aa)[0];
+    return [t.label, pm.n, t.pr.e||'—', pm.fr&&t.pr.c==='~$0'?FREE_B:t.pr.c, cheaper?altTxt(cheaper):'—', better?altTxt(better):'—'];
+  });
   let mxHtml = `<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold">⚡ Quick Matrix</h2></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[600px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Task</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Effort</th><th class="p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Cost</th><th class="hidden md:table-cell p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Cheaper alt</th><th class="hidden md:table-cell p-2.5 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Better</th></tr></thead><tbody class="divide-y divide-[#eceef4]">`;
   mx.forEach(r=>{mxHtml+=`<tr class="hover:bg-[#f8f9fc]"><td class="p-2.5 font-medium">${r[0]}</td><td class="p-2.5 text-[#2962ff] font-medium">${r[1]}</td><td class="p-2.5 text-[#6b7085] font-mono">${r[2]}</td><td class="p-2.5">${r[3]}</td><td class="hidden md:table-cell p-2.5 text-[#5a5f73]">${r[4]}</td><td class="hidden md:table-cell p-2.5 text-[#5a5f73]">${r[5]}</td></tr>`;});
   mxHtml += `</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">Cost = estimated $/task at listed effort, current prices (Nov 5, 2026).</div></div>`;
@@ -399,7 +399,7 @@ function runFinder() {
   const pri = (document.querySelector('input[name="priority"]:checked')||{value:'balanced'}).value;
 
   // blended cost: input + 3× output $/MTok (rough real-world ratio)
-  function blend(mk){ const x=M[mk]; return x ? x.i + x.o*3 : 999; }
+  function blend(mk){ if(!M[mk]) return 999; const p=effPrice(mk); return p.i + p.o*3; }
 
   // Score all candidate models
   const scores = {};
@@ -431,7 +431,7 @@ function runFinder() {
       const pColor = i===0?'text-[#2962ff] font-bold':'';
       rh += `<div class="result-card border border-[#e2e5ec] rounded-lg p-3.5 ${colors[i]}" style="border-left-width:4px">`;
       rh += `<div class="flex items-center gap-2"><span class="inline-flex items-center justify-center w-6 h-6 rounded-full ${i===0?'bg-[#2962ff] text-white':'bg-[#e2e5ec] text-[#5a5f73]'} text-xs font-bold">${i+1}</span><span class="font-semibold text-sm ${pColor}">${m.n}</span>${freeBadge(m.fr)}<span class="ml-auto text-xs text-[#6b7085]">${m.aaT||'AA'} ${m.aa}</span></div>`;
-      rh += `<div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-[#5a5f73]"><span>💰 <strong>$${m.i}</strong> / MTok in</span><span>💰 <strong>$${m.o}</strong> / MTok out</span><span>📊 <strong>$${blend(r.mk).toFixed(1)}</strong> blended $/MTok (in + 3× out)</span><span>🎯 ${m.b}</span></div>`;
+      rh += `<div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-[#5a5f73]"><span>💰 <strong>$${effPrice(r.mk).i}</strong> / MTok in</span><span>💰 <strong>$${effPrice(r.mk).o}</strong> / MTok out</span><span>📊 <strong>$${blend(r.mk).toFixed(1)}</strong> blended $/MTok (in + 3× out)</span><span>🎯 ${m.b}</span></div>`;
       rh += `</div>`;
     });
   }
@@ -673,35 +673,10 @@ function renderPriceHistory(){
     {d:'May 28, 2026', p:'Anthropic', c:'violet', t:'🟣 Opus 4.8 launch', b:'<strong>$5/$25</strong>. Superseded by Opus 5 at the same price.'},
     {d:'Apr 24, 2026', p:'DeepSeek', c:'blue', t:'🔵 V4 Flash &amp; V4 Pro launch', b:'<strong>$0.14/$0.28</strong> and <strong>$0.435/$0.87</strong>, 1M ctx, MIT.'},
   ];
-  const snap = [
-    ['Opus 5.5','$4','$20','Sep 22 · #1 overall'],
-    ['Fable 5.1','$10','$50','Sep 1'],
-    ['Sonnet 5.5','$2','$10','~Sep 28'],
-    ['Haiku 5.5','$0.10','$0.50','≤100K prompt; $0.50/$2.50 above'],
-    ['Opus 5','$5','$25','legacy'],
-    ['Sonnet 5','$2','$10','legacy'],
-    ['Opus 4.8','$5','$25','legacy'],
-    ['GPT-5.6 Sol','$4','$20','promo thru Nov 21'],
-    ['GPT-5.6 Terra','$2','$12','cut Jul 30'],
-    ['GPT-5.6 Luna','$0.20','$1.20','cut Jul 30'],
-    ['GPT-5.5','$5','$30',''],
-    ['GPT-5.4','$2.50','$15',''],
-    ['Grok 4.6','$2','$6','Aug 12'],
-    ['Grok 4.5','$2','$6','cached in $0.50'],
-    ['Gemini 3.7 Flash','$0.75','$3.75','intro thru Dec 31'],
-    ['Gemini 3.6 Flash','$1.50','$7.50','superseded'],
-    ['Gemini 3.5 Flash','$1.50','$9','superseded'],
-    ['Gemini 3.1 Pro','$2','$12','$4/$18 &gt;200K'],
-    ['DeepSeek V4 Flash','$0.14','$0.28',''],
-    ['DeepSeek V4 Pro','$0.435','$0.87',''],
-    ['Kimi K3','$3','$15',''],
-    ['GLM-5.3','$1.40','$4.40','new Aug 14'],
-    ['GLM-5.2','$1.34','$4',''],
-    ['Qwen3.8-Max','$1.65','$4.95','new Aug 3'],
-    ['MiniMax M3','$0.30','$1.20',''],
-    ['Muse Spark 1.2','$0.10','$0.20','new Aug 5'],
-    ['Muse Spark 1.1 (Meta)','$1.25','$4.25',''],
-  ];
+  // Snapshot — generated from M (prices in effect today). SNAP_EXTRA = priced models not in the catalog.
+  const SNAP_EXTRA = [['GPT-5.5','$5','$30',''],['GPT-5.4','$2.50','$15',''],['Muse Spark 1.1 (Meta)','$1.25','$4.25','']];
+  const money=v=>v?('$'+(v<1?String(+v.toFixed(3)):v)):'Free';
+  const snap = MArr.filter(m=>m.sn!==undefined).map(m=>{const p=effPrice(m.k);return [m.n,money(p.i),money(p.o),m.sn+(m.v?` <span class="text-[#a0a5b5]">· checked ${fmtDate(m.v)}</span>`:'')];}).concat(SNAP_EXTRA);
   const dot = {emerald:'bg-emerald-500',blue:'bg-blue-500',violet:'bg-violet-500',gray:'bg-gray-400'};
   let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since recent releases.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (Sol promo ends Nov 21; Gemini 3.7 Flash intro ends Dec 31; DeepSeek peak-hour pricing).</li></ul><p class="text-xs text-[#6b7085] mt-2">Claude prices verified <strong>Nov 5, 2026</strong> (official docs). Other vendors last verified Aug 29, 2026.</p></div><div class="p-5">';
   tl.forEach(r=>{
