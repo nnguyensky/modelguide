@@ -14,6 +14,8 @@ var MG = window.MG = {};
 MG.checked = '2026-11-05';
 // Show a warning on the page when the data is older than this many days
 MG.staleDays = 30;
+// Public address of the site (used for links in the RSS feed, feed.xml)
+MG.siteUrl = 'https://nnguyensky.github.io/modelguide/';
 MG.models = {
  "opus55": {
   "n": "Opus 5.5",
@@ -2416,35 +2418,66 @@ MG.dsw = [{"id": "gpt-6-astra", "n": "GPT-6 Astra", "p": "OpenAI", "e": "xhigh",
 
 // Price & launch timeline, newest first. n:1 = new since the last refresh.
 MG.timeline = [
-    {d:'Oct 26, 2026', p:'OpenCode Zen', c:'gray', t:'⚫ Zen free list reshuffled', b:'DeepSeek V4 Flash deprecated on Zen. Free now: <strong>DeepSeek V4.1 Flash, GLM-5.3-Flash, MiMo V2.6 Flash</strong>, NVIDIA Nemotron trio, Beam, Flint 40B, Big Pickle. MiMo v2.5, North Mini Code, Hy3 no longer free.', n:1},
-    {d:'Oct 2026', p:'Google', c:'blue', t:'🔵 Gemini 4 Carbon', b:'<strong>$4/$20</strong>. AA #1 overall (60). Price via Artificial Analysis.', n:1},
-    {d:'Oct 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-6.1 Terra', b:'<strong>$1/$5</strong> — half of GPT-5.6 Terra ($2/$12). AA 51 @ max.', n:1},
-    {d:'Oct 2026', p:'Moonshot', c:'gray', t:'⚫ Kimi K3.1 Pro', b:'<strong>$2/$10</strong>, 1M ctx, proprietary. AA 46. Replaces Kimi K3 ($3/$15) as the Kimi pick.', n:1},
-    {d:'~Oct 17, 2026', p:'DeepSeek', c:'blue', t:'🔵 V4.1 Flash · peak pricing live · V4 Pro price up', b:'<strong>V4.1 Flash $0.30/$1.20</strong> peak, <strong>$0.15/$0.60</strong> off-peak (V4 Flash retired; its ID routes here). Peak hours 01:00–04:00 &amp; 06:00–10:00 UTC Mon–Fri. <strong>V4 Pro</strong> now $1.32/$3.96 peak, $0.66/$1.98 off-peak (was $0.435/$0.87).', n:1},
-    {d:'~Oct 13, 2026', p:'Google', c:'blue', t:'🔵 Gemini 4 Argon', b:'<strong>$2/$10</strong> promo (50% credit back) thru Nov 30, then <strong>$4/$20</strong>. AA 50.', n:1},
-    {d:'~Oct 7, 2026', p:'Anthropic', c:'violet', t:'🟣 Haiku 5.5', b:'<strong>$0.10/$0.50</strong> for prompts up to 100K tokens, <strong>$0.50/$2.50</strong> above. AA 36. Replaces Haiku 4.5 ($1/$5).', n:1},
-    {d:'~Sep 28, 2026', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5.5', b:'<strong>$2/$10</strong> — same as Sonnet 5. AA 55 @ max.', n:1},
-    {d:'Sep 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-6 Astra · GPT-6.1 Sol · GPT-6 Luna', b:'<strong>Astra $10/$50</strong> (AA 57, DeepSWE #1 74.1%) · <strong>6.1 Sol $2/$10</strong> (AA 55 for ~$1.27/task) · <strong>Luna $0.10/$0.50</strong>. GPT-5.6 becomes legacy.', n:1},
-    {d:'Sep 22, 2026', p:'Anthropic', c:'violet', t:'🟣 Opus 5.5', b:'<strong>$4/$20</strong> — 20% cheaper than Opus 5 ($5/$25). AA 59 @ max (#2). Fast mode $8/$40.', n:1},
-    {d:'Sep 22, 2026', p:'Datacurve', c:'blue', t:'🔵 DeepSWE v1.1 refresh', b:'28 models. GPT-6 Astra #1 (74.1%), Gemini 3.8 Flash #2 (73.8%), Opus 5 #3 (73.6%).', n:1},
-    {d:'Sep 2026', p:'xAI', c:'gray', t:'⚫ Grok 4.7', b:'<strong>$2/$6</strong>, 500K ctx. AA 35. Same price as Grok 4.6.', n:1},
-    {d:'~Sep 2, 2026', p:'Google', c:'blue', t:'🔵 Gemini 3.8 Flash', b:'<strong>$0.75/$3.75</strong> intro thru Dec 31, then $1.50/$7.50. DeepSWE 73.8%. Gemini 3.6 Flash moved to the same intro price.', n:1},
-    {d:'Sep 1, 2026', p:'Anthropic', c:'violet', t:'🟣 Fable 5.1', b:'<strong>$10/$50</strong> unchanged. Cache hit drops $1 → $0.25.', n:1},
-    {d:'Aug 26, 2026', p:'Datacurve', c:'blue', t:'🔵 DeepSWE v1.1 leaderboard refresh', b:'27 models. Opus 5 #1 at 73.6%.'},
-    {d:'Aug 21, 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 Sol price cut', b:'<strong>Sol −20%/−33%:</strong> $5/$30 → <strong>$4/$20</strong> (promo thru Nov 21). First time Sol undercuts Opus 5 on both input AND output. Terra and Luna unchanged.'},
-    {d:'Aug 13, 2026', p:'Google', c:'blue', t:'🔵 Gemini 3.7 Flash launch', b:'<strong>$0.75/$3.75</strong> intro thru Dec 31 — half the price of 3.6 Flash. DeepSWE 65.3%. 3.6 Flash superseded.'},
-    {d:'Aug 12, 2026', p:'xAI', c:'gray', t:'⚫ Grok 4.6 launch', b:'<strong>$2/$6</strong> unchanged from 4.5. DeepSWE 65.9% (up from 4.5\'s 54%). Now operated under SpaceXAI name.'},
-    {d:'Aug 10, 2026', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5 $2/$10 made permanent', b:'Scheduled Sep 1 increase to $3/$15 <strong>cancelled</strong>. $2/$10 is now the standard price. Biggest pricing surprise of the month.'},
-    {d:'Jul 31, 2026', p:'DeepSeek', c:'blue', t:'🔵 V4 Flash 0731 public beta', b:'Price unchanged <strong>$0.14/$0.28</strong> — but DeepSWE jumped <strong>7.3% → 54.4%</strong> (7×). V4 Pro confirmed at <strong>$0.435/$0.87</strong>. Legacy <code class="bg-[#eceef4] px-1 rounded">deepseek-chat</code> / <code class="bg-[#eceef4] px-1 rounded">deepseek-reasoner</code> aliases retired. Future <strong>2× peak-hour pricing</strong> announced (Beijing 09:00–12:00 &amp; 14:00–18:00), effective date TBA.'},
-    {d:'Jul 30, 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 price cuts', b:'<strong>Luna −80%:</strong> $1/$6 → <strong>$0.20/$1.20</strong> · <strong>Terra −20%:</strong> $2.50/$15 → <strong>$2/$12</strong> · Sol unchanged at $5/$30. Priority Processing renamed <strong>Fast mode</strong> (2× price, 2.5× speed). Both cuts apply retroactively to usage from Jul 30.'},
-    {d:'Jul 24, 2026', p:'Anthropic', c:'violet', t:'🟣 Opus 5 launch', b:'<strong>$5/$25</strong> — same price as Opus 4.8, massively better. <strong>Opus 4.8 is now superseded</strong> (keep only if Opus 5\'s safety classifier blocks a request).'},
-    {d:'Jul 21, 2026', p:'Google', c:'blue', t:'🔵 Gemini 3.6 Flash launch', b:'<strong>$1.50/$7.50</strong>. Output −17% vs 3.5 Flash ($9.00) plus ~17% fewer output tokens → <strong>~31% lower real-world bill</strong>. 3.5 Flash superseded.'},
-    {d:'Jul 9, 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 GA', b:'Sol <strong>$5/$30</strong> · Terra <strong>$2.50/$15</strong> · Luna <strong>$1/$6</strong> (pre-cut rates).'},
-    {d:'Jul 8, 2026', p:'xAI', c:'gray', t:'⚫ Grok 4.5 launch', b:'<strong>$2/$6</strong>, 500K ctx, cached input $0.50/M. Best agentic $/task at launch ($1.51/task @ high).'},
-    {d:'Jun 30, 2026', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5 launch', b:'<strong>$2/$10</strong> (now permanent). New tokenizer adds ~30% tokens (code/JSON heaviest).'},
-    {d:'May 28, 2026', p:'Anthropic', c:'violet', t:'🟣 Opus 4.8 launch', b:'<strong>$5/$25</strong>. Superseded by Opus 5 at the same price.'},
-    {d:'Apr 24, 2026', p:'DeepSeek', c:'blue', t:'🔵 V4 Flash &amp; V4 Pro launch', b:'<strong>$0.14/$0.28</strong> and <strong>$0.435/$0.87</strong>, 1M ctx, MIT.'},
+    {d:'Oct 26, 2026', iso:'2026-10-26', added:'2026-11-05', p:'OpenCode Zen', c:'gray', t:'⚫ Zen free list reshuffled', b:'DeepSeek V4 Flash deprecated on Zen. Free now: <strong>DeepSeek V4.1 Flash, GLM-5.3-Flash, MiMo V2.6 Flash</strong>, NVIDIA Nemotron trio, Beam, Flint 40B, Big Pickle. MiMo v2.5, North Mini Code, Hy3 no longer free.', n:1},
+    {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'Google', c:'blue', t:'🔵 Gemini 4 Carbon', b:'<strong>$4/$20</strong>. AA #1 overall (60). Price via Artificial Analysis.', n:1},
+    {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'OpenAI', c:'emerald', t:'🟢 GPT-6.1 Terra', b:'<strong>$1/$5</strong> — half of GPT-5.6 Terra ($2/$12). AA 51 @ max.', n:1},
+    {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'Moonshot', c:'gray', t:'⚫ Kimi K3.1 Pro', b:'<strong>$2/$10</strong>, 1M ctx, proprietary. AA 46. Replaces Kimi K3 ($3/$15) as the Kimi pick.', n:1},
+    {d:'~Oct 17, 2026', iso:'2026-10-17', added:'2026-11-05', p:'DeepSeek', c:'blue', t:'🔵 V4.1 Flash · peak pricing live · V4 Pro price up', b:'<strong>V4.1 Flash $0.30/$1.20</strong> peak, <strong>$0.15/$0.60</strong> off-peak (V4 Flash retired; its ID routes here). Peak hours 01:00–04:00 &amp; 06:00–10:00 UTC Mon–Fri. <strong>V4 Pro</strong> now $1.32/$3.96 peak, $0.66/$1.98 off-peak (was $0.435/$0.87).', n:1},
+    {d:'~Oct 13, 2026', iso:'2026-10-13', added:'2026-11-05', p:'Google', c:'blue', t:'🔵 Gemini 4 Argon', b:'<strong>$2/$10</strong> promo (50% credit back) thru Nov 30, then <strong>$4/$20</strong>. AA 50.', n:1},
+    {d:'~Oct 7, 2026', iso:'2026-10-07', added:'2026-11-05', p:'Anthropic', c:'violet', t:'🟣 Haiku 5.5', b:'<strong>$0.10/$0.50</strong> for prompts up to 100K tokens, <strong>$0.50/$2.50</strong> above. AA 36. Replaces Haiku 4.5 ($1/$5).', n:1},
+    {d:'~Sep 28, 2026', iso:'2026-09-28', added:'2026-11-05', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5.5', b:'<strong>$2/$10</strong> — same as Sonnet 5. AA 55 @ max.', n:1},
+    {d:'Sep 2026', iso:'2026-09-01', added:'2026-11-05', p:'OpenAI', c:'emerald', t:'🟢 GPT-6 Astra · GPT-6.1 Sol · GPT-6 Luna', b:'<strong>Astra $10/$50</strong> (AA 57, DeepSWE #1 74.1%) · <strong>6.1 Sol $2/$10</strong> (AA 55 for ~$1.27/task) · <strong>Luna $0.10/$0.50</strong>. GPT-5.6 becomes legacy.', n:1},
+    {d:'Sep 22, 2026', iso:'2026-09-22', added:'2026-11-05', p:'Anthropic', c:'violet', t:'🟣 Opus 5.5', b:'<strong>$4/$20</strong> — 20% cheaper than Opus 5 ($5/$25). AA 59 @ max (#2). Fast mode $8/$40.', n:1},
+    {d:'Sep 22, 2026', iso:'2026-09-22', added:'2026-11-05', p:'Datacurve', c:'blue', t:'🔵 DeepSWE v1.1 refresh', b:'28 models. GPT-6 Astra #1 (74.1%), Gemini 3.8 Flash #2 (73.8%), Opus 5 #3 (73.6%).', n:1},
+    {d:'Sep 2026', iso:'2026-09-01', added:'2026-11-05', p:'xAI', c:'gray', t:'⚫ Grok 4.7', b:'<strong>$2/$6</strong>, 500K ctx. AA 35. Same price as Grok 4.6.', n:1},
+    {d:'~Sep 2, 2026', iso:'2026-09-02', added:'2026-11-05', p:'Google', c:'blue', t:'🔵 Gemini 3.8 Flash', b:'<strong>$0.75/$3.75</strong> intro thru Dec 31, then $1.50/$7.50. DeepSWE 73.8%. Gemini 3.6 Flash moved to the same intro price.', n:1},
+    {d:'Sep 1, 2026', iso:'2026-09-01', added:'2026-11-05', p:'Anthropic', c:'violet', t:'🟣 Fable 5.1', b:'<strong>$10/$50</strong> unchanged. Cache hit drops $1 → $0.25.', n:1},
+    {d:'Aug 26, 2026', iso:'2026-08-26', added:'2026-08-29', p:'Datacurve', c:'blue', t:'🔵 DeepSWE v1.1 leaderboard refresh', b:'27 models. Opus 5 #1 at 73.6%.'},
+    {d:'Aug 21, 2026', iso:'2026-08-21', added:'2026-08-29', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 Sol price cut', b:'<strong>Sol −20%/−33%:</strong> $5/$30 → <strong>$4/$20</strong> (promo thru Nov 21). First time Sol undercuts Opus 5 on both input AND output. Terra and Luna unchanged.'},
+    {d:'Aug 13, 2026', iso:'2026-08-13', added:'2026-08-29', p:'Google', c:'blue', t:'🔵 Gemini 3.7 Flash launch', b:'<strong>$0.75/$3.75</strong> intro thru Dec 31 — half the price of 3.6 Flash. DeepSWE 65.3%. 3.6 Flash superseded.'},
+    {d:'Aug 12, 2026', iso:'2026-08-12', added:'2026-08-29', p:'xAI', c:'gray', t:'⚫ Grok 4.6 launch', b:'<strong>$2/$6</strong> unchanged from 4.5. DeepSWE 65.9% (up from 4.5\'s 54%). Now operated under SpaceXAI name.'},
+    {d:'Aug 10, 2026', iso:'2026-08-10', added:'2026-08-29', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5 $2/$10 made permanent', b:'Scheduled Sep 1 increase to $3/$15 <strong>cancelled</strong>. $2/$10 is now the standard price. Biggest pricing surprise of the month.'},
+    {d:'Jul 31, 2026', iso:'2026-07-31', added:'2026-08-29', p:'DeepSeek', c:'blue', t:'🔵 V4 Flash 0731 public beta', b:'Price unchanged <strong>$0.14/$0.28</strong> — but DeepSWE jumped <strong>7.3% → 54.4%</strong> (7×). V4 Pro confirmed at <strong>$0.435/$0.87</strong>. Legacy <code class="bg-[#eceef4] px-1 rounded">deepseek-chat</code> / <code class="bg-[#eceef4] px-1 rounded">deepseek-reasoner</code> aliases retired. Future <strong>2× peak-hour pricing</strong> announced (Beijing 09:00–12:00 &amp; 14:00–18:00), effective date TBA.'},
+    {d:'Jul 30, 2026', iso:'2026-07-30', added:'2026-08-29', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 price cuts', b:'<strong>Luna −80%:</strong> $1/$6 → <strong>$0.20/$1.20</strong> · <strong>Terra −20%:</strong> $2.50/$15 → <strong>$2/$12</strong> · Sol unchanged at $5/$30. Priority Processing renamed <strong>Fast mode</strong> (2× price, 2.5× speed). Both cuts apply retroactively to usage from Jul 30.'},
+    {d:'Jul 24, 2026', iso:'2026-07-24', added:'2026-08-29', p:'Anthropic', c:'violet', t:'🟣 Opus 5 launch', b:'<strong>$5/$25</strong> — same price as Opus 4.8, massively better. <strong>Opus 4.8 is now superseded</strong> (keep only if Opus 5\'s safety classifier blocks a request).'},
+    {d:'Jul 21, 2026', iso:'2026-07-21', added:'2026-08-29', p:'Google', c:'blue', t:'🔵 Gemini 3.6 Flash launch', b:'<strong>$1.50/$7.50</strong>. Output −17% vs 3.5 Flash ($9.00) plus ~17% fewer output tokens → <strong>~31% lower real-world bill</strong>. 3.5 Flash superseded.'},
+    {d:'Jul 9, 2026', iso:'2026-07-09', added:'2026-08-29', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 GA', b:'Sol <strong>$5/$30</strong> · Terra <strong>$2.50/$15</strong> · Luna <strong>$1/$6</strong> (pre-cut rates).'},
+    {d:'Jul 8, 2026', iso:'2026-07-08', added:'2026-08-29', p:'xAI', c:'gray', t:'⚫ Grok 4.5 launch', b:'<strong>$2/$6</strong>, 500K ctx, cached input $0.50/M. Best agentic $/task at launch ($1.51/task @ high).'},
+    {d:'Jun 30, 2026', iso:'2026-06-30', added:'2026-08-29', p:'Anthropic', c:'violet', t:'🟣 Sonnet 5 launch', b:'<strong>$2/$10</strong> (now permanent). New tokenizer adds ~30% tokens (code/JSON heaviest).'},
+    {d:'May 28, 2026', iso:'2026-05-28', added:'2026-08-29', p:'Anthropic', c:'violet', t:'🟣 Opus 4.8 launch', b:'<strong>$5/$25</strong>. Superseded by Opus 5 at the same price.'},
+    {d:'Apr 24, 2026', iso:'2026-04-24', added:'2026-08-29', p:'DeepSeek', c:'blue', t:'🔵 V4 Flash &amp; V4 Pro launch', b:'<strong>$0.14/$0.28</strong> and <strong>$0.435/$0.87</strong>, 1M ctx, MIT.'},
   ];
+
+// Price history per model: [date, in, out, note]. Future dates are scheduled changes.
+// Dates starting with "~" are approximate (only the month or week is known).
+MG.history = {
+ opus55: [['2026-09-22', 4, 20, 'Launch']],
+ opus5: [['2026-07-24', 5, 25, 'Launch']],
+ opus48: [['2026-05-28', 5, 25, 'Launch']],
+ sonnet55: [['~2026-09-28', 2, 10, 'Launch']],
+ sonnet5: [['2026-06-30', 2, 10, 'Launch (intro price)'], ['2026-08-10', 2, 10, 'Intro price made permanent']],
+ haiku55: [['~2026-10-07', 0.1, 0.5, 'Launch']],
+ fable51: [['2026-09-01', 10, 50, 'Launch']],
+ gpt6astra: [['~2026-09-01', 10, 50, 'Launch']],
+ gpt61sol: [['~2026-09-01', 2, 10, 'Launch']],
+ gpt6luna: [['~2026-09-01', 0.1, 0.5, 'Launch']],
+ gpt61terra: [['~2026-10-01', 1, 5, 'Launch']],
+ gptSol: [['2026-07-09', 5, 30, 'GA'], ['2026-08-21', 4, 20, 'Promo price'], ['2026-11-22', 5, 30, 'Promo ends']],
+ gptTerra: [['2026-07-09', 2.5, 15, 'GA'], ['2026-07-30', 2, 12, 'Price cut']],
+ gptLuna: [['2026-07-09', 1, 6, 'GA'], ['2026-07-30', 0.2, 1.2, 'Price cut −80%']],
+ gemini4carbon: [['~2026-10-01', 4, 20, 'Launch']],
+ gemini4argon: [['~2026-10-13', 2, 10, 'Launch (promo)'], ['2026-12-01', 4, 20, 'Promo ends']],
+ gemini38f: [['~2026-09-02', 0.75, 3.75, 'Launch (intro price)'], ['2027-01-01', 1.5, 7.5, 'Intro price ends']],
+ gemini37f: [['2026-08-13', 0.75, 3.75, 'Launch (intro price)'], ['2027-01-01', 1.5, 7.5, 'Intro price ends']],
+ gemini36f: [['2026-07-21', 1.5, 7.5, 'Launch'], ['~2026-09-02', 0.75, 3.75, 'Moved to intro price'], ['2027-01-01', 1.5, 7.5, 'Intro price ends']],
+ grok45: [['2026-07-08', 2, 6, 'Launch']],
+ grok46: [['2026-08-12', 2, 6, 'Launch']],
+ grok47: [['~2026-09-01', 2, 6, 'Launch']],
+ dsV4Pro: [['2026-04-24', 0.435, 0.87, 'Launch'], ['~2026-10-17', 1.32, 3.96, 'Peak pricing; price up']],
+ dsV41Flash: [['~2026-10-17', 0.3, 1.2, 'Launch (replaces V4 Flash at $0.14 / $0.28)']],
+ kimiK31pro: [['~2026-10-23', 2, 10, 'Launch']],
+ glm53: [['2026-08-14', 1.4, 4.4, 'Launch']],
+};
 
 // Upcoming changes: shown until their date passes.
 MG.watch = [
@@ -2458,6 +2491,14 @@ MG.gotchas = [
  'Gemini 4: completions over 32K tokens are billed even if the request fails (from Nov 13).',
  'Zen free models are limited-time and some use your data for training (MiMo, Big Pickle, Flint, Pulse).',
  'Not on DeepSWE yet: Claude 5.5, GPT-6.1, Gemini 4, Grok 4.7 — coding picks for them use AA only.',
+];
+
+// Router simulator presets. Each tier: [model, effort, share %]. Tier 1 gets whatever is left.
+MG.routerPresets = [
+ {id:'escalate', name:'Cheap first, escalate', tiers:[['gpt61sol','high',80],['opus55','xhigh',20]]},
+ {id:'three', name:'Three-step ladder', tiers:[['gpt6luna','medium',60],['gpt61sol','max',30],['opus55','xhigh',10]]},
+ {id:'claude', name:'All Claude', tiers:[['haiku55','high',70],['sonnet55','high',25],['opus55','xhigh',5]]},
+ {id:'open', name:'Open weights first', tiers:[['dsV41Flash','max',75],['gpt61sol','max',25]]},
 ];
 
 MG.rules = [

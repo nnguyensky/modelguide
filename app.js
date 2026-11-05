@@ -58,6 +58,10 @@
     plus: '<path d="M12 5v14M5 12h14"/>',
     x: '<path d="M6 6l12 12M18 6L6 18"/>',
     up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+    down: '<path d="M12 5v14M6 13l6 6 6-6"/>',
+    rss: '<path d="M5 19a1 1 0 100-2 1 1 0 000 2zM4 11a9 9 0 019 9M4 4a16 16 0 0116 16"/>',
+    print: '<path d="M7 9V3h10v6M7 17H5a2 2 0 01-2-2v-4a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2h-2M7 14h10v7H7z"/>',
+    spark: '<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
   };
   async function copyText(t) {
     try { await navigator.clipboard.writeText(t); return true; } catch (e) {
@@ -71,6 +75,55 @@
   }
   const csvCell = (v) => { const t = String(v ?? ''); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
   // Long-prompt tier: price per 1M once a prompt is over `over` tokens
+  // ── Price history (step chart of $ per 1M; dashed = scheduled) ──
+  const TODAY = new Date().toISOString().slice(0, 10);
+  function histChart(k, w = 280, h = 140) {
+    const H = (D.history || {})[k]; if (!H || !H.length) return '';
+    const pts = H.map(([d, i, o, note]) => ({ d: d.replace('~', ''), approx: d.startsWith('~'), i, o, note }));
+    const day = (d) => new Date(d + 'T00:00:00').getTime();
+    const end = pts[pts.length - 1].d > TODAY ? pts[pts.length - 1].d : TODAY;
+    const t0 = day(pts[0].d) - 20 * 864e5, t1 = day(end) + 25 * 864e5;
+    const L = 38, R = 10, T = 16, B = 22, iw = w - L - R, ih = h - T - B;
+    const x = (d) => L + (day(d) - t0) / (t1 - t0) * iw;
+    const top = Math.max(...pts.map((q) => q.o)) * 1.22;
+    const y = (v) => T + ih - (v / top) * ih;
+    const xT = x(TODAY), xEnd = L + iw;
+    const seg = (key, cls) => {
+      let out = '';
+      pts.forEach((q, n) => {
+        const a = x(q.d), b = n + 1 < pts.length ? x(pts[n + 1].d) : xEnd, yy = y(q[key]);
+        if (a < xT) out += `<line class="${cls}" x1="${a}" x2="${Math.min(b, xT)}" y1="${yy}" y2="${yy}"/>`;
+        if (b > xT) out += `<line class="${cls} future" x1="${Math.max(a, xT)}" x2="${b}" y1="${yy}" y2="${yy}"/>`;
+        if (n + 1 < pts.length) out += `<line class="${cls}${pts[n + 1].d > TODAY ? ' future' : ''}" x1="${b}" x2="${b}" y1="${yy}" y2="${y(pts[n + 1][key])}"/>`;
+      });
+      return out;
+    };
+    const fmtM = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+    const label = `Price history for ${M[k].n}: ` + pts.map((q) => `${q.approx ? 'about ' : ''}${fmtDate(q.d)} ${q.note}, ${usd(q.i)} in / ${usd(q.o)} out`).join('; ');
+    return `<figure class="hist">
+      <svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label)}">
+        <line class="hist-axis" x1="${L}" x2="${xEnd}" y1="${y(0)}" y2="${y(0)}"/>
+        <text class="hist-tick" x="${L - 6}" y="${y(0) + 4}" text-anchor="end">$0</text>
+        <text class="hist-tick" x="${L - 6}" y="${y(top / 1.22) + 4}" text-anchor="end">${usd(Math.round(top / 1.22 * 100) / 100)}</text>
+        ${xT > L && xT < xEnd ? `<line class="hist-today" x1="${xT}" x2="${xT}" y1="${T - 6}" y2="${y(0)}"/><text class="hist-tick" x="${xT}" y="${T - 8}" text-anchor="middle">today</text>` : ''}
+        ${seg('i', 'hist-in')}${seg('o', 'hist-out')}
+        ${pts.map((q) => `<circle class="hist-dot${q.d > TODAY ? ' future' : ''}" cx="${x(q.d)}" cy="${y(q.o)}" r="3.5"><title>${esc((q.approx ? '~' : '') + fmtDate(q.d) + ' · ' + q.note + ' · ' + usd(q.i) + ' / ' + usd(q.o))}</title></circle>
+          <text class="hist-val" x="${x(q.d)}" y="${y(q.o) - 8}" text-anchor="middle">${usd(q.o)}</text>`).join('')}
+        <text class="hist-tick" x="${L}" y="${h - 6}">${fmtM(pts[0].d)}</text><text class="hist-tick" x="${xEnd}" y="${h - 6}" text-anchor="end">${fmtM(end)}</text>
+      </svg>
+      <figcaption class="hist-key"><span><i class="k-out"></i>Output</span><span><i class="k-in"></i>Input</span><span><i class="k-fut"></i>Scheduled</span></figcaption>
+      <ol class="hist-list">${pts.map((q) => `<li class="${q.d > TODAY ? 'future' : ''}"><span class="mono">${q.approx ? '~' : ''}${esc(fmtM(q.d))}</span><span>${esc(q.note)}</span><span class="mono">${usd(q.i)} / ${usd(q.o)}</span></li>`).join('')}</ol>
+    </figure>`;
+  }
+
+  // ── New since your last visit: compare each timeline item's `added` date with the data version last seen ──
+  let prevSeen = null;
+  try { prevSeen = sessionStorage.getItem('mg-prevSeen'); } catch (e) { /* ignore */ }
+  if (prevSeen === null) { prevSeen = store.get('seen', '') || ''; try { sessionStorage.setItem('mg-prevSeen', prevSeen); } catch (e) { /* ignore */ } }
+  store.set('seen', D.checked);
+  const isFresh = (t) => !!prevSeen && t.added > prevSeen;
+  const FRESH = D.timeline.filter(isFresh);
+
   function priceAt(k, inTok) { const m = M[k], p = effPrice(k); return m.long && inTok > m.long.over ? { i: m.long.i, o: m.long.o, long: true } : { ...p, long: false }; }
   const icon = (n, cls) => `<svg class="icon ${cls || ''}" viewBox="0 0 24 24" aria-hidden="true">${I[n] || ''}</svg>`;
   const segBtns = (items, cur, attr) => items.map(([v, label]) => `<button type="button" data-${attr}="${esc(v)}" aria-pressed="${String(v) === String(cur)}">${esc(label)}</button>`).join('');
@@ -159,7 +212,7 @@
     const conf = confidence(p.m);
     const flags = flagsFor(p.m, p);
     const watch = D.watch.filter((w) => !past(w.until));
-    const changed = D.timeline.filter((t) => t.n).slice(0, 4);
+    const changed = (FRESH.length ? FRESH : D.timeline.filter((t) => t.n)).slice(0, 4);
     const board = Object.keys(M).filter((k) => current(k) && M[k].aa != null && M[k].aaCost).sort((a, b) => M[b].aa - M[a].aa).slice(0, 8);
     const valRank = [...board].sort((a, b) => M[b].aa / M[b].aaCost - M[a].aa / M[a].aaCost);
 
@@ -204,9 +257,9 @@
         <section class="card"><h3 class="h3" style="display:flex;gap:8px;align-items:center;color:var(--ink)"><span style="color:var(--warn);display:flex">${icon('clock')}</span>Price changes ahead</h3>
           ${watch.length ? `<ol class="watch" style="margin-top:14px">${watch.map((w) => `<li><span class="when">${esc(w.d)}</span><span>${esc(w.t)}<br><span class="small muted">${esc(w.b)}</span></span></li>`).join('')}</ol>` : '<p class="muted small" style="margin-top:10px">No scheduled price changes.</p>'}
         </section>
-        <section class="card"><h3 class="h3" style="display:flex;gap:8px;align-items:center"><span style="color:var(--accent);display:flex">${icon('trend')}</span>What changed</h3>
+        <section class="card"><h3 class="h3" style="display:flex;gap:8px;align-items:center"><span style="color:var(--accent);display:flex">${icon('trend')}</span>${FRESH.length ? `New since your last visit <span class="tag solid">${FRESH.length}</span>` : 'What changed'}</h3>
           <ul style="list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px;font-size:14px">${changed.map((t) => `<li><strong style="font-weight:500">${stripEmoji(t.t)}</strong> <span class="muted small">· ${esc(t.d)}</span></li>`).join('')}</ul>
-          <a href="#changes" style="display:inline-block;margin-top:14px;font-size:14px;font-weight:500">All changes →</a>
+          <a href="#changes" style="display:inline-block;margin-top:14px;font-size:14px;font-weight:500">${FRESH.length > 4 ? `All ${FRESH.length} new changes →` : 'All changes →'}</a>
         </section>
       </aside>
     </div>
@@ -297,6 +350,7 @@
       </dl>
       ${lad.length ? `<h3 class="label-caps" style="margin:20px 0 8px">Effort ladder</h3><div class="eladder">${lad.map((l) => `<div class="er ${l[1] === topAA ? 'top' : ''}"><span class="mono muted">${esc(l[0])}</span><div class="track"><div class="fill" style="width:${Math.round(l[1] / 60 * 100)}%"></div></div><span class="mono" style="text-align:right">${l[1]}</span><span class="mono" style="text-align:right">$${l[2].toFixed(2)}</span></div>`).join('')}</div>` : ''}
       ${(m.notes || []).length ? `<h3 class="label-caps" style="margin:20px 0 8px">Notes</h3><ul class="flags" style="margin-top:0">${m.notes.map((n) => `<li><span class="${/DeepSWE #|zero data/.test(n) ? 'ok' : 'warn'}" style="display:flex">${icon(/DeepSWE #|zero data/.test(n) ? 'check' : 'warn')}</span>${esc(n)}</li>`).join('')}</ul>` : ''}
+      ${(D.history || {})[k] ? `<h3 class="label-caps" style="margin:20px 0 8px">Price history</h3>${histChart(k)}` : ''}
       <p class="small muted" style="margin-top:18px">${m.official ? 'Price read on the vendor’s own page' : `Price from ${m.srcs || 1} independent source${(m.srcs || 1) > 1 ? 's' : ''}`} · checked ${fmtDate(m.v)}</p>
       <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">${m.aa != null && m.aaCost ? `<a class="btn primary" href="#value/${k}">Show on value map</a>` : ''}
         <button type="button" class="btn" data-cmp="${k}" aria-pressed="${C.includes(k)}">${icon(C.includes(k) ? 'check' : 'plus')}${C.includes(k) ? 'In compare' : 'Add to compare'}</button>
@@ -497,11 +551,15 @@
     const watch = D.watch.filter((w) => !past(w.until));
     const snap = Object.keys(M).filter((k) => M[k].sn !== undefined).sort((a, b) => M[a].p.localeCompare(M[b].p) || (M[b].aa ?? -1) - (M[a].aa ?? -1));
     app.innerHTML = `
-      <h1 class="h1" style="font-size:clamp(28px,3.4vw,36px)">Changes &amp; sources</h1>
-      <p class="muted" style="margin-top:6px">Launches and price moves, newest first, plus what is scheduled next.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+        <div><h1 class="h1" style="font-size:clamp(28px,3.4vw,36px)">Changes &amp; sources</h1>
+        <p class="muted" style="margin-top:6px">Launches and price moves, newest first, plus what is scheduled next.</p></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="feed.xml" type="application/rss+xml">${icon('rss')}Subscribe (RSS)</a><a class="btn" href="#sheet">${icon('print')}Cheat sheet</a></div>
+      </div>
+      ${FRESH.length ? `<div class="fresh-note" role="status">${icon('spark')}<span><strong>${FRESH.length} change${FRESH.length > 1 ? 's' : ''} since your last visit</strong> — marked below. You last saw data from ${fmtDate(prevSeen)}.</span></div>` : ''}
       <div class="row" style="margin-top:24px">
         <section class="card grow" aria-label="Timeline"><h2 class="h3" style="margin-bottom:16px">Timeline</h2>
-          <ol class="timeline">${D.timeline.map((t) => `<li style="--pc:${dotFor[t.c] || 'var(--muted)'}"><div class="when">${esc(t.d)} · ${esc(t.p)}${t.n ? ' <span class="tag accent" style="margin-left:4px">New</span>' : ''}</div><div class="what">${stripEmoji(t.t)}</div><div class="body">${t.b}</div></li>`).join('')}</ol>
+          <ol class="timeline">${D.timeline.map((t) => `<li class="${isFresh(t) ? 'fresh' : ''}" style="--pc:${dotFor[t.c] || 'var(--muted)'}"><div class="when">${esc(t.d)} · ${esc(t.p)}${isFresh(t) ? ' <span class="tag solid" style="margin-left:4px">New for you</span>' : t.n ? ' <span class="tag accent" style="margin-left:4px">New</span>' : ''}</div><div class="what">${stripEmoji(t.t)}</div><div class="body">${t.b}</div></li>`).join('')}</ol>
         </section>
         <div class="side" style="display:grid;gap:24px">
           <section class="card"><h2 class="h3" style="margin-bottom:14px">Coming up</h2>
@@ -547,6 +605,7 @@
       ['Weights · free', (k) => `${M[k].open ? 'Open' : 'Closed'}${M[k].fr === 2 ? ' · free on Zen' : ''}`],
       ['Price source', (k) => (M[k].official ? 'Vendor page' : `${M[k].srcs || 1} independent source${(M[k].srcs || 1) > 1 ? 's' : ''}`)],
       ['Effort ladder', (k) => ((M[k].ladder || []).length ? `<div class="eladder">${M[k].ladder.map((l) => `<div class="er"><span class="mono muted">${esc(l[0])}</span><div class="track"><div class="fill" style="width:${Math.round(l[1] / 60 * 100)}%"></div></div><span class="mono" style="text-align:right">${l[1]}</span><span class="mono" style="text-align:right">$${l[2].toFixed(2)}</span></div>`).join('')}</div>` : '<span class="muted">single setting</span>')],
+      ['Price history', (k) => histChart(k, 260, 120) || '<span class="muted">no recorded changes</span>'],
       ['Notes', (k) => ((M[k].notes || []).length ? `<ul class="flags" style="margin:0">${M[k].notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<span class="muted">—</span>')],
     ];
     app.innerHTML = `
@@ -584,9 +643,135 @@
     }));
   }
 
+  // ── Router simulator ─────────────────────────────────────────────
+  const clone = (x) => JSON.parse(JSON.stringify(x));
+  const RT = Object.assign({ tiers: clone(D.routerPresets[0].tiers), perDay: 100, preset: D.routerPresets[0].id }, store.get('router', {}));
+  const ROLE_NAME = ['Default', 'Escalate', 'Last resort'];
+  const routable = () => Object.keys(M).filter((k) => current(k) && M[k].aa != null && (M[k].ladder || M[k].aaCost)).sort((a, b) => M[b].aa - M[a].aa);
+  function costAt(k, e) { const l = (M[k].ladder || []).find((r) => r[0] === e); return l ? { aa: l[1], c: l[2] } : { aa: M[k].aa, c: M[k].aaCost }; }
+  function effortsOf(k) { return (M[k].ladder || []).map((l) => l[0]); }
+  function fixTiers() {
+    RT.tiers = RT.tiers.filter((t) => M[t[0]]).slice(0, 3);
+    RT.tiers.forEach((t) => { const ef = effortsOf(t[0]); if (ef.length && !ef.includes(t[1])) t[1] = ef[ef.length - 1]; if (!ef.length) t[1] = 'best'; });
+    const rest = RT.tiers.slice(1).reduce((a, t) => a + t[2], 0);
+    if (rest > 100) { let over = rest - 100; for (let i = RT.tiers.length - 1; i > 0 && over > 0; i--) { const cut = Math.min(over, RT.tiers[i][2]); RT.tiers[i][2] -= cut; over -= cut; } }
+    RT.tiers[0][2] = 100 - RT.tiers.slice(1).reduce((a, t) => a + t[2], 0);
+  }
+  function routerCalc() {
+    const tiers = RT.tiers.map(([k, e, share]) => ({ k, e, share, ...costAt(k, e) }));
+    const task = tiers.reduce((a, t) => a + t.share / 100 * t.c, 0);
+    const aa = tiers.reduce((a, t) => a + t.share / 100 * t.aa, 0);
+    const month = (c) => c * RT.perDay * 30;
+    const topT = tiers.reduce((b, t) => (t.aa > b.aa ? t : b), tiers[0]);
+    const cheapT = tiers.reduce((b, t) => (t.c < b.c ? t : b), tiers[0]);
+    return { tiers, task, aa, month: month(task), top: { ...topT, month: month(topT.c) }, cheap: { ...cheapT, month: month(cheapT.c) } };
+  }
+  function viewRouter() {
+    fixTiers();
+    const ks = routable();
+    app.innerHTML = `
+      <div class="hero" style="align-items:flex-end">
+        <div class="hero-copy">
+          <p class="eyebrow">Router</p>
+          <h1 class="h1">Route tasks across models</h1>
+          <p class="lede">Send most work to a cheap model and escalate only the hard tasks. See what the mix costs per month, how it scores, and what you save.</p>
+        </div>
+        <label class="perday">Tasks per day<input type="number" id="rt-day" class="num-in" min="1" step="10" value="${RT.perDay}"></label>
+      </div>
+      <div class="chips" role="group" aria-label="Presets" style="margin-top:22px">${D.routerPresets.map((pr) => `<button type="button" class="chip ghost" data-preset="${pr.id}" aria-pressed="${RT.preset === pr.id}">${esc(pr.name)}</button>`).join('')}</div>
+      <div class="row" style="margin-top:22px">
+        <section class="grow" aria-label="Tiers">
+          <div class="tiers-list">${RT.tiers.map((t, i) => `
+            ${i ? `<div class="tier-arrow" aria-hidden="true">${icon('down')}<span>escalate ${t[2]}% of tasks</span></div>` : ''}
+            <div class="card tier" style="--bc:var(--b-${PC[M[t[0]].p] || 'other'})">
+              <div class="tier-head"><span class="tier-num">${i + 1}</span><span class="label-caps">${ROLE_NAME[i]}</span>
+                ${i ? `<button type="button" class="icon-btn" data-rm="${i}" aria-label="Remove tier ${i + 1}" style="margin-left:auto;width:32px;height:32px">${icon('x')}</button>` : ''}</div>
+              <div class="tier-grid">
+                <label>Model<select class="select" data-tm="${i}">${ks.map((k) => `<option value="${k}" ${k === t[0] ? 'selected' : ''}>${esc(M[k].n)} · AA ${M[k].aa}</option>`).join('')}</select></label>
+                <label>Effort<select class="select" data-te="${i}" ${effortsOf(t[0]).length ? '' : 'disabled'}>${(effortsOf(t[0]).length ? effortsOf(t[0]) : ['best']).map((e) => `<option ${e === t[1] ? 'selected' : ''}>${esc(e)}</option>`).join('')}</select></label>
+                ${i ? `<label class="share">Share of tasks <output id="rt-o${i}">${t[2]}%</output><input type="range" min="0" max="100" step="5" value="${t[2]}" data-ts="${i}"></label>`
+                    : `<div class="share"><span>Share of tasks</span><output id="rt-o0" class="big-share">${t[2]}%</output><span class="small muted">gets everything not escalated</span></div>`}
+              </div>
+              <p class="tier-meta" id="rt-m${i}"></p>
+            </div>`).join('')}
+          </div>
+          ${RT.tiers.length < 3 ? '<button type="button" class="btn" id="rt-add" style="margin-top:14px">' + icon('plus') + 'Add a tier</button>' : ''}
+        </section>
+        <aside class="side" aria-label="Results" aria-live="polite"><div id="rt-out"></div></aside>
+      </div>`;
+    const drawOut = () => {
+      const r = routerCalc();
+      r.tiers.forEach((t, i) => { const m = document.getElementById('rt-m' + i); if (m) m.innerHTML = `AA ${t.aa} · <span class="mono">$${t.c.toFixed(2)}</span> per task · ${t.share}% of tasks`; });
+      const o0 = document.getElementById('rt-o0'); if (o0) o0.textContent = RT.tiers[0][2] + '%';
+      const save = r.top.month > 0 ? (r.top.month - r.month) / r.top.month : 0;
+      const bars = [['Your mix', r.month, r.aa, true], ['All to ' + M[r.top.k].n, r.top.month, r.top.aa], ['All to ' + M[r.cheap.k].n, r.cheap.month, r.cheap.aa]];
+      const bmax = Math.max(...bars.map((b) => b[1]), 0.01);
+      document.getElementById('rt-out').innerHTML = `
+        <div class="card lift">
+          <p class="label-caps">Traffic split</p>
+          <div class="flow" role="img" aria-label="${esc(r.tiers.map((t) => `${M[t.k].n} ${t.share}%`).join(', '))}">${r.tiers.filter((t) => t.share > 0).map((t) => `<span style="--bc:var(--b-${PC[M[t.k].p] || 'other'});flex:${t.share}">${t.share >= 12 ? `${esc(M[t.k].mono)} ${t.share}%` : ''}</span>`).join('')}</div>
+          <div class="kpis">
+            <div><span class="small muted">Per month</span><b class="mono">${big(r.month)}</b><span class="small muted">${RT.perDay}/day</span></div>
+            <div><span class="small muted">Avg score</span><b class="mono">${r.aa.toFixed(1)}</b><span class="small muted">weighted AA</span></div>
+            <div class="${save > 0 ? 'good' : ''}"><span class="small muted">Saving</span><b class="mono">${save > 0 ? Math.round(save * 100) + '%' : '—'}</b><span class="small muted">vs ${esc(M[r.top.k].n)}</span></div>
+          </div>
+          <div style="margin-top:20px">${bars.map((b) => `<div class="mrow ${b[3] ? 'on' : ''}"><div class="top-line"><span>${esc(b[0])}</span><span class="mono">${big(b[1])} · AA ${b[2].toFixed(1)}</span></div><div class="track"><div class="fill" style="width:${Math.max(2, Math.round(b[1] / bmax * 100))}%"></div></div></div>`).join('')}</div>
+          <p class="small muted" style="margin-top:14px">Cost per task and score come from Artificial Analysis at each effort. The weighted score is a rough guide: escalated tasks are usually the hardest ones.</p>
+        </div>`;
+    };
+    drawOut();
+    const save = () => store.set('router', RT);
+    document.getElementById('rt-day').addEventListener('input', (e) => { RT.perDay = Math.max(1, +e.target.value || 1); save(); drawOut(); });
+    app.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => { const pr = D.routerPresets.find((x) => x.id === b.dataset.preset); RT.tiers = clone(pr.tiers); RT.preset = pr.id; save(); viewRouter(); }));
+    app.querySelectorAll('[data-tm]').forEach((sel) => sel.addEventListener('change', () => { RT.tiers[+sel.dataset.tm][0] = sel.value; RT.preset = ''; fixTiers(); save(); viewRouter(); }));
+    app.querySelectorAll('[data-te]').forEach((sel) => sel.addEventListener('change', () => { RT.tiers[+sel.dataset.te][1] = sel.value; RT.preset = ''; save(); drawOut(); }));
+    app.querySelectorAll('[data-ts]').forEach((rg) => rg.addEventListener('input', () => {
+      const i = +rg.dataset.ts; RT.tiers[i][2] = +rg.value; RT.preset = ''; fixTiers(); rg.value = RT.tiers[i][2];
+      document.getElementById('rt-o' + i).textContent = RT.tiers[i][2] + '%';
+      const arrow = rg.closest('.tier').previousElementSibling; if (arrow && arrow.classList.contains('tier-arrow')) arrow.querySelector('span').textContent = `escalate ${RT.tiers[i][2]}% of tasks`;
+      save(); drawOut();
+    }));
+    app.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => { RT.tiers.splice(+b.dataset.rm, 1); RT.preset = ''; fixTiers(); save(); viewRouter(); }));
+    const add = document.getElementById('rt-add');
+    if (add) add.addEventListener('click', () => { const used = new Set(RT.tiers.map((t) => t[0])); const k = routable().find((x) => !used.has(x)); RT.tiers.push([k, effortsOf(k).slice(-1)[0] || 'best', 10]); RT.preset = ''; fixTiers(); save(); viewRouter(); });
+  }
+
+  // ── Printable cheat sheet ────────────────────────────────────────
+  function viewSheet() {
+    const vpts = Object.keys(M).filter((k) => current(k) && M[k].aa != null && M[k].aa >= 15 && M[k].aaCost).sort((a, b) => M[a].aaCost - M[b].aaCost);
+    const front = []; let best = -1; vpts.forEach((k) => { if (M[k].aa > best) { front.push(k); best = M[k].aa; } });
+    const watch = D.watch.filter((w) => !past(w.until));
+    app.innerHTML = `
+      <div class="sheet-bar">
+        <div><h1 class="h1" style="font-size:clamp(26px,3vw,32px)">Cheat sheet</h1><p class="muted" style="margin-top:4px">One A4 page: the pick for every task, the value ladder and what changes next.</p></div>
+        <button type="button" class="btn primary" id="print">${icon('print')}Print or save as PDF</button>
+      </div>
+      <article class="sheet" aria-label="Cheat sheet">
+        <header class="sheet-head">
+          <div><b>Model Guide</b> — which AI model to use</div>
+          <div class="mono">Data ${fmtDate(D.checked)} · ${esc(D.siteUrl.replace(/^https?:\/\//, ''))}</div>
+        </header>
+        <div class="sheet-grid">
+          ${D.groups.map((g) => `<section class="sheet-group"><h2>${icon(g.icon)}${esc(g.name)}</h2><ul>${g.tasks.map((t) => {
+            const pc = parseCost(t.pr.c), alt = t.alts.filter((a) => M[a.m] && parseCost(a.c) != null && parseCost(a.c) < (pc ?? 0)).sort((a, b) => parseCost(a.c) - parseCost(b.c))[0];
+            return `<li><span class="st">${esc(t.t)}</span><span class="sp"><b>${esc(M[t.pr.m].n)}</b>${t.pr.e ? ` <em>${esc(normE(t.pr.e))}</em>` : ''}</span><span class="sc mono">${esc((t.pr.c || '').replace(/ \(DeepSWE\)/, '*'))}</span><span class="sa">${alt ? `or ${esc(M[alt.m].n)} <span class="mono">${esc(alt.c.replace(/ \(DeepSWE\)/, '*'))}</span>` : ''}</span></li>`;
+          }).join('')}</ul></section>`).join('')}
+          <section class="sheet-group sheet-side">
+            <h2>${icon('trend')}Best value ladder</h2>
+            <ol class="sheet-ladder">${front.map((k) => `<li><span>${esc(M[k].n)}</span><span class="mono">AA ${M[k].aa}</span><span class="mono">$${M[k].aaCost.toFixed(2)}</span></li>`).join('')}</ol>
+            ${watch.length ? `<h2 style="margin-top:10px">${icon('clock')}Coming up</h2><ul class="sheet-watch">${watch.map((w) => `<li><b class="mono">${esc(w.d)}</b> ${esc(w.t)} <span class="mono">${esc(w.b)}</span></li>`).join('')}</ul>` : ''}
+            <h2 style="margin-top:10px">${icon('bulb')}Rules</h2>
+            <ol class="sheet-rules">${D.rules.slice(0, 6).map(([b]) => `<li>${esc(b)}</li>`).join('')}</ol>
+          </section>
+        </div>
+        <footer class="sheet-foot">$ = estimated cost per task (Artificial Analysis at that effort; * = DeepSWE coding benchmark). AA = Artificial Analysis Intelligence Index. Prices change often — check the vendor page before scale use.</footer>
+      </article>`;
+    document.getElementById('print').addEventListener('click', () => window.print());
+  }
+
   // ── Router ───────────────────────────────────────────────────────
-  const ROUTES = { recommend: viewRecommend, explore: viewExplore, compare: viewCompare, value: viewValue, insights: viewInsights, changes: viewChanges };
-  const ORDER = ['recommend', 'explore', 'compare', 'value', 'insights', 'changes'];
+  const ROUTES = { recommend: viewRecommend, explore: viewExplore, compare: viewCompare, router: viewRouter, value: viewValue, insights: viewInsights, changes: viewChanges, sheet: viewSheet };
+  const ORDER = ['recommend', 'explore', 'compare', 'router', 'value', 'insights', 'changes'];
   let lastRoute = '';
   function render() {
     const [route, arg, arg2] = (location.hash.replace(/^#\/?/, '') || 'recommend').split('/');
@@ -594,7 +779,7 @@
     ROUTES[r](arg, arg2);
     staleBanner();
     document.querySelectorAll('.nav a').forEach((a) => (a.dataset.route === r ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
-    document.title = `Model Guide — ${{ recommend: 'Recommend', explore: 'Explore', compare: 'Compare', value: 'Value map', insights: 'Insights', changes: 'Changes' }[r]}`;
+    document.title = `Model Guide — ${{ recommend: 'Recommend', explore: 'Explore', compare: 'Compare', router: 'Router', value: 'Value map', insights: 'Insights', changes: 'Changes', sheet: 'Cheat sheet' }[r]}`;
     if (r !== lastRoute) { window.scrollTo(0, 0); if (lastRoute) app.focus({ preventScroll: true }); lastRoute = r; }
   }
   window.addEventListener('hashchange', render);
@@ -612,6 +797,8 @@
   }
 
   document.getElementById('checked').textContent = 'Data checked ' + fmtDate(D.checked);
+  // Badge on the Changes link: how many items are new since the last visit
+  if (FRESH.length) { const a = document.querySelector('.nav a[data-route="changes"]'); if (a) a.insertAdjacentHTML('beforeend', `<span class="nav-badge" aria-label="${FRESH.length} new since your last visit">${FRESH.length}</span>`); }
   document.getElementById('foot-line').textContent = `Prices and scores checked ${fmtDate(D.checked)} · DeepSWE leaderboard Sep 22, 2026 · prices and scores are directional — verify before scale deployment.`;
   document.getElementById('theme-btn').addEventListener('click', () => {
     const root = document.documentElement;
@@ -624,10 +811,10 @@
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const typing = /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || '');
     if (e.key === '/' && !typing) { e.preventDefault(); if (!location.hash.startsWith('#explore')) location.hash = 'explore'; setTimeout(() => document.getElementById('q')?.focus(), 0); return; }
-    if (!typing && /^[1-6]$/.test(e.key)) location.hash = ORDER[+e.key - 1];
+    if (!typing && /^[1-7]$/.test(e.key)) location.hash = ORDER[+e.key - 1];
   });
   render();
 
   // Exposed for tests and the console
-  window.MGApp = { effPrice, priceAt, past, TASKS, taskOptions, routes: ORDER };
+  window.MGApp = { effPrice, priceAt, past, TASKS, taskOptions, routerCalc, routes: ORDER, fresh: () => FRESH.length };
 })();

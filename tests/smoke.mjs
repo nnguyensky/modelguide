@@ -11,7 +11,7 @@ import { readFileSync } from 'node:fs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const url = pathToFileURL(path.join(root, 'index.html')).href;
-const ROUTES = ['recommend', 'explore', 'compare', 'value', 'insights', 'changes'];
+const ROUTES = ['recommend', 'explore', 'compare', 'router', 'value', 'insights', 'changes', 'sheet'];
 const require = createRequire(import.meta.url);
 let axePath = null; try { axePath = require.resolve('axe-core/axe.min.js'); } catch (e) { /* optional */ }
 
@@ -26,7 +26,7 @@ async function visit(page, label) {
   for (const r of ROUTES) {
     await page.evaluate((h) => { location.hash = h; }, r);
     try {
-      await page.waitForFunction((h) => document.querySelector(`.nav a[data-route="${h}"]`)?.getAttribute('aria-current') === 'page', r, { timeout: 5000 });
+      await page.waitForFunction((h) => h === 'sheet' ? !!document.querySelector('.sheet') : document.querySelector(`.nav a[data-route="${h}"]`)?.getAttribute('aria-current') === 'page', r, { timeout: 5000 });
     } catch (e) { errors.push(`route ${r}${label} did not open`); return; }
     const len = await page.$eval('#app', (el) => el.innerText.trim().length);
     if (len < 200) errors.push(`route ${r}${label} rendered almost nothing (${len} chars)`);
@@ -105,6 +105,54 @@ if (!errors.length) {
   await page.click('#d3'); await page.click('#d3');
 }
 
+// 1a. Router, price history, cheat sheet
+if (!errors.length) {
+  await page.evaluate(() => { location.hash = 'router'; });
+  await page.waitForSelector('#rt-out .kpis');
+  await page.click('[data-preset="three"]');
+  if ((await page.$$('.tier')).length !== 3) errors.push('router: three-step preset did not give 3 tiers');
+  const before = await page.$eval('#rt-out .kpis b', (b) => b.textContent);
+  await page.$eval('[data-ts="1"]', (el) => { el.value = '50'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  const after = await page.$eval('#rt-out .kpis b', (b) => b.textContent);
+  if (before === after) errors.push('router: moving a share slider did not change the monthly cost');
+  const share0 = await page.$eval('#rt-o0', (o) => parseInt(o.textContent, 10));
+  const others = await page.$$eval('[data-ts]', (rs) => rs.reduce((a, r) => a + +r.value, 0));
+  if (share0 + others !== 100) errors.push(`router: shares add up to ${share0 + others}%, not 100%`);
+  await page.click('[data-rm="2"]');
+  if ((await page.$$('.tier')).length !== 2) errors.push('router: removing a tier failed');
+  await page.click('#rt-add');
+  if ((await page.$$('.tier')).length !== 3) errors.push('router: adding a tier failed');
+  const calc = await page.evaluate(() => window.MGApp.routerCalc());
+  if (!(calc.month > 0) || !(calc.aa > 0)) errors.push('router: calculation returned no cost or score');
+
+  await page.evaluate(() => { location.hash = 'explore/gptSol'; });
+  await page.waitForSelector('#detail .hist svg');
+  if ((await page.$$('#detail .hist-dot')).length < 3) errors.push('price history: GPT-5.6 Sol should show 3 price points');
+  if (!(await page.$('#detail .hist-dot.future'))) errors.push('price history: scheduled change not marked');
+
+  await page.evaluate(() => { location.hash = 'sheet'; });
+  await page.waitForSelector('.sheet');
+  await page.emulateMedia({ media: 'print' });
+  const h = await page.$eval('.sheet', (el) => el.scrollHeight);
+  if (h > 1125) errors.push(`cheat sheet is ${h}px tall in print — more than one A4 page (1123px)`);
+  await page.emulateMedia({ media: 'screen' });
+}
+
+// 1a2. "New since your last visit": a visitor who last saw older data gets a badge
+if (!errors.length) {
+  const ctx = await browser.newContext();
+  await ctx.addInitScript(() => { try { if (!sessionStorage.getItem('t')) { localStorage.setItem('mg-seen', JSON.stringify('2026-08-29')); sessionStorage.setItem('t', '1'); } } catch (e) { /* ignore */ } });
+  const pv = await ctx.newPage(); await pv.route('**/fonts.googleapis.com/**', (r) => r.abort());
+  await pv.goto(url);
+  const want = await pv.evaluate(() => window.MG.timeline.filter((t) => t.added > '2026-08-29').length);
+  const badge = await pv.$eval('.nav-badge', (b) => +b.textContent).catch(() => 0);
+  if (!want || badge !== want) errors.push(`new-since-visit badge shows ${badge}, expected ${want}`);
+  await pv.evaluate(() => { location.hash = 'changes'; });
+  await pv.waitForSelector('.timeline');
+  if ((await pv.$$('.timeline li.fresh')).length !== want) errors.push('changes page does not mark every new item');
+  await ctx.close();
+}
+
 // 1b. Stale-data banner shows when the data is old, and not when it is fresh
 if (!errors.length) {
   if (await page.$('.stale')) errors.push('stale banner shown on fresh data');
@@ -149,6 +197,15 @@ if (!errors.length) {
       t.alts.forEach((a) => { if (!M[a.m]) out.push(`task "${t.t}" alt → unknown model ${a.m}`); });
     }));
     D.watch.forEach((w) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(w.until)) out.push(`watch item "${w.t}" has a bad date`); });
+    D.timeline.forEach((t) => { if (!/^\d{4}-\d{2}-\d{2}$/.test(t.iso || '') || !/^\d{4}-\d{2}-\d{2}$/.test(t.added || '')) out.push(`timeline "${t.t}" needs iso and added dates`); });
+    Object.entries(D.history || {}).forEach(([k, h]) => {
+      if (!M[k]) out.push(`history for unknown model ${k}`);
+      h.forEach((r) => { if (!/^~?\d{4}-\d{2}-\d{2}$/.test(r[0]) || typeof r[1] !== 'number' || typeof r[2] !== 'number') out.push(`history ${k}: bad row ${JSON.stringify(r)}`); });
+      const last = h.filter((r) => r[0].replace('~', '') <= new Date().toISOString().slice(0, 10)).pop();
+      const cur = window.MGApp.effPrice(k);
+      if (last && (last[1] !== cur.i || last[2] !== cur.o)) out.push(`history ${k}: latest point ${last[1]}/${last[2]} differs from current price ${cur.i}/${cur.o}`);
+    });
+    (D.routerPresets || []).forEach((p) => p.tiers.forEach((t) => { if (!M[t[0]]) out.push(`router preset ${p.id}: unknown model ${t[0]}`); }));
     return out;
   }));
 }
@@ -169,4 +226,4 @@ if (errors.length) {
   console.error(`✗ ${errors.length} problem(s):\n  ` + errors.join('\n  '));
   process.exit(1);
 }
-console.log(`✓ all routes render, every task/mode works, share links, CSV, compare + calculator, phone details, stale banner${axePath ? ', accessibility (axe)' : ''}, data references, future-date views OK`);
+console.log(`✓ all routes render, every task/mode works, share links, CSV, compare + calculator, router, price history, one-page cheat sheet, new-since-visit, phone details, stale banner${axePath ? ', accessibility (axe)' : ''}, data references, future-date views OK`);

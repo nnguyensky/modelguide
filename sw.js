@@ -2,8 +2,8 @@
 // Same-origin files: serve from cache at once, refresh the cache in the background
 // (stale-while-revalidate), so new data shows up on the next visit.
 // Bump VERSION when the list of core files changes.
-const VERSION = 'mg-v1';
-const CORE = ['./', 'index.html', 'styles.css', 'data.js', 'app.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png'];
+const VERSION = 'mg-v2';
+const CORE = ['./', 'index.html', 'styles.css', 'data.js', 'app.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'feed.xml'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
