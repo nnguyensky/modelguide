@@ -37,7 +37,7 @@
   const normE = (e) => ({ med: 'medium', 'non-think': 'non-think', 'low-med': 'low' }[e] || e || '');
   const PC = { OpenAI: 'openai', Anthropic: 'anthropic', Google: 'google', Moonshot: 'moonshot', DeepSeek: 'deepseek', 'Z.ai': 'zai', xAI: 'xai', Xiaomi: 'xiaomi', Meta: 'meta', Alibaba: 'alibaba' };
   const pcVar = (p) => `var(--c-${PC[p] || 'other'})`;
-  const badge = (k, size) => `<span class="mono-badge ${size || ''}" style="--pc:${pcVar(M[k].p)}" aria-hidden="true">${esc(M[k].mono)}</span>`;
+  const badge = (k, size) => `<span class="mono-badge ${size || ''}" style="--pc:${pcVar(M[k].p)};--bc:var(--b-${PC[M[k].p] || 'other'})" aria-hidden="true">${esc(M[k].mono)}</span>`;
   const stripEmoji = (s) => String(s).replace(/^[^\p{L}\p{N}$]+\s*/u, '');
   const I = {
     check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
@@ -53,7 +53,25 @@
     shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/>',
     eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
     chip: '<rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/>',
+    link: '<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>',
+    download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
   };
+  async function copyText(t) {
+    try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+      const ta = document.createElement('textarea'); ta.value = t; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e2) { ok = false; } ta.remove(); return ok;
+    }
+  }
+  function downloadFile(name, text, type) {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  }
+  const csvCell = (v) => { const t = String(v ?? ''); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+  // Long-prompt tier: price per 1M once a prompt is over `over` tokens
+  function priceAt(k, inTok) { const m = M[k], p = effPrice(k); return m.long && inTok > m.long.over ? { i: m.long.i, o: m.long.o, long: true } : { ...p, long: false }; }
   const icon = (n, cls) => `<svg class="icon ${cls || ''}" viewBox="0 0 24 24" aria-hidden="true">${I[n] || ''}</svg>`;
   const segBtns = (items, cur, attr) => items.map(([v, label]) => `<button type="button" data-${attr}="${esc(v)}" aria-pressed="${String(v) === String(cur)}">${esc(label)}</button>`).join('');
   const ROLE = { pr: 'Recommended' };
@@ -96,7 +114,11 @@
     return out.slice(0, 5);
   }
 
-  function viewRecommend() {
+  function viewRecommend(taskArg, modeArg) {
+    if (taskArg && TASKS.find((t) => t.id === taskArg)) R.task = taskArg;
+    if (['balanced', 'cheap', 'quality'].includes(modeArg)) R.mode = modeArg;
+    const want = '#recommend/' + R.task + '/' + R.mode;
+    if (location.hash !== want) history.replaceState(null, '', want);
     const task = TASKS.find((t) => t.id === R.task);
     const g = D.groups[task.group];
     const opts = taskOptions(task);
@@ -170,7 +192,7 @@
               <h2 class="pick-name">${esc(m.n)}</h2>
               <p class="muted">${esc(m.p)}${p.e ? ` · effort <span class="mono" style="color:var(--ink)">${esc(normE(p.e))}</span>` : ''}</p></div>
           </div>
-          <div class="pick-cost"><div class="big">${p.cost === 0 ? 'Free' : '~$' + p.cost.toFixed(2)}</div><div class="small muted">est. per task · ${esc(priceTxt(p.m))} per 1M tokens</div></div>
+          <div class="pick-cost"><button type="button" class="btn" id="share" style="height:34px;font-size:13px;margin-bottom:8px">${icon('link')}<span>Copy link</span></button><div class="big">${p.cost === 0 ? 'Free' : '~$' + p.cost.toFixed(2)}</div><div class="small muted">est. per task · ${esc(priceTxt(p.m))} per 1M tokens</div></div>
         </div>
         <div class="meter lg" style="margin-top:22px"><span class="small muted" style="width:92px">AA score</span><div class="track"><div class="fill on" style="width:${m.aa == null ? 0 : Math.round(m.aa / 60 * 100)}%"></div></div><span class="num">${m.aa ?? '—'}</span></div>
         <ul class="why">${why.map((w) => `<li>${icon('check')}${esc(w)}</li>`).join('')}</ul>
@@ -221,13 +243,20 @@
       <p class="small muted" style="margin-top:10px">$ / task = Artificial Analysis cost to run its full index at the best effort setting. Value = score per dollar, ranked.</p>
     </section>`;
 
-    app.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => { R.mode = b.dataset.mode; saveRec(); render(); }));
-    app.querySelectorAll('[data-vol]').forEach((b) => b.addEventListener('click', () => { R.vol = +b.dataset.vol; saveRec(); render(); }));
-    app.querySelectorAll('[data-task]').forEach((b) => b.addEventListener('click', () => { R.task = b.dataset.task; saveRec(); render(); }));
-    app.querySelectorAll('[data-group]').forEach((b) => b.addEventListener('click', () => { const t = TASKS.find((x) => x.group === +b.dataset.group); R.task = t.id; saveRec(); render(); }));
+    app.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => { R.mode = b.dataset.mode; saveRec(); goRec(); }));
+    document.getElementById('share').addEventListener('click', async (e) => {
+      const b = e.currentTarget, label = b.querySelector('span');
+      const ok = await copyText(location.href.split('#')[0] + '#recommend/' + R.task + '/' + R.mode);
+      label.textContent = ok ? 'Link copied' : 'Copy failed'; setTimeout(() => { label.textContent = 'Copy link'; }, 1800);
+    });
+    app.querySelectorAll('[data-vol]').forEach((b) => b.addEventListener('click', () => { R.vol = +b.dataset.vol; saveRec(); goRec(); }));
+    app.querySelectorAll('[data-task]').forEach((b) => b.addEventListener('click', () => { R.task = b.dataset.task; saveRec(); goRec(); }));
+    app.querySelectorAll('[data-group]').forEach((b) => b.addEventListener('click', () => { const t = TASKS.find((x) => x.group === +b.dataset.group); R.task = t.id; saveRec(); goRec(); }));
     app.querySelectorAll('[data-explore]').forEach((el) => el.addEventListener('click', () => { location.hash = 'explore/' + el.dataset.explore; }));
   }
   const saveRec = () => store.set('rec', R);
+  // Keep the link in sync before redrawing, so the link (not stale args) drives the view
+  const goRec = () => { history.replaceState(null, '', '#recommend/' + R.task + '/' + R.mode); render(); };
 
   // ── Explore ──────────────────────────────────────────────────────
   const E = { q: '', prov: '', open: false, free: false, legacy: true, sort: 'aa', sel: 'gpt61sol' };
@@ -269,7 +298,9 @@
       ${lad.length ? `<h3 class="label-caps" style="margin:20px 0 8px">Effort ladder</h3><div class="eladder">${lad.map((l) => `<div class="er ${l[1] === topAA ? 'top' : ''}"><span class="mono muted">${esc(l[0])}</span><div class="track"><div class="fill" style="width:${Math.round(l[1] / 60 * 100)}%"></div></div><span class="mono" style="text-align:right">${l[1]}</span><span class="mono" style="text-align:right">$${l[2].toFixed(2)}</span></div>`).join('')}</div>` : ''}
       ${(m.notes || []).length ? `<h3 class="label-caps" style="margin:20px 0 8px">Notes</h3><ul class="flags" style="margin-top:0">${m.notes.map((n) => `<li><span class="${/DeepSWE #|zero data/.test(n) ? 'ok' : 'warn'}" style="display:flex">${icon(/DeepSWE #|zero data/.test(n) ? 'check' : 'warn')}</span>${esc(n)}</li>`).join('')}</ul>` : ''}
       <p class="small muted" style="margin-top:18px">${m.official ? 'Price read on the vendor’s own page' : `Price from ${m.srcs || 1} independent source${(m.srcs || 1) > 1 ? 's' : ''}`} · checked ${fmtDate(m.v)}</p>
-      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">${m.aa != null && m.aaCost ? `<a class="btn primary" href="#value/${k}">Show on value map</a>` : ''}<a class="btn" href="#changes">Price history</a></div>
+      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">${m.aa != null && m.aaCost ? `<a class="btn primary" href="#value/${k}">Show on value map</a>` : ''}
+        <button type="button" class="btn" data-cmp="${k}" aria-pressed="${C.includes(k)}">${icon(C.includes(k) ? 'check' : 'plus')}${C.includes(k) ? 'In compare' : 'Add to compare'}</button>
+        <button type="button" class="btn back-list" data-back="${k}">${icon('up')}Back to list</button></div>
     </aside>`;
   }
   function viewExplore(sel) {
@@ -285,6 +316,7 @@
         <button type="button" class="toggle" data-flag="open" aria-pressed="${E.open}"><span class="sw"></span>Open weights</button>
         <button type="button" class="toggle" data-flag="free" aria-pressed="${E.free}"><span class="sw"></span>Free on Zen</button>
         <button type="button" class="toggle" data-flag="legacy" aria-pressed="${E.legacy}"><span class="sw"></span>Hide legacy</button>
+        <button type="button" class="btn" id="csv">${icon('download')}CSV</button>
         <label class="sort">Sort by <select id="sort" class="select">${[['aa', 'Score'], ['value', 'Value (score per $)'], ['cost', 'Cost per task'], ['price', 'Price']].map(([v, l]) => `<option value="${v}" ${v === E.sort ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
       </div>
       <div class="row" style="margin-top:20px"><div class="grow" id="rows"></div><div id="detail" class="side" style="flex:1 1 320px"></div></div>`;
@@ -299,13 +331,26 @@
           <td class="r mono">${perTask(m.aaCost)}</td><td class="r mono muted" style="white-space:nowrap">${esc(priceTxt(k))}</td><td class="r mono">${m.dsw ? m.dsw.toFixed(1) + '%' : '—'}</td>
           <td>${m.legacy ? '<span class="tag">Legacy</span>' : m.fr === 2 ? '<span class="tag good">Free on Zen</span>' : `<span class="tag ${/value|Budget|Best/i.test(m.t) ? 'good' : /#1|DeepSWE/.test(m.t) ? 'accent' : ''}">${esc(m.t || '')}</span>`}</td></tr>`; }).join('')}</tbody></table></div>` : '<div class="card empty">No models match these filters.</div>';
       document.getElementById('detail').innerHTML = ks.length ? detailHtml(E.sel) : '';
-      document.querySelectorAll('#rows tr[data-k]').forEach((tr) => tr.addEventListener('click', () => { E.sel = tr.dataset.k; drawRows(); }));
+      document.querySelectorAll('#rows tr[data-k]').forEach((tr) => tr.addEventListener('click', () => {
+        E.sel = tr.dataset.k; drawRows();
+        // On narrow screens the details sit below the table: bring them into view
+        if (matchMedia('(max-width: 900px)').matches) document.getElementById('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }));
+      const cmpBtn = document.querySelector('#detail [data-cmp]');
+      if (cmpBtn) cmpBtn.addEventListener('click', () => { toggleCompare(cmpBtn.dataset.cmp); drawRows(); });
+      const back = document.querySelector('#detail [data-back]');
+      if (back) back.addEventListener('click', () => { const row = document.querySelector(`#rows tr[data-k="${back.dataset.back}"]`); if (row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.querySelector('button')?.focus({ preventScroll: true }); } });
     };
     drawRows();
     const q = document.getElementById('q');
     q.addEventListener('input', () => { E.q = q.value; drawRows(); });
     document.getElementById('prov').addEventListener('change', (e) => { E.prov = e.target.value; drawRows(); });
     document.getElementById('sort').addEventListener('change', (e) => { E.sort = e.target.value; drawRows(); });
+    document.getElementById('csv').addEventListener('click', () => {
+      const head = ['Model', 'Provider', 'Input $/1M', 'Output $/1M', 'Scheduled change', 'AA', 'AA $/task', 'DeepSWE %', 'Context', 'Open weights', 'Free on Zen', 'Legacy', 'Checked'];
+      const lines = [head].concat(exploreRows().map((k) => { const m = M[k], p = effPrice(k); return [m.n, m.p, p.i, p.o, m.priceChangeDate && !past(m.priceChangeDate) ? `${m.iAfter}/${m.oAfter} from ${m.priceChangeDate}` : '', m.aa ?? '', m.aaCost ?? '', m.dsw ?? '', m.ctx, m.open ? 'yes' : 'no', m.fr === 2 ? 'yes' : 'no', m.legacy ? 'yes' : 'no', m.v]; }));
+      downloadFile(`model-guide-${D.checked}.csv`, lines.map((r) => r.map(csvCell).join(',')).join('\n') + '\n', 'text/csv');
+    });
     app.querySelectorAll('[data-flag]').forEach((b) => b.addEventListener('click', () => { E[b.dataset.flag] = !E[b.dataset.flag]; b.setAttribute('aria-pressed', E[b.dataset.flag]); drawRows(); }));
   }
 
@@ -475,19 +520,96 @@
       </section>`;
   }
 
+  // ── Compare ──────────────────────────────────────────────────────
+  let C = (store.get('cmp', ['gpt61sol', 'opus55', 'gemini4carbon']) || []).filter((k) => M[k]).slice(0, 3);
+  const Q = Object.assign({ inTok: 20000, outTok: 2000, perDay: 100 }, store.get('calc', {}));
+  function toggleCompare(k) {
+    C = C.includes(k) ? C.filter((x) => x !== k) : C.concat(k).slice(-3);
+    store.set('cmp', C);
+  }
+  function viewCompare(arg) {
+    if (arg) { const ks = arg.split(',').filter((k) => M[k]).slice(0, 3); if (ks.length) { C = ks; store.set('cmp', C); } }
+    const want = '#compare/' + C.join(',');
+    if (C.length && location.hash !== want) history.replaceState(null, '', want);
+    const opts = Object.keys(M).sort((a, b) => M[a].p.localeCompare(M[b].p) || M[a].n.localeCompare(M[b].n));
+    const sel = (i) => `<label class="sr-only" for="c${i}">Model ${i + 1}</label><select id="c${i}" class="select" data-slot="${i}" style="width:100%"><option value="">${i < C.length ? 'Remove' : 'Add a model…'}</option>${opts.map((k) => `<option value="${k}" ${C[i] === k ? 'selected' : ''}>${esc(M[k].n)} · ${esc(M[k].p)}</option>`).join('')}</select>`;
+    const monthly = (k) => { const p = priceAt(k, Q.inTok); return { ...p, task: (Q.inTok * p.i + Q.outTok * p.o) / 1e6 }; };
+    const costs = C.map(monthly);
+    const cheapest = costs.length ? Math.min(...costs.map((c) => c.task)) : 0;
+    const rows = [
+      ['Provider', (k) => esc(M[k].p)],
+      ['Price / 1M (in / out)', (k) => `<span class="mono">${esc(priceTxt(k))}</span>`],
+      ['Long prompts', (k) => (M[k].long ? `<span class="mono">${usd(M[k].long.i)} / ${usd(M[k].long.o)}</span> <span class="small muted">over ${M[k].long.over / 1000}K</span>` : '<span class="muted">same price</span>')],
+      ['AA score (best)', (k) => (M[k].aa == null ? '<span class="muted">not ranked</span>' : `<div class="meter"><div class="track"><div class="fill on" style="width:${Math.round(M[k].aa / 60 * 100)}%"></div></div><span class="num">${M[k].aa}</span></div>`)],
+      ['AA $ / task', (k) => `<span class="mono">${perTask(M[k].aaCost)}</span>`],
+      ['DeepSWE', (k) => `<span class="mono">${M[k].dsw ? M[k].dsw.toFixed(1) + '%' : '—'}</span>`],
+      ['Context', (k) => `<span class="mono">${esc(M[k].ctx)}</span>`],
+      ['Weights · free', (k) => `${M[k].open ? 'Open' : 'Closed'}${M[k].fr === 2 ? ' · free on Zen' : ''}`],
+      ['Price source', (k) => (M[k].official ? 'Vendor page' : `${M[k].srcs || 1} independent source${(M[k].srcs || 1) > 1 ? 's' : ''}`)],
+      ['Effort ladder', (k) => ((M[k].ladder || []).length ? `<div class="eladder">${M[k].ladder.map((l) => `<div class="er"><span class="mono muted">${esc(l[0])}</span><div class="track"><div class="fill" style="width:${Math.round(l[1] / 60 * 100)}%"></div></div><span class="mono" style="text-align:right">${l[1]}</span><span class="mono" style="text-align:right">$${l[2].toFixed(2)}</span></div>`).join('')}</div>` : '<span class="muted">single setting</span>')],
+      ['Notes', (k) => ((M[k].notes || []).length ? `<ul class="flags" style="margin:0">${M[k].notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '<span class="muted">—</span>')],
+    ];
+    app.innerHTML = `
+      <h1 class="h1" style="font-size:clamp(28px,3.4vw,36px)">Compare models</h1>
+      <p class="muted" style="margin-top:6px">Pick up to three models. The link updates so you can share this comparison.</p>
+      <div class="cmp-pickers">${[0, 1, 2].map(sel).join('')}</div>
+      ${C.length ? `
+      <section class="card section" aria-label="Cost calculator">
+        <div class="section-head" style="margin-bottom:6px"><h2 class="h3" style="font-size:17px">Your workload</h2><span class="small muted">Uses list prices, including long-prompt tiers</span></div>
+        <div class="calc-inputs">
+          <label>Input tokens per task<input type="number" min="0" step="1000" id="inTok" value="${Q.inTok}" class="num-in"></label>
+          <label>Output tokens per task<input type="number" min="0" step="500" id="outTok" value="${Q.outTok}" class="num-in"></label>
+          <label>Tasks per day<input type="number" min="0" step="10" id="perDay" value="${Q.perDay}" class="num-in"></label>
+        </div>
+        <div class="calc-out" id="calc-out"></div>
+      </section>
+      <div class="table-box section"><table class="table cmp-table" style="min-width:${220 + C.length * 240}px">
+        <thead><tr><th scope="col" style="width:180px">&nbsp;</th>${C.map((k) => `<th scope="col"><span class="model-cell">${badge(k)}<span class="name" style="text-transform:none;letter-spacing:0;font-size:14px;color:var(--ink)">${esc(M[k].n)}</span></span></th>`).join('')}</tr></thead>
+        <tbody>${rows.map(([label, f]) => `<tr><th scope="row" class="small muted" style="text-transform:none;letter-spacing:0;position:static">${label}</th>${C.map((k) => `<td>${f(k)}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table></div>` : '<div class="card empty section">Add a model above to start comparing.</div>'}`;
+    const drawCalc = () => {
+      const out = document.getElementById('calc-out'); if (!out) return;
+      const cs = C.map((k) => ({ k, ...monthly(k) }));
+      const minT = Math.min(...cs.map((c) => c.task)), maxM = Math.max(...cs.map((c) => c.task * Q.perDay * 30), 0.0001);
+      out.innerHTML = cs.map((c) => `<div class="mrow ${c.task === minT ? 'on' : ''}"><div class="top-line"><span>${esc(M[c.k].n)}${c.long ? ' <span class="tag warn">long-prompt price</span>' : ''}</span><span class="mono">$${c.task.toFixed(4)} / task · ${big(c.task * Q.perDay * 30)} / month</span></div><div class="track"><div class="fill" style="width:${Math.max(2, Math.round(c.task * Q.perDay * 30 / maxM * 100))}%"></div></div></div>`).join('')
+        + `<p class="small muted" style="margin-top:12px">Token-based estimate for one call per task. Reasoning tokens count as output; agent runs make many calls, so AA $ / task above is often closer for agents.</p>`;
+    };
+    drawCalc();
+    ['inTok', 'outTok', 'perDay'].forEach((id) => { const el = document.getElementById(id); if (el) el.addEventListener('input', () => { Q[id] = Math.max(0, +el.value || 0); store.set('calc', Q); drawCalc(); }); });
+    app.querySelectorAll('[data-slot]').forEach((s2) => s2.addEventListener('change', () => {
+      const i = +s2.dataset.slot, v = s2.value, next = C.slice();
+      if (!v) next.splice(i, 1); else if (i < next.length) next[i] = v; else next.push(v);
+      C = [...new Set(next)].slice(0, 3); store.set('cmp', C);
+      location.hash = C.length ? 'compare/' + C.join(',') : 'compare';
+    }));
+  }
+
   // ── Router ───────────────────────────────────────────────────────
-  const ROUTES = { recommend: viewRecommend, explore: viewExplore, value: viewValue, insights: viewInsights, changes: viewChanges };
-  const ORDER = ['recommend', 'explore', 'value', 'insights', 'changes'];
+  const ROUTES = { recommend: viewRecommend, explore: viewExplore, compare: viewCompare, value: viewValue, insights: viewInsights, changes: viewChanges };
+  const ORDER = ['recommend', 'explore', 'compare', 'value', 'insights', 'changes'];
   let lastRoute = '';
   function render() {
-    const [route, arg] = (location.hash.replace(/^#\/?/, '') || 'recommend').split('/');
+    const [route, arg, arg2] = (location.hash.replace(/^#\/?/, '') || 'recommend').split('/');
     const r = ROUTES[route] ? route : 'recommend';
-    ROUTES[r](arg);
+    ROUTES[r](arg, arg2);
+    staleBanner();
     document.querySelectorAll('.nav a').forEach((a) => (a.dataset.route === r ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
-    document.title = `Model Guide — ${{ recommend: 'Recommend', explore: 'Explore', value: 'Value map', insights: 'Insights', changes: 'Changes' }[r]}`;
+    document.title = `Model Guide — ${{ recommend: 'Recommend', explore: 'Explore', compare: 'Compare', value: 'Value map', insights: 'Insights', changes: 'Changes' }[r]}`;
     if (r !== lastRoute) { window.scrollTo(0, 0); if (lastRoute) app.focus({ preventScroll: true }); lastRoute = r; }
   }
   window.addEventListener('hashchange', render);
+
+  // Warn when the data is older than MG.staleDays
+  function staleBanner() {
+    const days = Math.floor((Date.now() - new Date(D.checked + 'T00:00:00')) / 864e5);
+    if (days <= (D.staleDays || 30)) return;
+    app.insertAdjacentHTML('afterbegin', `<div class="stale" role="status">${icon('warn')}<span>These prices and scores were last checked <strong>${days} days ago</strong> (${fmtDate(D.checked)}). Models and prices change often — check the vendor page before you rely on a number.</span></div>`);
+  }
+
+  // Offline support (only over http/https — service workers don't run from file://)
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ }); });
+  }
 
   document.getElementById('checked').textContent = 'Data checked ' + fmtDate(D.checked);
   document.getElementById('foot-line').textContent = `Prices and scores checked ${fmtDate(D.checked)} · DeepSWE leaderboard Sep 22, 2026 · prices and scores are directional — verify before scale deployment.`;
@@ -502,10 +624,10 @@
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const typing = /INPUT|SELECT|TEXTAREA/.test(document.activeElement?.tagName || '');
     if (e.key === '/' && !typing) { e.preventDefault(); if (!location.hash.startsWith('#explore')) location.hash = 'explore'; setTimeout(() => document.getElementById('q')?.focus(), 0); return; }
-    if (!typing && /^[1-5]$/.test(e.key)) location.hash = ORDER[+e.key - 1];
+    if (!typing && /^[1-6]$/.test(e.key)) location.hash = ORDER[+e.key - 1];
   });
   render();
 
   // Exposed for tests and the console
-  window.MGApp = { effPrice, past, TASKS, taskOptions, routes: ORDER };
+  window.MGApp = { effPrice, priceAt, past, TASKS, taskOptions, routes: ORDER };
 })();

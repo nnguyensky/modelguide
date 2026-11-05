@@ -10,6 +10,9 @@
   --good: #0B7A55; --good-soft: #E6F4EE; --warn: #A15C00; --warn-soft: #FFF4E0; --bad: #B42318;
   --c-openai: #10A37F; --c-anthropic: #C2410C; --c-google: #2563EB; --c-moonshot: #6D28D9; --c-deepseek: #0E7490;
   --c-zai: #4338CA; --c-xai: #3F3F46; --c-xiaomi: #B45309; --c-meta: #0369A1; --c-alibaba: #9F1239; --c-other: #5E6068;
+  /* badge fills: same in both themes, all pass 4.5:1 with white text */
+  --b-openai: #0B6E52; --b-anthropic: #B23A0B; --b-google: #1D4ED8; --b-moonshot: #6D28D9; --b-deepseek: #0E6A85;
+  --b-zai: #4338CA; --b-xai: #3F3F46; --b-xiaomi: #9A4508; --b-meta: #0369A1; --b-alibaba: #9F1239; --b-other: #52525B;
   --shadow-1: 0 1px 0 rgba(17,17,19,.04), 0 1px 3px rgba(17,17,19,.06);
   --shadow-2: 0 1px 0 rgba(17,17,19,.04), 0 12px 32px -12px rgba(17,17,19,.18), 0 32px 64px -32px rgba(48,70,245,.25);
   --radius: 18px; --radius-sm: 12px;
@@ -131,7 +134,7 @@ select.select { height: 40px; padding: 0 10px; border-radius: 10px; border: 1px 
 .tag.accent { background: var(--accent-soft); color: var(--accent); }
 .tag.warn { background: var(--warn-soft); color: var(--warn); }
 .tag.solid { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
-.mono-badge { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 8px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: var(--pc, var(--c-other)); letter-spacing: -.02em; }
+.mono-badge { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 8px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: var(--bc, var(--b-other)); letter-spacing: -.02em; }
 .mono-badge.lg { width: 56px; height: 56px; border-radius: 16px; font-size: 18px; box-shadow: 0 8px 18px -6px var(--pc), inset 0 1px 0 rgba(255,255,255,.35); }
 .mono-badge.md { width: 36px; height: 36px; border-radius: 10px; font-size: 13px; }
 .meter { display: flex; align-items: center; gap: 10px; }
@@ -262,12 +265,15 @@ select.select { height: 40px; padding: 0 10px; border-radius: 10px; border: 1px 
 .pod-block .s { position: absolute; left: 110px; bottom: 0; width: 20px; height: 100%; background: var(--bar-side); transform: skewY(-45deg); transform-origin: bottom left; }
 .pod-block .t { position: absolute; left: 0; bottom: 100%; width: 110px; height: 20px; background: var(--bar-top); transform: skewX(-45deg); transform-origin: bottom left; }
 .pod-block .cost { font-family: var(--mono); font-size: 20px; font-weight: 500; }
-.pod-block .rank { position: absolute; left: 10px; top: 8px; font-family: var(--mono); font-size: 12px; opacity: .8; }
+.pod-block .rank { position: absolute; left: 10px; top: 8px; font-family: var(--mono); font-size: 12px; }
 .pod.first .f { background: var(--accent); color: var(--accent-ink); } .pod.first .s { background: var(--accent-deep); } .pod.first .t { background: var(--accent-light); }
 .takeaways { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 18px; }
 .takeaways li { display: grid; grid-template-columns: 70px 1fr; gap: 14px; }
 .takeaways .stat { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent-light); line-height: 1.1; }
 :root:not([data-theme="dark"]) .card.inverse .stat { color: #9DAAFF; }
+/* dark theme: the inverse card is light, so the stat needs a dark accent */
+:root[data-theme="dark"] .card.inverse .stat { color: var(--accent-deep); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .card.inverse .stat { color: var(--accent-deep); } }
 .takeaways b { display: block; font-weight: 600; }
 .heat { width: 100%; min-width: 860px; border-collapse: separate; border-spacing: 6px; font-size: 13px; }
 .heat th { text-align: left; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 4px 8px; }
@@ -305,3 +311,23 @@ main:focus { outline: none; }
 /* leave room for the skewed top face of 3D blocks */
 .pod-block { margin-top: 22px; }
 .bar3d { margin-top: 12px; }
+
+/* ── Stale-data banner ── */
+.stale { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 20px; padding: 12px 16px; border-radius: var(--radius-sm); background: var(--warn-soft); color: var(--ink); border: 1px solid color-mix(in srgb, var(--warn) 35%, transparent); font-size: 14px; }
+.stale .icon { color: var(--warn); margin-top: 2px; }
+
+/* ── Explore: "back to list" only matters when details sit below the table ── */
+.back-list { display: none; }
+@media (max-width: 900px) { .back-list { display: inline-flex; } .detail { position: static; scroll-margin-top: 120px; } }
+
+/* ── Compare ── */
+.cmp-pickers { margin-top: 20px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.calc-inputs { margin-top: 12px; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); }
+.calc-inputs label { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+.num-in { height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-family: var(--mono); font-size: 14px; color: var(--ink); }
+.num-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.calc-out { margin-top: 18px; }
+.cmp-table td { vertical-align: top; }
+.cmp-table tbody th { padding: 11px 16px; border-bottom: 1px solid var(--line); font-weight: 500; vertical-align: top; background: var(--bg); }
+.pod.first .pod-block .rank { color: var(--accent-ink); }
+#detail { scroll-margin-top: 130px; }
