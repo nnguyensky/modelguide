@@ -120,7 +120,8 @@
   let prevSeen = null;
   try { prevSeen = sessionStorage.getItem('mg-prevSeen'); } catch (e) { /* ignore */ }
   if (prevSeen === null) { prevSeen = store.get('seen', '') || ''; try { sessionStorage.setItem('mg-prevSeen', prevSeen); } catch (e) { /* ignore */ } }
-  store.set('seen', D.checked);
+  // Mark as seen: the newest of the manual check date and any entry added later (e.g. by the weekly bot)
+  store.set('seen', D.timeline.reduce((mx, t) => (t.added > mx ? t.added : mx), D.checked));
   const isFresh = (t) => !!prevSeen && t.added > prevSeen;
   const FRESH = D.timeline.filter(isFresh);
 
@@ -565,6 +566,10 @@
           <section class="card"><h2 class="h3" style="margin-bottom:14px">Coming up</h2>
             ${watch.length ? `<ol class="watch">${watch.map((w) => `<li><span class="when">${esc(w.d)}</span><span>${esc(w.t)}<br><span class="small muted">${esc(w.b)}</span></span></li>`).join('')}</ol>` : '<p class="small muted">Nothing scheduled.</p>'}
           </section>
+          ${window.MG_CHECKS ? `<section class="card"><h2 class="h3" style="margin-bottom:10px;display:flex;gap:8px;align-items:center"><span style="color:var(--good);display:flex">${icon('check')}</span>Automatic checks</h2>
+            <p class="small muted">Every Monday a bot compares prices, scores, the DeepSWE board and the free list with outside sources, and opens an issue or a PR when something changed.</p>
+            <dl class="stats" style="margin-top:12px"><div><dt>Last run</dt><dd>${fmtDate(window.MG_CHECKS.date)}</dd></div><div><dt>Prices</dt><dd>${window.MG_CHECKS.prices.models} · ${window.MG_CHECKS.prices.diffs ? window.MG_CHECKS.prices.diffs + ' diff' : 'match'}</dd></div></dl>
+            <ul class="flags" style="margin-top:10px">${Object.entries(window.MG_CHECKS.sources).map(([k, v]) => `<li><span class="${v === 'ok' ? 'ok' : 'warn'}" style="display:flex">${icon(v === 'ok' ? 'check' : 'warn')}</span>${esc(k)} <span class="muted small">· ${esc(v)}</span></li>`).join('')}</ul></section>` : ''}
           <section class="card"><h2 class="h3" style="margin-bottom:12px">Gotchas</h2>
             <ul class="flags" style="margin-top:0">${D.gotchas.map((g) => `<li><span class="warn" style="display:flex">${icon('warn')}</span>${esc(g)}</li>`).join('')}</ul></section>
           <section class="card"><h2 class="h3" style="margin-bottom:12px">Sources</h2>
@@ -797,9 +802,12 @@
   }
 
   document.getElementById('checked').textContent = 'Data checked ' + fmtDate(D.checked);
+  // Weekly automatic check (checks.js, written by the bot)
+  const CK = window.MG_CHECKS;
+  const autoLine = CK ? `Prices cross-checked automatically on ${fmtDate(CK.date)}: ${CK.prices.models} models, ${CK.prices.diffs ? CK.prices.diffs + ' difference' + (CK.prices.diffs > 1 ? 's' : '') + ' under review' : 'all match'} (${Object.entries(CK.sources).filter(([, v]) => v === 'ok').map(([k]) => k).join(', ')}).` : '';
   // Badge on the Changes link: how many items are new since the last visit
   if (FRESH.length) { const a = document.querySelector('.nav a[data-route="changes"]'); if (a) a.insertAdjacentHTML('beforeend', `<span class="nav-badge" aria-label="${FRESH.length} new since your last visit">${FRESH.length}</span>`); }
-  document.getElementById('foot-line').textContent = `Prices and scores checked ${fmtDate(D.checked)} · DeepSWE leaderboard Sep 22, 2026 · prices and scores are directional — verify before scale deployment.`;
+  document.getElementById('foot-line').textContent = `Prices and scores checked by hand ${fmtDate(D.checked)}${autoLine ? ' · ' + autoLine : ''} · prices and scores are directional — verify before scale deployment.`;
   document.getElementById('theme-btn').addEventListener('click', () => {
     const root = document.documentElement;
     const now = root.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');

@@ -13,11 +13,15 @@ Plain **HTML, CSS and JavaScript**. No framework, no build step, no runtime depe
 | `data.js` | **All data**: models, task picks, DeepSWE results, timeline, price watch, insights, sources. |
 | `app.js` | Rendering and interaction for all pages. Reads `window.MG` from `data.js`. |
 | `sw.js`, `manifest.webmanifest`, `icon*.svg/png` | Offline support and install-as-app (service worker caches the site; works over http/https, not from `file://`). |
-| `tools/check-prices.mjs` | Compares `data.js` prices with the LiteLLM and models.dev open price databases. |
-| `tools/build-feed.mjs`, `feed.xml` | Builds the RSS feed of changes from the timeline. CI fails if `feed.xml` is out of date. |
+| `tools/weekly-check.mjs` | Weekly data check: prices (LiteLLM, models.dev, Artificial Analysis API, Cursor docs), long-prompt tiers, AA scores and cost per task, DeepSWE, OpenCode Zen free list, new model IDs. Can apply price changes that two or more sources agree on. |
+| `tools/known-models.json` | Model IDs seen in each source at the last run (so only *new* IDs are reported). Updated by the weekly bot. |
+| `checks.js` | Result of the last weekly check, shown on the page. Written by the weekly bot. |
+| `tools/build.mjs`, `feed.xml` | Builds the RSS feed from the timeline and stamps the offline-cache version in `sw.js`. The Build workflow runs it after every push and commits the result. |
 | `tests/smoke.mjs` | Headless test: every page renders, every task/mode works, share links, CSV export, Compare + calculator, phone layout, stale-data banner, accessibility (axe-core, light and dark), data references, and each scheduled price-change date. |
 | `.github/workflows/check.yml` | Runs syntax checks and the smoke + accessibility test on every push and pull request. |
-| `.github/workflows/price-check.yml` | Every Monday: runs the price check and opens (or comments on) a `price-check` issue when prices differ. Can also be run by hand from the Actions tab. |
+| `.github/workflows/weekly-check.yml` | Every Monday (or by hand from the Actions tab): runs the weekly check. Agreed price changes → a pull request to review. Anything else → a `data-check` issue (closed again when all is clear). Records the run on `main`, which also keeps the schedule alive. |
+| `.github/workflows/build.yml` | After each push: rebuilds `feed.xml` and `sw.js` and commits them. |
+| `tests/weekly-check.test.mjs` | Offline test of the weekly check (fake sources built from `data.js`). Runs in CI. |
 
 ## Run
 
@@ -49,11 +53,11 @@ All edits are in `data.js`. Then run the test.
 5. **Task picks:** edit `MG.groups` (`pr` = primary pick, `alts` = 3 alternatives; `c` = cost per task, from AA unless marked `(DeepSWE)`).
 6. **Benchmarks:** `MG.dsw` holds the DeepSWE board (best config per model).
 7. **Timeline / insights / rules / sources:** `MG.timeline`, `MG.insights`, `MG.trend`, `MG.strengths`, `MG.rules`, `MG.sources`.
-8. Long-prompt price tiers: `long: {over, i, o}`. Price-database keys for the weekly check: `ref: {lit, md}` (LiteLLM key, models.dev path under `providers/`).
+8. Long-prompt price tiers: `long: {over, i, o}`. Source names for the weekly check: `ref: {lit, md, zen, cursor, aaName}` — LiteLLM key, models.dev path under `providers/`, OpenCode Zen free-list name, Cursor docs name, and the Artificial Analysis name when it differs from `n`.
 9. **Timeline entries** need `iso` (event date) and `added` (the `MG.checked` date when the entry was added — this drives "new since your last visit" and the RSS dates).
 10. **Price history:** `MG.history[model]` = `[date, in, out, note]` rows; prefix the date with `~` when only the month is known; future dates are scheduled changes. The test checks that the latest past row matches the current price.
 11. **Router presets:** `MG.routerPresets`.
-12. Rebuild the RSS feed: `node tools/build-feed.mjs` (set `MG.siteUrl` to your site address).
+12. `feed.xml` and `sw.js` are rebuilt automatically after you push (or run `node tools/build.mjs`). Set `MG.siteUrl` to your site address.
 13. Update `MG.checked` (the page warns readers once the data is older than `MG.staleDays`, default 30). Then run the checks:
 
 ```bash
@@ -65,7 +69,7 @@ node tests/smoke.mjs
 ```
 
 ```bash
-node tools/check-prices.mjs
+OFFLINE= node tools/weekly-check.mjs   # add AA_API_KEY=... to include Artificial Analysis
 ```
 
 ## Data sources
@@ -76,3 +80,9 @@ node tools/check-prices.mjs
 - Coloured initials are placeholders, not vendor logos.
 
 Prices and benchmarks are directional — verify before scale deployment.
+
+## Automation setup (one time)
+
+1. **Artificial Analysis key (optional, free):** create a key at artificialanalysis.ai (Insights Platform → API keys), then add it as a repository secret named `AA_API_KEY` (Settings → Secrets and variables → Actions). Without it, the weekly check skips AA scores and AA prices.
+2. **Let the bot open pull requests:** Settings → Actions → General → Workflow permissions → tick *Allow GitHub Actions to create and approve pull requests*.
+3. If `main` is protected so that only pull requests can change it, the weekly bot cannot record its run there. Either allow `github-actions[bot]` to push, or accept that the "last automatic check" line on the page won't update (the issue and PR still work).

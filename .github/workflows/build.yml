@@ -1,0 +1,46 @@
+name: Build generated files
+
+# After a push that touches the site or its data, rebuild feed.xml (RSS) and the
+# offline-cache version in sw.js, and commit them back to the same branch.
+on:
+  push:
+    paths:
+      - 'data.js'
+      - 'checks.js'
+      - 'app.js'
+      - 'styles.css'
+      - 'index.html'
+      - 'manifest.webmanifest'
+      - 'icon*'
+      - 'sw.js'
+      - 'tools/build.mjs'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Rebuild feed.xml and sw.js
+        run: node tools/build.mjs
+      - name: Commit if anything changed
+        run: |
+          git add feed.xml sw.js
+          if git diff --cached --quiet; then
+            echo "Generated files already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Rebuild feed.xml and sw.js"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

@@ -3,13 +3,14 @@ name: Check page
 on:
   push:
   pull_request:
+  workflow_dispatch:   # lets the weekly bot start CI on the PRs it opens
 
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - name: JS syntax
@@ -17,11 +18,16 @@ jobs:
           node --check data.js
           node --check app.js
           node --check sw.js
-          node --check tools/check-prices.mjs
-          node --check tools/build-feed.mjs
+          node --check checks.js
+          node --check tools/weekly-check.mjs
+          node --check tools/build.mjs
+          node --check tests/weekly-check.test.mjs
           node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"
-      - name: RSS feed is up to date with data.js
-        run: node tools/build-feed.mjs --check
+      - name: Weekly-check logic (offline test)
+        run: node tests/weekly-check.test.mjs
+      - name: Generated files (feed.xml, sw.js) — the Build workflow commits them; this only warns
+        continue-on-error: true
+        run: node tools/build.mjs --check
       - name: Install Playwright and axe-core
         run: |
           npm install --no-save playwright@1.63.0 axe-core@4.14.0

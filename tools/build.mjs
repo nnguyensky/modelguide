@@ -1,7 +1,11 @@
-// Build feed.xml (RSS 2.0) from the timeline in data.js.
-// Usage:  node tools/build-feed.mjs          → writes feed.xml
-//         node tools/build-feed.mjs --check  → exits 1 if feed.xml is out of date (used in CI)
+// Build generated files from the sources:
+//   feed.xml  RSS 2.0 feed from the timeline in data.js
+//   sw.js     offline-cache VERSION = hash of the files it caches, so a change reaches visitors
+// Usage:  node tools/build.mjs          → writes both
+//         node tools/build.mjs --check  → exits 1 if either is out of date
+// The "Build" workflow runs this on every push and commits the result.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import vm from 'node:vm';
@@ -44,12 +48,23 @@ ${items}
 </rss>
 `;
 
+// Service worker: stamp VERSION with a hash of the cached files
+const swPath = path.join(root, 'sw.js');
+const sw = readFileSync(swPath, 'utf8');
+const core = JSON.parse(/const CORE = (\[[^\]]*\]);/.exec(sw)[1].replace(/'/g, '"'));
+const h = createHash('sha256');
+core.filter((f) => f !== './' && f !== 'feed.xml').forEach((f) => h.update(f + '\0' + readFileSync(path.join(root, f))));
+h.update(feed);
+const swNew = sw.replace(/const VERSION = '[^']*';/, `const VERSION = 'mg-${h.digest('hex').slice(0, 10)}';`);
+
 const out = path.join(root, 'feed.xml');
+const curFeed = existsSync(out) ? readFileSync(out, 'utf8') : '';
 if (process.argv.includes('--check')) {
-  const cur = existsSync(out) ? readFileSync(out, 'utf8') : '';
-  if (cur !== feed) { console.error('feed.xml is out of date — run: node tools/build-feed.mjs'); process.exit(1); }
-  console.log('feed.xml is up to date');
+  const stale = [curFeed !== feed && 'feed.xml', sw !== swNew && 'sw.js'].filter(Boolean);
+  if (stale.length) { console.error(`${stale.join(' and ')} out of date — run: node tools/build.mjs`); process.exit(1); }
+  console.log('feed.xml and sw.js are up to date');
 } else {
   writeFileSync(out, feed);
-  console.log(`feed.xml written (${MG.timeline.length} items)`);
+  writeFileSync(swPath, swNew);
+  console.log(`feed.xml (${MG.timeline.length} items) and sw.js (${/const VERSION = '([^']*)'/.exec(swNew)[1]}) written`);
 }
