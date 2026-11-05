@@ -5,20 +5,28 @@ A single-page, dependency-free cheat-sheet for picking the right AI model per ta
 **Files**
 - `index.html` — the page (layout, tabs, styles). Loads `modelguide.js`.
 - `modelguide.js` — ALL data and logic: model catalog (`M[]`), per-task recommendations (`TG`), DeepSWE leaderboard (`DSW`), price history, finder scoring, tab rendering.
-- `modelreview.md` — companion markdown doc (Claude-focused review, DeepSWE table). Not used by the page; standalone.
+- `tests/smoke.mjs` — headless check: page loads with no JS errors, every tab renders, finder works, every task/dashboard entry points to a real model.
+- `.github/workflows/check.yml` — runs `node --check` and the smoke test on every push and pull request.
 
 **Run**
-Open `index.html` in any browser. No build step, no dependencies. Optionally serve: `python3 -m http.server` in this folder.
+Open `index.html` in any browser. No build step. Optionally serve: `python3 -m http.server` in this folder.
+Light/dark theme follows the OS setting; the sun/moon button switches it and remembers the choice.
+
+**Test**
+```bash
+npm install --no-save playwright@1.63.0 && npx playwright install chromium
+node tests/smoke.mjs
+```
 
 **Tabs**
 | Tab | What it shows |
 |---|---|
-| 📊 Dashboard | All-models table (sorted, free highlighted), pricing tiers, best cost/task (CursorBench) |
-| 🎯 By Task | 22 tasks × primary pick + 3 alternatives with estimated $/task |
+| 📊 Dashboard | All-models table (free highlighted, date each model was last checked), pricing tiers, best cost/task (CursorBench) |
+| 🎯 By Task | 29 tasks × primary pick + 3 alternatives with estimated $/task |
 | 🔍 Finder | Select tasks + priority → top-5 ranked models |
 | Claude / OpenAI / Gemini / Grok / Cursor / Free | Per-provider lineups with rates and gotchas |
-| ⚡ Matrix | Task × model quick table + golden rules + effort-level reference |
-| 🎯 DeepSWE Chart | Interactive bubble chart: score × cost/task × output tokens × agent steps (18 models) |
+| ⚡ Matrix | Task × model quick table (built from the By Task data) + golden rules + effort-level reference |
+| 🎯 DeepSWE Chart | Interactive bubble chart: score × cost/task × output tokens × agent steps (27 models) |
 | 📜 Price History | Timeline of price changes, current-rate snapshot, watchlist |
 | 📚 References | Sources |
 
@@ -28,10 +36,13 @@ Open `index.html` in any browser. No build step, no dependencies. Optionally ser
 - Keyboard: `Ctrl/Cmd + 1..9` jump to tabs, `Ctrl/Cmd + 0` = Matrix.
 
 **How to update**
-1. Prices/specs: edit the model entries in `M[]` (`modelguide.js`, top of file). For scheduled changes (e.g. Sonnet 5 intro → standard), use `iAfter`/`oAfter`/`priceChangeDate`.
-2. Benchmarks: DeepSWE data lives in `DSW[]`; re-fetch from the live leaderboard and update the `updated` note.
-3. Cost estimates per task: adjust the `~$` strings in `TG`.
-4. Bump the verification date in the header/footer and `Price History` tab.
+1. Prices/specs: edit the model entry in `M[]` (`modelguide.js`, top of file). Set `v:'YYYY-MM-DD'` to the day you checked it, and `sn:'…'` for the note in the price snapshot (models without `sn` are left out of the snapshot).
+2. Scheduled price changes (promo or intro price ending): add `iAfter`/`oAfter`/`priceChangeDate`. The page shows `old→new` before the date and switches to the new price on that date — finder scores, the matrix and the snapshot all use the price in effect today.
+3. Per-task picks and cost estimates: edit `TG`. The Matrix tab is generated from `TG`, so don't edit it separately.
+4. Benchmarks: DeepSWE data lives in `DSW[]`; re-fetch from the live leaderboard and update the `updated` note.
+5. Price history timeline and watchlist: `renderPriceHistory()`.
+6. Bump the dates in `index.html` (header, sidebar, footer).
+7. Run `node tests/smoke.mjs` before pushing (CI runs it too).
 
 **Data sources**
 Artificial Analysis (AA Index), DeepSWE v1.1 (deepswe.datacurve.ai), CursorBench 3.2 (BridgeMind), vendor docs (Claude, OpenAI, Gemini, xAI, DeepSeek, etc.). Prices and benchmarks are directional — verify before scale deployment. Full disclaimer at the bottom of the page.
