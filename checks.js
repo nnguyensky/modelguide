@@ -2,13 +2,17 @@
 window.MG_CHECKS = {
  "date": "2026-11-05",
  "prices": {
-  "models": 30,
+  "models": 31,
   "diffs": 0
  },
  "applied": 0,
  "findings": 0,
  "sources": {
   "LiteLLM": "ok",
-  "models.dev": "ok"
+  "models.dev": "ok",
+  "Artificial Analysis API": "skipped",
+  "DeepSWE": "ok",
+  "OpenCode Zen": "ok",
+  "Cursor docs": "ok"
  }
 };
