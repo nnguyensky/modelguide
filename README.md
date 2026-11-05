@@ -49,8 +49,8 @@ node tests/smoke.mjs
 **Data sources**
 - Scores: Artificial Analysis Intelligence Index (current version, best effort setting) and its cost per task by effort; DeepSWE v1.1 (deepswe.datacurve.ai, read from the page data).
 - Prices from vendor pages: Claude, Google Cloud, xAI, DeepSeek, Z.ai, Cursor.
-- Prices via Artificial Analysis where the vendor page could not be read: OpenAI GPT-6 family (openai.com needs a Cloudflare check), Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen.
-- Free-tier details (OpenCode Zen, OpenRouter) last checked Aug 29.
+- Prices via Artificial Analysis where the vendor page could not be read (OpenAI GPT-6 family, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen), cross-checked against [LiteLLM's open price database](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
+- OpenCode Zen free list and list prices checked Nov 5 (also used to cross-check GPT-6 prices). OpenRouter free limits as of Aug 29.
 - Models with `aa:null` are legacy or not on the current AA index and are not ranked.
 
 Prices and benchmarks are directional — verify before scale deployment. Full disclaimer at the bottom of the page.

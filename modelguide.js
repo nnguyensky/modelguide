@@ -6,8 +6,8 @@
 // aa = Artificial Analysis Intelligence Index (current version, best effort config, read Nov 5 2026).
 // aa:null = listed but not ranked (legacy model, or no score on the current index).
 // Prices $/MTok. Sources: Claude docs, Google Cloud pricing, xAI docs, DeepSeek docs, Z.ai docs,
-// Cursor docs; OpenAI GPT-6 family + Kimi/Muse/MiMo/MiniMax/Mistral/Qwen from Artificial Analysis
-// (openai.com is behind a Cloudflare check that this build environment cannot pass).
+// Cursor docs; OpenAI GPT-6, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen from Artificial Analysis, each cross-checked
+// against LiteLLM's open price database (github.com/BerriAI/litellm). openai.com sits behind a bot check.
 const M = {
   // Anthropic — platform.claude.com
   opus55:    { n:'Opus 5.5',      p:'Anthropic',  i:4,   o:20,  aa:59, e:['low','med','high','xhigh','max'], b:'Best Claude. AA #2 (max). Fast mode $8/$40', t:'AA #2', c:'purple', fr:0, v:'2026-11-05', sn:'Sep 22' },
@@ -20,10 +20,10 @@ const M = {
   opus48:    { n:'Opus 4.8',      p:'Anthropic',  i:5,   o:25,  aa:null, e:['low','med','high','xhigh','max'], b:'Legacy. Migrate to Opus 5.5', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
 
   // OpenAI — GPT-6 family (prices via Artificial Analysis); GPT-5.6 prices confirmed on cursor.com
-  gpt6astra: { n:'GPT-6 Astra',   p:'OpenAI',     i:10,  o:50,  aa:57, e:['low','med','high','xhigh','max'], b:'Top OpenAI. DeepSWE #1 (74.1%)', t:'DeepSWE #1', c:'blue', fr:0, v:'2026-11-05', sn:'Sep' },
-  gpt61sol:  { n:'GPT-6.1 Sol',   p:'OpenAI',     i:2,   o:10,  aa:55, e:['low','med','high','xhigh','max'], b:'Best value at the top: AA 55 for ~$1.27/task', t:'Best value', c:'green', fr:0, v:'2026-11-05', sn:'Sep' },
-  gpt61terra:{ n:'GPT-6.1 Terra', p:'OpenAI',     i:1,   o:5,   aa:51, e:['none','low','med','high','xhigh','max'], b:'Budget OpenAI. AA 51 for ~$0.96/task', t:'Budget', c:'green', fr:0, v:'2026-11-05', sn:'Oct' },
-  gpt6luna:  { n:'GPT-6 Luna',    p:'OpenAI',     i:0.1, o:0.5, aa:28, e:['none','low','med','high','xhigh','max'], b:'Cheapest OpenAI. Bulk, classify', t:'Cheapest', c:'orange', fr:0, v:'2026-11-05', sn:'Sep' },
+  gpt6astra: { n:'GPT-6 Astra',   p:'OpenAI',     i:10,  o:50,  aa:57, e:['low','med','high','xhigh','max'], b:'Top OpenAI. DeepSWE #1 (74.1%). $20/$75 past 272K', t:'DeepSWE #1', c:'blue', fr:0, v:'2026-11-05', sn:'Sep · $20/$75 &gt;272K' },
+  gpt61sol:  { n:'GPT-6.1 Sol',   p:'OpenAI',     i:2,   o:10,  aa:55, e:['low','med','high','xhigh','max'], b:'Best value at the top: AA 55 for ~$1.27/task. $4/$15 past 272K', t:'Best value', c:'green', fr:0, v:'2026-11-05', sn:'Sep · $4/$15 &gt;272K' },
+  gpt61terra:{ n:'GPT-6.1 Terra', p:'OpenAI',     i:1,   o:5,   aa:51, e:['none','low','med','high','xhigh','max'], b:'Budget OpenAI. AA 51 for ~$0.96/task. $2 input past 272K', t:'Budget', c:'green', fr:0, v:'2026-11-05', sn:'Oct · $2 input &gt;272K' },
+  gpt6luna:  { n:'GPT-6 Luna',    p:'OpenAI',     i:0.1, o:0.5, aa:28, e:['none','low','med','high','xhigh','max'], b:'Cheapest OpenAI. Bulk, classify', t:'Cheapest', c:'orange', fr:0, v:'2026-11-05', sn:'Sep · $0.20/$0.75 &gt;272K' },
   gptSol:    { n:'GPT-5.6 Sol',   p:'OpenAI',     i:4,   o:20,  aa:null, e:['none','low','med','high','xhigh','max','ultra'], iAfter:5, oAfter:30, priceChangeDate:'2026-11-22', b:'Legacy. Promo $4/$20 thru Nov 21. Use GPT-6.1 Sol', bAfter:'Legacy. $5/$30 (promo ended Nov 21). Use GPT-6.1 Sol', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy · promo thru Nov 21 → $5/$30', snAfter:'legacy · promo ended Nov 21' },
   gptTerra:  { n:'GPT-5.6 Terra', p:'OpenAI',     i:2,   o:12,  aa:null, e:['none','low','med','high','xhigh','max'], b:'Legacy. GPT-6.1 Terra is cheaper', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
   gptLuna:   { n:'GPT-5.6 Luna',  p:'OpenAI',     i:0.2, o:1.2, aa:null, e:['none','low','med','high','xhigh','max'], b:'Legacy. GPT-6 Luna is cheaper', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
@@ -38,7 +38,7 @@ const M = {
   gemini31p: { n:'Gemini 3.1 Pro',  p:'Google',   i:2,   o:12,  aa:null, e:[], b:'Preview. Not on the current AA index', t:'Preview', c:'gray', fr:0, v:'2026-11-05', sn:'preview · $4/$18 &gt;200K' },
 
   // xAI — docs.x.ai; Cursor — cursor.com/docs/models
-  grok47:    { n:'Grok 4.7',      p:'xAI',        i:2,   o:6,   aa:35, e:['low','med','high','xhigh'], b:'xAI flagship. 500K ctx. In Cursor plan pool', t:'xAI flagship', c:'orange', fr:0, v:'2026-11-05', sn:'Sep · 500K ctx' },
+  grok47:    { n:'Grok 4.7',      p:'xAI',        i:2,   o:6,   aa:35, e:['low','med','high','xhigh'], b:'xAI flagship. 500K ctx. In Cursor plan pool', t:'xAI flagship', c:'orange', fr:0, v:'2026-11-05', sn:'Sep · $4/$12 &gt;200K' },
   grok46:    { n:'Grok 4.6',      p:'xAI',        i:2,   o:6,   aa:null, e:['low','med','high','xhigh'], b:'Legacy. Use Grok 4.7 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
   grok45:    { n:'Grok 4.5',      p:'xAI',        i:2,   o:6,   aa:null, e:['low','med','high'], b:'Legacy. Use Grok 4.7 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
   composer25:{ n:'Composer 2.5',  p:'Cursor',     i:0.5, o:2.5, aa:null, e:[], b:'Cheapest Cursor coding model. Cursor only (not on AA)', t:'Cursor $/task', c:'green', fr:0, cu:1, v:'2026-11-05', sn:'Cursor only' },
@@ -47,23 +47,24 @@ const M = {
   kimiK31pro:{ n:'Kimi K3.1 Pro', p:'Moonshot',   i:2,   o:10,  aa:46, e:[], b:'Strong non-US alternative. Proprietary', t:'Alt family', c:'purple', fr:0, v:'2026-11-05', sn:'Oct 23' },
   museWonder:{ n:'Muse Wonder',   p:'Meta',       i:4,   o:20,  aa:44, e:['low','med','high','max'], b:'Meta flagship (API). Full version AA 50, no public price', t:'Meta', c:'blue', fr:0, v:'2026-11-05', sn:'' },
   qwen38max: { n:'Qwen3.8 Max',   p:'Alibaba',    i:2,   o:6,   aa:34, e:['low','med','high','xhigh','max'], b:'Alibaba flagship. Pricey per task', t:'Alibaba', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
-  dsV41Flash:{ n:'DeepSeek V4.1 Flash',p:'DeepSeek',i:0.3,o:1.2, aa:33, e:['non-think','high','max'], b:'Open weights. Off-peak half price ($0.15/$0.60)', t:'Open value', c:'green', fr:0, v:'2026-11-05', sn:'peak price · off-peak $0.15/$0.60' },
+  dsV41Flash:{ n:'DeepSeek V4.1 Flash',p:'DeepSeek',i:0.3,o:1.2, aa:33, e:['non-think','high','max'], b:'Open weights. Off-peak half price ($0.15/$0.60). Free on Zen (limited time)', t:'Open value', c:'green', fr:2, v:'2026-11-05', sn:'peak price · off-peak $0.15/$0.60' },
   dsV4Pro:   { n:'DeepSeek V4 Pro',p:'DeepSeek',  i:1.32,o:3.96,aa:23, e:['non-think','high','max'], b:'Open weights, MIT. Off-peak $0.66/$1.98. Flash scores higher', t:'MIT', c:'indigo', fr:0, v:'2026-11-05', sn:'peak price · off-peak $0.66/$1.98' },
   glm53:     { n:'GLM-5.3',       p:'Z.ai',       i:1.4, o:4.4, aa:32, e:['low','med','high','max'], b:'Top open-weight coder on DeepSWE (69%)', t:'Open coder', c:'indigo', fr:0, v:'2026-11-05', sn:'' },
-  glm53f:    { n:'GLM-5.3-Flash', p:'Z.ai',       i:0.15,o:0.5, aa:28, e:[], b:'DeepSWE 63.4% at $0.24/task. MIT', t:'Budget open', c:'indigo', fr:0, v:'2026-11-05', sn:'' },
+  glm53f:    { n:'GLM-5.3-Flash', p:'Z.ai',       i:0.15,o:0.5, aa:28, e:[], b:'DeepSWE 63.4% at $0.24/task. MIT. Free on Zen (limited time)', t:'Budget open', c:'indigo', fr:2, v:'2026-11-05', sn:'' },
   glm52:     { n:'GLM-5.2',       p:'Z.ai',       i:1.4, o:4.4, aa:null, e:['low','med','high','max'], b:'Legacy. Use GLM-5.3 (same price)', t:'Legacy', c:'gray', fr:0, v:'2026-11-05', sn:'legacy' },
-  mimoV26pro:{ n:'MiMo V2.6 Pro', p:'Xiaomi',     i:0.43,o:0.87,aa:30, e:[], b:'Open weights. AA 30 for $0.26/task', t:'Open value', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
-  mimoV26f:  { n:'MiMo V2.6 Flash',p:'Xiaomi',    i:0.14,o:0.28,aa:27, e:[], b:'Open weights. Cheapest decent open model', t:'Open budget', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
+  mimoV26pro:{ n:'MiMo V2.6 Pro', p:'Xiaomi',     i:0.435,o:0.87,aa:30, e:[], b:'Open weights. AA 30 for $0.26/task', t:'Open value', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
+  mimoV26f:  { n:'MiMo V2.6 Flash',p:'Xiaomi',    i:0.14,o:0.28,aa:27, e:[], b:'Open weights. Free on Zen (limited time; data may be used for training)', t:'Open budget', c:'cyan', fr:2, v:'2026-11-05', sn:'' },
   minimaxM31f:{ n:'MiniMax M3.1 Flash',p:'MiniMax',i:0.15,o:0.6, aa:29, e:[], b:'Open weights, 1M ctx', t:'Open', c:'purple', fr:0, v:'2026-11-05', sn:'' },
   mistralL4: { n:'Mistral Large 4',p:'Mistral',   i:0.7, o:2.1, aa:26, e:['med','high'], b:'Open weights (EU lab)', t:'EU open', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
   mistralS4: { n:'Mistral Small 4',p:'Mistral',   i:0.15,o:0.6, aa:4,  e:[], b:'Small, Apache 2.0. Edge / simple tasks only', t:'Edge', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
   qwen3827b: { n:'Qwen3.8 27B',   p:'Alibaba',    i:0.5, o:3,   aa:20, e:['low','med','xhigh'], b:'Open weights, 256K ctx. Best local-size model on AA', t:'Local', c:'cyan', fr:0, v:'2026-11-05', sn:'' },
 
-  // Free / self-host — free status last checked Aug 29 (opencode.ai not reachable from the build environment)
-  mimoV25:   { n:'MiMo v2.5',      p:'Xiaomi',    i:0.14,o:0.28,aa:null, e:[], b:'Native multimodal. Free on Zen (as of Aug 29)', t:'Multimodal', c:'cyan', fr:2, v:'2026-08-29' },
-  northMini: { n:'North Mini Code',p:'Cohere',    i:0.2, o:0.8, aa:null, e:[], b:'Local coder. Fits RTX 4090. Free on Zen (as of Aug 29)', t:'Local', c:'purple', fr:2, v:'2026-08-29' },
-  hy3Free:   { n:'Hy3 Free',       p:'Tencent',   i:0,   o:0,   aa:null, e:['no_think','low','high'], b:'295B MoE. Free tier may have expired', t:'Was free', c:'orange', fr:1, v:'2026-08-29' },
-  bigPickle: { n:'Big Pickle',     p:'OpenCode Zen',i:0, o:0,   aa:null, e:[], b:'Smoke tests only', t:'Smoke tests', c:'gray', fr:1, v:'2026-08-29' },
+  // Free on OpenCode Zen for a limited time (opencode.ai/docs/zen, Nov 5). fr:2 = free on Zen.
+  nemotron35svl:{ n:'Nemotron 3.5 Super VL',p:'NVIDIA',i:0.2,o:0.5, aa:14, e:[], b:'Vision-language. Free on Zen (trial — no personal data)', t:'Free vision', c:'green', fr:2, v:'2026-11-05' },
+  beam:      { n:'Beam 1.0',       p:'Reflection', i:0.4, o:1.2, aa:18, e:[], b:'Free on Zen. Not used for training; kept 30 days', t:'Free', c:'green', fr:2, v:'2026-11-05' },
+  bigPickle: { n:'Big Pickle',     p:'OpenCode Zen',i:0, o:0,   aa:null, e:[], b:'Stealth model. Free on Zen; data may be used for training', t:'Smoke tests', c:'gray', fr:2, v:'2026-11-05' },
+  // Self-host only
+  northMini: { n:'North Mini Code',p:'Cohere',    i:0.2, o:0.8, aa:null, e:[], b:'Local coder. Fits RTX 4090. No longer on Zen', t:'Local', c:'purple', fr:0, v:'2026-08-29' },
   gemma431:  { n:'Gemma 4 31B',    p:'Google',    i:0.2, o:0.8, aa:null, e:[], b:'Apache 2.0, self-host friendly', t:'Apache 2.0', c:'cyan', fr:0, v:'2026-08-29' },
 };
 // After a scheduled price change, swap in the post-change description/note.
@@ -129,7 +130,7 @@ const TG = [
 {name:'📊 Data & Research',co:'border-l-[#0d9488]',hc:'text-[#0a6e65]',hb:'bg-[#d5f5f0]',tasks:[
   {t:'Analyze data / statistics',pr:{m:'gpt61sol',e:'max',c:'~$1.27'},alts:[{m:'dsV41Flash',e:'max',r:1,l:'Open budget',c:'~$0.60'},{m:'sonnet55',e:'high',r:2,l:'Claude alt',c:'~$1.64'},{m:'opus55',e:'high',r:3,l:'Premium',c:'~$3.46'}]},
   {t:'Research / lit review',pr:{m:'opus55',e:'xhigh',c:'~$6.05'},alts:[{m:'gpt61sol',e:'max',r:1,l:'Budget',c:'~$1.27'},{m:'kimiK31pro',e:'',r:2,l:'Alt family',c:'~$3.68'},{m:'gemini4carbon',e:'high',r:3,l:'AA #1',c:'~$7.76'}]},
-  {t:'Low-cost bulk processing',pr:{m:'gpt6luna',e:'medium',c:'~$0.04'},alts:[{m:'haiku55',e:'low',r:1,l:'Claude budget',c:'~$0.04'},{m:'mimoV26f',e:'',r:2,l:'Open weights',c:'~$0.13'},{m:'northMini',e:'',r:3,l:'Free local',c:'~$0'}]},
+  {t:'Low-cost bulk processing',pr:{m:'gpt6luna',e:'medium',c:'~$0.04'},alts:[{m:'haiku55',e:'low',r:1,l:'Claude budget',c:'~$0.04'},{m:'mimoV26f',e:'',r:2,l:'Open weights',c:'~$0.13'},{m:'glm53f',e:'',r:3,l:'Free on Zen',c:'~$0'}]},
   {t:'Database query generation',pr:{m:'gpt61terra',e:'high',c:'~$0.26'},alts:[{m:'dsV41Flash',e:'high',r:1,l:'Open weights',c:'~$0.46'},{m:'glm53f',e:'',r:2,l:'Open budget',c:'~$0.58'},{m:'sonnet55',e:'medium',r:3,l:'Claude alt',c:'~$0.78'}]},
 ]},
 {name:'🧠 Reasoning & Analysis',co:'border-l-[#d97706]',hc:'text-[#7a4a02]',hb:'bg-[#fef3cd]',tasks:[
@@ -148,11 +149,11 @@ const TG = [
   {t:'Document OCR + analysis',pr:{m:'opus55',e:'high',c:'~$3.46'},alts:[{m:'haiku55',e:'high',r:1,l:'Budget',c:'~$0.16'},{m:'mimoV26pro',e:'',r:2,l:'Open budget',c:'~$0.26'},{m:'gpt61sol',e:'high',r:3,l:'Cheaper',c:'~$0.59'}]},
   {t:'Screenshot → code',pr:{m:'opus55',e:'high',c:'~$3.46'},alts:[{m:'gpt61sol',e:'max',r:1,l:'Value',c:'~$1.27'},{m:'gemini38f',e:'high',r:2,l:'Strong coder',c:'~$2.36 (DeepSWE)'},{m:'gpt6astra',e:'high',r:3,l:'Strong alt',c:'~$3.24'}]},
   {t:'Computer use / GUI',pr:{m:'gemini38f',e:'medium',c:'~$6.26'},alts:[{m:'gpt61sol',e:'high',r:1,l:'Cheaper',c:'~$0.59'},{m:'opus55',e:'high',r:2,l:'Better',c:'~$3.46'}]},
-  {t:'Multimodal (img+audio+video)',pr:{m:'gemini38f',e:'medium',c:'~$6.26'},alts:[{m:'mimoV25',e:'',r:1,l:'Free (Aug 29)',c:'~$0'},{m:'gemini4carbon',e:'medium',r:2,l:'Top Google',c:'~$6.59'},{m:'opus55',e:'high',r:3,l:'Best img+txt',c:'~$3.46'}]},
+  {t:'Multimodal (img+audio+video)',pr:{m:'gemini38f',e:'medium',c:'~$6.26'},alts:[{m:'nemotron35svl',e:'',r:1,l:'Free vision (Zen)',c:'~$0'},{m:'gemini4carbon',e:'medium',r:2,l:'Top Google',c:'~$6.59'},{m:'opus55',e:'high',r:3,l:'Best img+txt',c:'~$3.46'}]},
 ]},
 {name:'🔒 Local / Private',co:'border-l-[#7c3aed]',hc:'text-[#5b21b6]',hb:'bg-[#ede9fe]',tasks:[
-  {t:'Local code agent (no cloud)',pr:{m:'qwen3827b',e:'xhigh',c:'~$0 (self-host)'},alts:[{m:'northMini',e:'',r:1,l:'Smaller GPU',c:'~$0'},{m:'gemma431',e:'',r:2,l:'Open alt',c:'~$0 (self-host)'},{m:'glm53f',e:'',r:3,l:'Bigger open model',c:'~$0 (self-host)'}]},
-  {t:'On-device / edge inference',pr:{m:'gemma431',e:'',c:'~$0 (self-host)'},alts:[{m:'mistralS4',e:'',r:1,l:'Efficient',c:'~$0 (self-host)'},{m:'northMini',e:'',r:2,l:'Free',c:'~$0'},{m:'qwen3827b',e:'medium',r:3,l:'Stronger',c:'~$0 (self-host)'}]},
+  {t:'Local code agent (no cloud)',pr:{m:'qwen3827b',e:'xhigh',c:'~$0 (self-host)'},alts:[{m:'northMini',e:'',r:1,l:'Smaller GPU',c:'~$0 (self-host)'},{m:'gemma431',e:'',r:2,l:'Open alt',c:'~$0 (self-host)'},{m:'glm53f',e:'',r:3,l:'Bigger open model',c:'~$0 (self-host)'}]},
+  {t:'On-device / edge inference',pr:{m:'gemma431',e:'',c:'~$0 (self-host)'},alts:[{m:'mistralS4',e:'',r:1,l:'Efficient',c:'~$0 (self-host)'},{m:'northMini',e:'',r:2,l:'Small GPU',c:'~$0 (self-host)'},{m:'qwen3827b',e:'medium',r:3,l:'Stronger',c:'~$0 (self-host)'}]},
 ]},
 ];
 
@@ -204,7 +205,7 @@ document.addEventListener('keydown',e=>{
 // ─── Render Dashboard ───
 // Explicit ordering for the main table (not pure AA sort — groups paid frontier/value tiers together).
 const DASH_ORDER = ['gemini4carbon','opus55','gpt6astra','gpt61sol','sonnet55','gpt61terra','gemini4argon','fable51','kimiK31pro','museWonder','haiku55','grok47','qwen38max','dsV41Flash','glm53','gemini38f','mimoV26pro','gpt6luna','composer25','gptSol','opus5'];
-const DASH_FREE_ORDER = ['mimoV25','northMini','hy3Free'];
+const DASH_FREE_ORDER = ['glm53f','mimoV26f','beam','nemotron35svl','bigPickle'];
 function renderDash(){
   const maxAa = Math.max(...MArr.filter(m=>m.aa!=null).map(m=>m.aa));
   function dashRow(mk,free){
@@ -221,7 +222,7 @@ function renderDash(){
   let html = '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm mt-4"><div class="flex items-center gap-2 px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📊 All Models</h2><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-blue-50 text-blue-800">AA Intelligence Index (current)</span><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[0.6875rem] font-semibold bg-green-50 text-green-800">Free highlighted</span></div><div class="table-scroll p-1"><table class="w-full text-xs sm:text-sm min-w-[620px]"><thead><tr class="bg-[#f8f9fc]"><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Model</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Provider</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">In $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Out $/MTok</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">AA</th><th class="hidden md:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Score</th><th class="p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Best For</th><th class="hidden lg:table-cell p-2.5 sm:p-3 text-left font-semibold text-xs uppercase tracking-wider text-[#6b7085] border-b-2 border-[#e2e5ec]">Checked</th></tr></thead><tbody class="divide-y divide-[#eceef4]">';
   DASH_ORDER.forEach(mk=>{html+=dashRow(mk,false);});
   DASH_FREE_ORDER.forEach(mk=>{html+=dashRow(mk,true);});
-  html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">* Green rows = free on OpenCode Zen (last checked Aug 29). Prices in $/MTok. AA = Artificial Analysis Intelligence Index, best effort setting. <code>$a→b</code> = scheduled price change. AA “—” = legacy or not on the current index (not ranked).</div></div>';
+  html += '</tbody></table></div><div class="px-5 py-2 text-xs text-[#6b7085] border-t border-[#eceef4]">* Green rows = free on OpenCode Zen for a limited time (checked Nov 5); paid price shown is the vendor API. Prices in $/MTok. AA = Artificial Analysis Intelligence Index, best effort setting. <code>$a→b</code> = scheduled price change. AA “—” = legacy or not on the current index (not ranked).</div></div>';
 
   // Pricing & CursorBench side-by-side
   html += '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">';
@@ -304,7 +305,7 @@ ${card(`Opus 4.8 ${tagH('gray','Legacy')}`,'$5/$25 · still available.','Two gen
   // OpenAI
   document.getElementById('tab-openai-inner').innerHTML = `
 <div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm">
-${head('openai','GPT-6 Family',[['Paid','bg-indigo-50 text-indigo-800'],['Sep–Oct 2026','bg-pink-50 text-pink-800']],'Rates = <strong>$ per 1M tokens</strong>. GPT-6 prices from Artificial Analysis (openai.com could not be read from the build environment). GPT-5.6 prices confirmed on cursor.com.')}
+${head('openai','GPT-6 Family',[['Paid','bg-indigo-50 text-indigo-800'],['Sep–Oct 2026','bg-pink-50 text-pink-800']],'Rates = <strong>$ per 1M tokens</strong>. GPT-6 prices from Artificial Analysis, matched by the LiteLLM price database and OpenCode list prices (openai.com sits behind a bot check). GPT-5.6 prices confirmed on cursor.com.')}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 p-4">
 ${card(`GPT-6.1 Sol ${tagH('green','Best value')} ${NEW}`,'<strong class="text-green-700">$2/$10</strong> · AA 55 @ max · 1M ctx','<strong>Effort → AA / $ per task:</strong> low 35 / $0.16 · medium 46 / $0.36 · high 50 / $0.59 · xhigh 52 / $0.76 · <strong class="text-[#2962ff]">max 55 / $1.27</strong>. Same AA as Sonnet 5.5 @ max for 1/8 the cost.','Default for agents, data work, logic — GPT-6.1 Sol @ max')}
 ${card(`GPT-6 Astra ${tagH('blue','DeepSWE #1')} ${NEW}`,'$10/$50 · AA 57 @ max · 1M ctx · knowledge Apr 2026','DeepSWE 74.1% @ xhigh for $4.43/task — #1 on the board. <strong>Effort → AA / $:</strong> high 55 / $3.24 · xhigh 55 / $3.66 · max 57 / $6.24.','Hard multi-file coding — GPT-6 Astra @ xhigh')}
@@ -348,21 +349,21 @@ ${card(`Third-party in Cursor ${tagH('purple','Premium+')}`,'Opus 5.5 $4/$20 · 
   // Free / open
   document.getElementById('tab-free-inner').innerHTML = `
 <div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm">
-${head('opensource','Free &amp; Open-Weight Models',[['Open weights','bg-green-50 text-green-800']],'Prices = <strong>$ per 1M tokens</strong> on the vendor API. Open-weight models can also be self-hosted. Free-tier details last checked Aug 29 (opencode.ai not reachable from the build environment).')}
+${head('opensource','Free &amp; Open-Weight Models',[['Open weights','bg-green-50 text-green-800']],'Prices = <strong>$ per 1M tokens</strong> on the vendor API. Open-weight models can also be self-hosted. Zen free list checked on opencode.ai, Nov 5, 2026.')}
 <div class="mx-4 mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-  <div class="bg-[#f0fdf4] border border-green-200 rounded-lg p-3"><div class="font-semibold text-green-800 text-[0.6875rem] uppercase tracking-wider">🧘 OpenCode Zen Free</div><div class="text-green-700 mt-1">Shared daily pool (~200 req). Add $10+ balance for ~1,000 req/day. <em>As of Aug 29.</em></div></div>
-  <div class="bg-[#fffbeb] border border-amber-200 rounded-lg p-3"><div class="font-semibold text-amber-800 text-[0.6875rem] uppercase tracking-wider">🔌 OpenRouter :free</div><div class="text-amber-700 mt-1">50 req/day default; 1,000 req/day after a one-time $10 credit. <em>As of Aug 29.</em></div></div>
+  <div class="bg-[#f0fdf4] border border-green-200 rounded-lg p-3"><div class="font-semibold text-green-800 text-[0.6875rem] uppercase tracking-wider">🧘 OpenCode Zen Free</div><div class="text-green-700 mt-1">Free for a limited time, inside OpenCode only. Some free models may use your data for training — check before sending private code.</div></div>
+  <div class="bg-[#fffbeb] border border-amber-200 rounded-lg p-3"><div class="font-semibold text-amber-800 text-[0.6875rem] uppercase tracking-wider">🔌 OpenRouter :free</div><div class="text-amber-700 mt-1">50 req/day default; 1,000 req/day after a one-time $10 credit. <em>As of Aug 29 — openrouter.ai not reachable to re-check.</em></div></div>
   <div class="bg-[#f8f9fc] border border-[#e2e5ec] rounded-lg p-3"><div class="font-semibold text-[#5a5f73] text-[0.6875rem] uppercase tracking-wider">💻 Self-Host (Ollama etc.)</div><div class="text-[#5a5f73] mt-1">No limits. Open-weight models only; needs your GPU/RAM.</div></div>
 </div>
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4">
-${card(`DeepSeek V4.1 Flash ${tagH('green','Open value')} ${NEW}`,'$0.30/$1.20 peak · <strong class="text-green-700">$0.15/$0.60 off-peak</strong> · 1M ctx · AA 33 · Oct 17','Peak = 01:00–04:00 and 06:00–10:00 UTC, Mon–Fri. V4 Flash is retired: <code>deepseek-v4-flash</code> now routes here.','')}
-${card(`GLM-5.3 / 5.3-Flash ${tagH('indigo','Open coders')}`,'$1.40/$4.40 · Flash $0.15/$0.50 · AA 32 / 28','DeepSWE 69.0% (top open-weight) · Flash 63.4% at $0.24/task. MIT.','')}
-${card(`MiMo V2.6 Pro / Flash ${tagH('cyan','Open budget')} ${NEW}`,'$0.43/$0.87 · Flash $0.14/$0.28 · AA 30 / 27','Pro: AA 30 for $0.26/task — best open value on AA.','')}
+${card(`DeepSeek V4.1 Flash ${tagH('green','Open value')} ${NEW}${freeBadge(2)}`,'$0.30/$1.20 peak · <strong class="text-green-700">$0.15/$0.60 off-peak</strong> · 1M ctx · AA 33 · Oct 17','Peak = 01:00–04:00 and 06:00–10:00 UTC, Mon–Fri. V4 Flash is retired: <code>deepseek-v4-flash</code> now routes here.','')}
+${card(`GLM-5.3 / 5.3-Flash ${tagH('indigo','Open coders')}${freeBadge(2)}`,'$1.40/$4.40 · Flash $0.15/$0.50 · AA 32 / 28','DeepSWE 69.0% (top open-weight) · Flash 63.4% at $0.24/task. MIT.','')}
+${card(`MiMo V2.6 Pro / Flash ${tagH('cyan','Open budget')} ${NEW}${freeBadge(2)}`,'$0.435/$0.87 · Flash $0.14/$0.28 · AA 30 / 27','Pro: AA 30 for $0.26/task — best open value on AA.','')}
 ${card(`MiniMax M3.1 Flash ${tagH('purple','Open')} ${NEW}`,'$0.15/$0.60 · 1M ctx · AA 29','MiniMax M3 (AA 19, $0.30/$1.20) is now behind it.','')}
 ${card(`Qwen3.8 27B ${tagH('cyan','Local size')}`,'$0.50/$3 · 256K ctx · AA 20 @ xhigh','Best score on AA among models that fit one large GPU.','')}
 ${card(`Mistral Large 4 / Small 4 ${tagH('cyan','EU · open')}`,'Large $0.70/$2.10 (AA 26) · Small $0.15/$0.60 (AA 4)','Small 4 is for edge / simple tasks only.','')}
 ${card(`DeepSeek V4 Pro ${tagH('indigo','MIT')}`,'$1.32/$3.96 peak · $0.66/$1.98 off-peak · AA 23','Price went up since Aug ($0.435/$0.87) and V4.1 Flash now scores higher.','')}
-${card(`Free on Zen ${freeBadge(2)}`,'MiMo v2.5 · North Mini Code · Hy3 Free · Big Pickle','<em>As of Aug 29 — not re-checked.</em> North Mini Code fits an RTX 4090 for local agents.','')}
+${card(`Free on Zen ${freeBadge(2)}`,'DeepSeek V4.1 Flash · GLM-5.3-Flash · MiMo V2.6 Flash · Nemotron 3 Ultra / 3.5 Lightning / 3.5 Super VL · Beam · Flint 40B · Big Pickle · Crouton Alpha · Pulse Alpha','<strong>Limited time.</strong> No training on data: DeepSeek, GLM, Beam. May be used for training: MiMo, Big Pickle, Flint, Pulse. NVIDIA models are trial-only — no personal data. MiMo v2.5, North Mini Code and Hy3 are no longer free.','')}
 </div>
 <div class="px-5 pb-3 text-[0.6875rem] text-[#6b7085]">Kimi K3.1 Pro (AA 46, $2/$10) and Qwen3.8 Max (AA 34, $2/$6) are proprietary — see the Dashboard. ${AA_NOTE}</div></div>`;
 
@@ -708,6 +709,7 @@ renderDeepSWE();
 function renderPriceHistory(){
   const NEW = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800 ml-1.5">New</span>';
   const tl = [
+    {d:'Oct 26, 2026', p:'OpenCode Zen', c:'gray', t:'⚫ Zen free list reshuffled', b:'DeepSeek V4 Flash deprecated on Zen. Free now: <strong>DeepSeek V4.1 Flash, GLM-5.3-Flash, MiMo V2.6 Flash</strong>, NVIDIA Nemotron trio, Beam, Flint 40B, Big Pickle. MiMo v2.5, North Mini Code, Hy3 no longer free.', n:1},
     {d:'Oct 2026', p:'Google', c:'blue', t:'🔵 Gemini 4 Carbon', b:'<strong>$4/$20</strong>. AA #1 overall (60). Price via Artificial Analysis.', n:1},
     {d:'Oct 2026', p:'OpenAI', c:'emerald', t:'🟢 GPT-6.1 Terra', b:'<strong>$1/$5</strong> — half of GPT-5.6 Terra ($2/$12). AA 51 @ max.', n:1},
     {d:'Oct 2026', p:'Moonshot', c:'gray', t:'⚫ Kimi K3.1 Pro', b:'<strong>$2/$10</strong>, 1M ctx, proprietary. AA 46. Replaces Kimi K3 ($3/$15) as the Kimi pick.', n:1},
@@ -741,7 +743,7 @@ function renderPriceHistory(){
   const money=v=>v?('$'+(v<1?String(+v.toFixed(3)):v)):'Free';
   const snap = MArr.filter(m=>m.sn!==undefined).map(m=>{const p=effPrice(m.k);return [m.n,money(p.i),money(p.o),m.sn+(m.v?` <span class="text-[#a0a5b5]">· checked ${fmtDate(m.v)}</span>`:'')];}).concat(SNAP_EXTRA);
   const dot = {emerald:'bg-emerald-500',blue:'bg-blue-500',violet:'bg-violet-500',gray:'bg-gray-400'};
-  let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since recent releases.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (promo and intro prices ending; DeepSeek peak-hour pricing). Past items drop off automatically.</li></ul><p class="text-xs text-[#6b7085] mt-2">Prices checked <strong>Nov 5, 2026</strong>: Claude, Google, xAI, DeepSeek, Z.ai and Cursor on their own sites; GPT-6 family, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen via Artificial Analysis. Free-tier models last checked Aug 29.</p></div><div class="p-5">';
+  let h = '<div class="grid grid-cols-1 lg:grid-cols-2 gap-4"><div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">📜 Price Changes History</h2></div><div class="px-5 py-3.5 border-b border-[#eceef4] bg-[#f8f9fc]"><p class="text-xs text-[#5a5f73] leading-relaxed"><strong class="text-[#121420]">What this is:</strong> a change log of every price move that affects the models in this guide — launches, cuts, and supersessions, newest first — so you can see why recommendations shifted and what the current rates are.</p><ul class="text-xs text-[#5a5f73] mt-2 space-y-1"><li>🕐 <strong>Timeline</strong> — launches and price changes, newest first. Items marked <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[0.625rem] font-bold uppercase bg-pink-50 text-pink-800">New</span> landed since recent releases.</li><li>🧾 <strong>Snapshot</strong> — today\'s list prices ($/MTok) for every model, with a note on what changed and when.</li><li>⏰ <strong>Watchlist</strong> — upcoming changes that will re-shape the recommendation (promo and intro prices ending; DeepSeek peak-hour pricing). Past items drop off automatically.</li></ul><p class="text-xs text-[#6b7085] mt-2">Prices checked <strong>Nov 5, 2026</strong>: Claude, Google, xAI, DeepSeek, Z.ai and Cursor on their own sites; GPT-6 family, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen via Artificial Analysis. Zen free list checked Nov 5; OpenRouter free limits as of Aug 29.</p></div><div class="p-5">';
   tl.forEach(r=>{
     h += `<div class="relative pl-9 pb-5 last:pb-0"><span class="absolute left-0 top-1 h-2.5 w-2.5 rounded-full ${dot[r.c]} ring-4 ring-white"></span><span class="absolute left-[5px] top-5 bottom-0 w-px bg-[#eceef4] last:hidden"></span><div class="text-[0.6875rem] font-bold uppercase tracking-wider text-[#6b7085]">${r.d} · ${r.p}${r.n?NEW:''}</div><div class="font-semibold text-sm mt-0.5">${r.t}</div><div class="text-xs text-[#5a5f73] mt-0.5 leading-relaxed">${r.b}</div></div>`;
   });
@@ -751,7 +753,7 @@ function renderPriceHistory(){
     h += `<tr class="hover:bg-[#f8f9fc]"><td class="p-2.5 font-medium">${r[0]}</td><td class="p-2.5 font-mono">${r[1]}</td><td class="p-2.5 font-mono">${r[2]}</td><td class="p-2.5 text-[#6b7085]">${r[3]}</td></tr>`;
   });
   h += '</tbody></table></div></div>';
-  h += '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">⏰ Watchlist &amp; Gotchas</h2></div><ul class="p-4 space-y-2 text-xs sm:text-sm text-[#5a5f73]">'+(past('2026-11-22')?'':'<li>🔔 <strong>Nov 21:</strong> GPT-5.6 Sol promo pricing ($4/$20) expires → reverts to $5/$30. Re-check model selection then.</li>')+(past('2026-12-01')?'':'<li>🔔 <strong>Nov 30:</strong> Gemini 4 Argon promo ($2/$10) ends → $4/$20.</li>')+(past('2027-01-01')?'':'<li>🔔 <strong>Dec 31:</strong> Gemini 3.8 / 3.7 / 3.6 Flash intro pricing ($0.75/$3.75) ends → doubles to $1.50/$7.50.</li>')+'<li>⏰ <strong>DeepSeek peak pricing is live:</strong> 2× price 01:00–04:00 &amp; 06:00–10:00 UTC Mon–Fri. Batch jobs off-peak.</li><li>⚠️ <strong>Gemini 4:</strong> completions over 32K tokens are billed even if the request fails (from Nov 13).</li><li>🔍 <strong>Not on DeepSWE yet:</strong> Claude 5.5, GPT-6.1, Gemini 4, Grok 4.7 — coding picks for them use AA only.</li><li>📍 <strong>Pin your IDs:</strong> move off <code class="bg-[#eceef4] px-1 rounded">gpt-5.6*</code>, <code class="bg-[#eceef4] px-1 rounded">claude-opus-5</code>, <code class="bg-[#eceef4] px-1 rounded">grok-4.6</code>, <code class="bg-[#eceef4] px-1 rounded">gemini-3.7-flash</code>.</li><li>📍 <strong>Claude IDs:</strong> <code class="bg-[#eceef4] px-1 rounded">claude-opus-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-sonnet-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-haiku-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-fable-5-1</code>.</li><li>🔧 <strong>Corrections Nov 5:</strong> all AA scores moved to the current AA index (old numbers were on an older scale); DeepSWE numbers re-read from Datacurve\'s own data (several Aug values were wrong, e.g. Grok 4.6 65.9% → 67.5%); GLM-5.2 $1.34/$4 → $1.40/$4.40; Qwen3.8 Max $1.65/$4.95 → $2/$6; Mistral Small 4 $0.20 → $0.15 input.</li></ul></div>';
+  h += '<div class="bg-white border border-[#e2e5ec] rounded-xl shadow-sm"><div class="px-5 py-3.5 border-b border-[#eceef4]"><h2 class="text-lg sm:text-xl font-semibold tracking-tight">⏰ Watchlist &amp; Gotchas</h2></div><ul class="p-4 space-y-2 text-xs sm:text-sm text-[#5a5f73]">'+(past('2026-11-22')?'':'<li>🔔 <strong>Nov 21:</strong> GPT-5.6 Sol promo pricing ($4/$20) expires → reverts to $5/$30. Re-check model selection then.</li>')+(past('2026-12-01')?'':'<li>🔔 <strong>Nov 30:</strong> Gemini 4 Argon promo ($2/$10) ends → $4/$20.</li>')+(past('2027-01-01')?'':'<li>🔔 <strong>Dec 31:</strong> Gemini 3.8 / 3.7 / 3.6 Flash intro pricing ($0.75/$3.75) ends → doubles to $1.50/$7.50.</li>')+'<li>🆓 <strong>Zen free models are limited-time</strong> and some use your data for training (MiMo, Big Pickle, Flint, Pulse) — avoid for private code.</li><li>⏰ <strong>Long-context surcharge:</strong> GPT-6 above 272K tokens ($4/$15 for 6.1 Sol, $20/$75 for Astra); Grok 4.7 above 200K ($4/$12).</li><li>⏰ <strong>DeepSeek peak pricing is live:</strong> 2× price 01:00–04:00 &amp; 06:00–10:00 UTC Mon–Fri. Batch jobs off-peak.</li><li>⚠️ <strong>Gemini 4:</strong> completions over 32K tokens are billed even if the request fails (from Nov 13).</li><li>🔍 <strong>Not on DeepSWE yet:</strong> Claude 5.5, GPT-6.1, Gemini 4, Grok 4.7 — coding picks for them use AA only.</li><li>📍 <strong>Pin your IDs:</strong> move off <code class="bg-[#eceef4] px-1 rounded">gpt-5.6*</code>, <code class="bg-[#eceef4] px-1 rounded">claude-opus-5</code>, <code class="bg-[#eceef4] px-1 rounded">grok-4.6</code>, <code class="bg-[#eceef4] px-1 rounded">gemini-3.7-flash</code>.</li><li>📍 <strong>Claude IDs:</strong> <code class="bg-[#eceef4] px-1 rounded">claude-opus-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-sonnet-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-haiku-5-5</code> · <code class="bg-[#eceef4] px-1 rounded">claude-fable-5-1</code>.</li><li>🔧 <strong>Corrections Nov 5:</strong> Mistral Large 4 is $0.70/$2.10 on the Mistral API ($1.36/$4.18 was a reseller price); all AA scores moved to the current AA index (old numbers were on an older scale); DeepSWE numbers re-read from Datacurve\'s own data (several Aug values were wrong, e.g. Grok 4.6 65.9% → 67.5%); GLM-5.2 $1.34/$4 → $1.40/$4.40; Qwen3.8 Max $1.65/$4.95 → $2/$6; Mistral Small 4 $0.20 → $0.15 input.</li></ul></div>';
   h += '</div></div>';
   document.getElementById('tab-price-inner').innerHTML = h;
 }
@@ -767,9 +769,10 @@ function renderReferences(){
     {u:'https://api-docs.deepseek.com/quick_start/pricing',n:'DeepSeek API Docs',d:'V4.1 Flash / V4 Pro peak and off-peak prices, peak hours, V4 Flash retirement'},
     {u:'https://docs.z.ai/guides/overview/pricing',n:'Z.ai (GLM) Docs',d:'GLM-5.3 / 5.3-Flash / 5.2 prices'},
     {u:'https://cursor.com/docs/models',n:'Cursor Docs',d:'Plan pool models (Grok 4.7, Composer 2.5) and third-party list prices, incl. GPT-5.6'},
-    {u:'https://openai.com/api/pricing/',n:'OpenAI Pricing',d:'Not readable from the build environment (Cloudflare check) — GPT-6 prices taken from Artificial Analysis'},
+    {u:'https://openai.com/api/pricing/',n:'OpenAI Pricing',d:'Not read (bot check) — GPT-6 prices from Artificial Analysis, matched by LiteLLM and OpenCode'},
+    {u:'https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json',n:'LiteLLM price database',d:'Open, community-maintained price list. Used to cross-check OpenAI, Moonshot (Kimi), Meta, Xiaomi, MiniMax, Mistral and long-context tiers (Nov 5)'},
     {u:'https://openrouter.ai',n:'OpenRouter',d:'Free model rate limits (as of Aug 29)'},
-    {u:'https://opencode.ai/docs/zen',n:'OpenCode Zen Docs',d:'Free model list and daily limits (as of Aug 29)'},
+    {u:'https://opencode.ai/docs/zen',n:'OpenCode Console / Zen Docs',d:'Free model list, data policies, list prices incl. GPT-6 long-context tiers (Nov 5)'},
   ];
   const third = [
     {u:'https://artificialanalysis.ai',n:'Artificial Analysis (AA Index)',d:'Current Intelligence Index, cost per task by effort, and prices for GPT-6, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral and Qwen. Read Nov 5, 2026.'},
