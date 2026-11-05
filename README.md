@@ -1,56 +1,62 @@
-# Model Selection Guide
+# Model Guide
 
-A single-page, dependency-free cheat-sheet for picking the right AI model per task. Covers Claude, OpenAI, Gemini, Grok, Cursor, and free/OSS models — with current prices, effort ladders, per-task routing, an interactive benchmark chart, and a price-change log.
+A single-page guide for picking the right AI model per task. Covers Claude, GPT-6, Gemini, Grok, Cursor and open-weight models — with scores, cost per task, prices, upcoming price changes and the sources behind every number.
 
-**Files**
-- `index.html` — the page (layout, tabs, styles). Loads `modelguide.js`.
-- `modelguide.js` — ALL data and logic: model catalog (`M[]`), per-task recommendations (`TG`), DeepSWE leaderboard (`DSW`), price history, finder scoring, tab rendering.
-- `tests/smoke.mjs` — headless check: page loads with no JS errors, every tab renders, finder works, every task/dashboard entry points to a real model.
-- `.github/workflows/check.yml` — runs `node --check` and the smoke test on every push and pull request.
+Plain **HTML, CSS and JavaScript**. No framework, no build step, no runtime dependencies (Google Fonts is optional; system fonts are used if it fails to load).
 
-**Run**
-Open `index.html` in any browser. No build step. Optionally serve: `python3 -m http.server` in this folder.
-Light/dark theme follows the OS setting; the sun/moon button switches it and remembers the choice.
+## Files
 
-**Test**
+| File | What it holds |
+|---|---|
+| `index.html` | Page shell: header, navigation, footer. Loads `styles.css`, `data.js`, `app.js`. |
+| `styles.css` | All styles. Color tokens at the top (light + dark), then components. |
+| `data.js` | **All data**: models, task picks, DeepSWE results, timeline, price watch, insights, sources. |
+| `app.js` | Rendering and interaction for the five pages. Reads `window.MG` from `data.js`. |
+| `tests/smoke.mjs` | Headless test: every page renders, every task/mode works, controls work, data references are valid, and the page still works on each scheduled price-change date. |
+| `.github/workflows/check.yml` | Runs a syntax check and the smoke test on every push and pull request. |
+
+## Run
+
+Open `index.html` in a browser. Or serve the folder: `python3 -m http.server`.
+
+## Pages
+
+| Page | URL | What it does |
+|---|---|---|
+| Recommend | `#recommend` | Pick a task group and task, then Balanced / Cheapest / Best quality. Shows the pick, why, alternatives, upcoming price changes, and a deep analysis: 3D effort ladder, monthly cost at 10/100/1000 tasks a day, confidence and risks. |
+| Explore | `#explore` or `#explore/<model>` | All models: search, provider filter, open weights, free on Zen, hide legacy, sort. Selecting a row opens the detail panel. |
+| Value map | `#value` or `#value/<model>` | Score against cost per task (AA index or DeepSWE), with the best-value line. 3D view on/off. |
+| Insights | `#insights` | Cheapest way to reach AA 50 (3D podium), key takeaways, price trend, coding tie, provider strengths, golden rules. |
+| Changes | `#changes` | Timeline, upcoming changes, gotchas, sources, full price snapshot. |
+
+Keyboard: `1`–`5` switch pages, `/` searches models. Theme follows the OS; the moon/sun button switches it and remembers the choice.
+
+## How to update
+
+All edits are in `data.js`. Then run the test.
+
+1. **Prices / specs:** edit the model in `MG.models`. Set `v` to the date you checked it and `sn` for the note in the price snapshot (models without `sn` are left out of the snapshot).
+2. **Scheduled price change** (promo or intro price ending): add `iAfter`, `oAfter`, `priceChangeDate`. Before the date the page shows `old → new`; from that date it uses the new price everywhere. `bAfter` / `snAfter` replace the description and note after that date. Add a matching item to `MG.watch` with `until` = the same date — it disappears once the date passes.
+3. **Scores:** `aa` = Artificial Analysis Intelligence Index at the best setting (`null` = legacy or not on the current index; listed but not ranked). `ladder` = `[effort, AA, $ per task]` rows from AA. `aaCost` = $ per task at the best setting. `dsw` = DeepSWE %.
+4. **Source confidence:** `official: true` when the price was read on the vendor's own page; `srcs` = how many independent sources agree.
+5. **Task picks:** edit `MG.groups` (`pr` = primary pick, `alts` = 3 alternatives; `c` = cost per task, from AA unless marked `(DeepSWE)`).
+6. **Benchmarks:** `MG.dsw` holds the DeepSWE board (best config per model).
+7. **Timeline / insights / rules / sources:** `MG.timeline`, `MG.insights`, `MG.trend`, `MG.strengths`, `MG.rules`, `MG.sources`.
+8. Update `MG.checked`, then run the test:
+
 ```bash
 npm install --no-save playwright@1.63.0 && npx playwright install chromium
+```
+
+```bash
 node tests/smoke.mjs
 ```
 
-**Tabs**
-| Tab | What it shows |
-|---|---|
-| 📊 Dashboard | All-models table (free highlighted, date each model was last checked), pricing tiers, best cost/task (CursorBench) |
-| 🎯 By Task | 29 tasks × primary pick + 3 alternatives with estimated $/task |
-| 🔍 Finder | Select tasks + priority → top-5 ranked models |
-| Claude / OpenAI / Gemini / Grok / Cursor / Free | Per-provider lineups with rates and gotchas |
-| ⚡ Matrix | Task × model quick table (built from the By Task data) + golden rules + effort-level reference |
-| 🎯 DeepSWE Chart | Interactive bubble chart: score × cost/task × output tokens × agent steps (27 models) |
-| 📜 Price History | Timeline of price changes, current-rate snapshot, watchlist |
-| 📚 References | Sources |
+## Data sources
 
-**Conventions**
-- List prices: **$/MTok** (input / output), e.g. `$2/$12`.
-- Workload costs: **estimated $ per task** at the listed effort, marked `~`.
-- Keyboard: `Ctrl/Cmd + 1..9` jump to tabs, `Ctrl/Cmd + 0` = Matrix.
+- **Scores:** Artificial Analysis Intelligence Index (current version) and its cost per task by effort; DeepSWE v1.1 (deepswe.datacurve.ai).
+- **Prices from vendor pages:** Claude, Google Cloud, xAI, DeepSeek, Z.ai, Cursor, OpenCode.
+- **Prices via Artificial Analysis** where the vendor page could not be read (OpenAI GPT-6 family, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen), cross-checked against [LiteLLM's open price database](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
+- Coloured initials are placeholders, not vendor logos.
 
-**How to update**
-1. Prices/specs: edit the model entry in `M[]` (`modelguide.js`, top of file). Set `v:'YYYY-MM-DD'` to the day you checked it, and `sn:'…'` for the note in the price snapshot (models without `sn` are left out of the snapshot).
-2. Scheduled price changes (promo or intro price ending): add `iAfter`/`oAfter`/`priceChangeDate`. The page shows `old→new` before the date and switches to the new price on that date — finder scores, the matrix and the snapshot all use the price in effect today. Add `bAfter` / `snAfter` for the description and snapshot note to use after that date.
-   - Other date-bound text: in JS templates use `past('YYYY-MM-DD') ? after : before`; in `index.html` add `data-after="YYYY-MM-DD" data-after-html="…"` to the element (the swapped-in HTML may carry its own later `data-after`).
-   - A model with no score on this page's AA scale can use `aa:null`: it is listed with "—" but not ranked.
-3. Per-task picks and cost estimates: edit `TG`. The Matrix tab is generated from `TG`, so don't edit it separately.
-4. Benchmarks: DeepSWE data lives in `DSW[]`; re-fetch from the live leaderboard and update the `updated` note.
-5. Price history timeline and watchlist: `renderPriceHistory()`.
-6. Bump the dates in `index.html` (header, sidebar, footer).
-7. Run `node tests/smoke.mjs` before pushing (CI runs it too).
-
-**Data sources**
-- Scores: Artificial Analysis Intelligence Index (current version, best effort setting) and its cost per task by effort; DeepSWE v1.1 (deepswe.datacurve.ai, read from the page data).
-- Prices from vendor pages: Claude, Google Cloud, xAI, DeepSeek, Z.ai, Cursor.
-- Prices via Artificial Analysis where the vendor page could not be read (OpenAI GPT-6 family, Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen), cross-checked against [LiteLLM's open price database](https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json).
-- OpenCode Zen free list and list prices checked Nov 5 (also used to cross-check GPT-6 prices). OpenRouter free limits as of Aug 29.
-- Models with `aa:null` are legacy or not on the current AA index and are not ranked.
-
-Prices and benchmarks are directional — verify before scale deployment. Full disclaimer at the bottom of the page.
+Prices and benchmarks are directional — verify before scale deployment.

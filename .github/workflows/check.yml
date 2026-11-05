@@ -13,10 +13,10 @@ jobs:
         with:
           node-version: 22
       - name: JS syntax
-        run: node --check modelguide.js
+        run: node --check data.js && node --check app.js
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.63.0
           npx playwright install --with-deps chromium
-      - name: Smoke test (page loads, tabs render, data references valid)
+      - name: Smoke test (all pages, controls, data references, future dates)
         run: node tests/smoke.mjs
