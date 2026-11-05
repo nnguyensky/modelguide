@@ -37,7 +37,9 @@ node tests/smoke.mjs
 
 **How to update**
 1. Prices/specs: edit the model entry in `M[]` (`modelguide.js`, top of file). Set `v:'YYYY-MM-DD'` to the day you checked it, and `sn:'…'` for the note in the price snapshot (models without `sn` are left out of the snapshot).
-2. Scheduled price changes (promo or intro price ending): add `iAfter`/`oAfter`/`priceChangeDate`. The page shows `old→new` before the date and switches to the new price on that date — finder scores, the matrix and the snapshot all use the price in effect today.
+2. Scheduled price changes (promo or intro price ending): add `iAfter`/`oAfter`/`priceChangeDate`. The page shows `old→new` before the date and switches to the new price on that date — finder scores, the matrix and the snapshot all use the price in effect today. Add `bAfter` / `snAfter` for the description and snapshot note to use after that date.
+   - Other date-bound text: in JS templates use `past('YYYY-MM-DD') ? after : before`; in `index.html` add `data-after="YYYY-MM-DD" data-after-html="…"` to the element (the swapped-in HTML may carry its own later `data-after`).
+   - A model with no score on this page's AA scale can use `aa:null`: it is listed with "—" but not ranked.
 3. Per-task picks and cost estimates: edit `TG`. The Matrix tab is generated from `TG`, so don't edit it separately.
 4. Benchmarks: DeepSWE data lives in `DSW[]`; re-fetch from the live leaderboard and update the `updated` note.
 5. Price history timeline and watchlist: `renderPriceHistory()`.
