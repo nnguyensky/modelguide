@@ -47,4 +47,10 @@ node tests/smoke.mjs
 7. Run `node tests/smoke.mjs` before pushing (CI runs it too).
 
 **Data sources**
-Artificial Analysis (AA Index), DeepSWE v1.1 (deepswe.datacurve.ai), CursorBench 3.2 (BridgeMind), vendor docs (Claude, OpenAI, Gemini, xAI, DeepSeek, etc.). Prices and benchmarks are directional — verify before scale deployment. Full disclaimer at the bottom of the page.
+- Scores: Artificial Analysis Intelligence Index (current version, best effort setting) and its cost per task by effort; DeepSWE v1.1 (deepswe.datacurve.ai, read from the page data).
+- Prices from vendor pages: Claude, Google Cloud, xAI, DeepSeek, Z.ai, Cursor.
+- Prices via Artificial Analysis where the vendor page could not be read: OpenAI GPT-6 family (openai.com needs a Cloudflare check), Gemini 4 Carbon, Kimi, Meta, Xiaomi, MiniMax, Mistral, Qwen.
+- Free-tier details (OpenCode Zen, OpenRouter) last checked Aug 29.
+- Models with `aa:null` are legacy or not on the current AA index and are not ranked.
+
+Prices and benchmarks are directional — verify before scale deployment. Full disclaimer at the bottom of the page.
