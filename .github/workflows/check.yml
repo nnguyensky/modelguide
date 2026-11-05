@@ -18,7 +18,10 @@ jobs:
           node --check app.js
           node --check sw.js
           node --check tools/check-prices.mjs
+          node --check tools/build-feed.mjs
           node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8'))"
+      - name: RSS feed is up to date with data.js
+        run: node tools/build-feed.mjs --check
       - name: Install Playwright and axe-core
         run: |
           npm install --no-save playwright@1.63.0 axe-core@4.14.0

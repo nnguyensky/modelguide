@@ -331,3 +331,108 @@ main:focus { outline: none; }
 .cmp-table tbody th { padding: 11px 16px; border-bottom: 1px solid var(--line); font-weight: 500; vertical-align: top; background: var(--bg); }
 .pod.first .pod-block .rank { color: var(--accent-ink); }
 #detail { scroll-margin-top: 130px; }
+
+/* ── Nav badge: new since last visit ── */
+.nav-badge { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 600; font-family: var(--mono); margin-left: 2px; }
+.fresh-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 18px; padding: 12px 16px; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--ink); font-size: 14px; }
+.fresh-note .icon { color: var(--accent); margin-top: 2px; }
+.timeline li.fresh::before { width: 11px; height: 11px; left: 3px; background: var(--accent); box-shadow: 0 0 0 4px var(--surface), 0 0 0 7px color-mix(in srgb, var(--accent) 25%, transparent); }
+.timeline li.fresh .what { color: var(--accent); }
+
+/* ── Price history chart ── */
+.hist { margin: 0; }
+.hist svg { width: 100%; height: auto; display: block; font-family: var(--mono); overflow: visible; }
+.hist-axis { stroke: var(--line); }
+.hist-today { stroke: var(--muted); stroke-dasharray: 2 3; opacity: .6; }
+.hist-tick { font-size: 9.5px; fill: var(--muted); }
+.hist-val { font-size: 10px; fill: var(--ink); font-weight: 500; }
+.hist-out { stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; }
+.hist-in { stroke: var(--muted); stroke-width: 1.6; opacity: .7; stroke-linecap: round; }
+.hist-out.future, .hist-in.future { stroke-dasharray: 4 4; }
+.hist-dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
+.hist-dot.future { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.hist-key { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 4px; }
+.hist-key span { display: inline-flex; align-items: center; gap: 6px; }
+.hist-key i { display: inline-block; width: 14px; height: 0; border-top: 2.4px solid var(--accent); }
+.hist-key .k-in { border-top: 1.6px solid var(--muted); }
+.hist-key .k-fut { border-top: 2.4px dashed var(--accent); }
+.hist-list { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; font-size: 12px; }
+.hist-list li { display: grid; grid-template-columns: 56px 1fr auto; gap: 8px; color: var(--muted); }
+.hist-list li.future { font-style: italic; }
+
+/* ── Router ── */
+.perday { display: grid; gap: 6px; font-size: 13px; color: var(--muted); width: 180px; }
+.tiers-list { display: grid; gap: 0; }
+.tier { position: relative; padding: 20px 22px; }
+.tier-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.tier-num { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-family: var(--mono); font-size: 13px; font-weight: 600; background: var(--bc, var(--ink)); color: #FFFFFF; }
+.tier-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); align-items: end; }
+.tier-grid label, .tier-grid .share { display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+.tier-grid .select { width: 100%; }
+.share output { font-family: var(--mono); color: var(--ink); font-size: 14px; }
+.share .big-share { font-size: 22px; font-weight: 500; color: var(--accent); }
+.share input[type="range"] { width: 100%; accent-color: var(--accent); height: 28px; }
+.tier-meta { margin-top: 12px; font-size: 13px; color: var(--muted); }
+.tier-arrow { display: flex; align-items: center; gap: 8px; padding: 10px 0 10px 22px; font-size: 13px; color: var(--muted); }
+.tier-arrow .icon { color: var(--accent); }
+.flow { display: flex; height: 40px; margin-top: 10px; border-radius: 10px; overflow: hidden; gap: 2px; }
+.flow span { display: grid; place-items: center; min-width: 0; background: var(--bc); color: #FFFFFF; font-size: 12px; font-weight: 600; font-family: var(--mono); white-space: nowrap; overflow: hidden; transition: flex .25s ease; }
+.kpis { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.kpis > div { display: grid; gap: 2px; padding: 12px; border-radius: 12px; background: var(--bg); }
+.kpis b { font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+.kpis .good b { color: var(--good); }
+@media (max-width: 480px) { .kpis { grid-template-columns: 1fr; } }
+
+/* ── Cheat sheet (screen: A4 paper preview; print: the page itself) ── */
+.sheet-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; }
+.sheet { width: 210mm; max-width: 100%; min-height: 297mm; margin: 0 auto; padding: 12mm 12mm 10mm; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow-2); font-size: 10.5px; line-height: 1.35; display: flex; flex-direction: column; }
+.sheet-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); font-size: 13px; }
+.sheet-head .mono { font-size: 10px; color: var(--muted); align-self: center; }
+.sheet-grid { margin-top: 10px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; flex: 1; align-content: start; }
+@media (max-width: 640px) { .sheet-grid { grid-template-columns: 1fr; } }
+.sheet-group h2 { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); margin: 0 0 4px; padding-bottom: 3px; border-bottom: 1px solid var(--line); }
+.sheet-group h2 .icon { width: 12px; height: 12px; }
+.sheet-group ul, .sheet-group ol { list-style: none; margin: 0; padding: 0; }
+.sheet-group li { padding: 3px 0; border-bottom: 1px dotted var(--line); display: grid; grid-template-columns: 1fr auto; gap: 0 8px; }
+.sheet-group .st { grid-column: 1 / -1; color: var(--muted); font-size: 9.5px; }
+.sheet-group .sp em { font-style: normal; font-family: var(--mono); font-size: 9.5px; color: var(--muted); }
+.sheet-group .sc { text-align: right; font-weight: 500; }
+.sheet-group .sa { grid-column: 1 / -1; font-size: 9.5px; color: var(--muted); }
+.sheet-ladder li { grid-template-columns: 1fr auto auto; }
+.sheet-watch li, .sheet-rules li { display: block; }
+.sheet-rules { counter-reset: s; } .sheet-rules li { counter-increment: s; } .sheet-rules li::before { content: counter(s) ". "; font-family: var(--mono); color: var(--accent); }
+.sheet-foot { margin-top: 10px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 9px; color: var(--muted); }
+@page { size: A4 portrait; margin: 0; }
+@media print {
+  .sheet-bar, .stale { display: none !important; }
+  main { padding: 0 !important; max-width: none !important; }
+  .sheet { width: 210mm; min-height: 297mm; border: 0; border-radius: 0; box-shadow: none; margin: 0; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Header: 7 nav items — drop the status text before the header wraps */
+@media (max-width: 1500px) { .status { display: none; } }
+.nav a { padding: 8px 10px; }
+
+/* Router result tiles: compact for the side column */
+.kpis > div { padding: 10px; min-width: 0; }
+.kpis b { font-size: 20px; }
+.kpis .small { font-size: 12px; line-height: 1.3; }
+
+/* Cheat sheet: two lines per task so the page fits one A4 sheet */
+.sheet { padding: 10mm 11mm 8mm; font-size: 10px; line-height: 1.3; }
+.sheet-grid { gap: 8px 14px; margin-top: 8px; }
+.sheet-group li { padding: 2px 0; grid-template-columns: 1fr auto; }
+.sheet-group .st { grid-column: 1; grid-row: 1; }
+.sheet-group .sc { grid-column: 2; grid-row: 1; }
+.sheet-group .sp { grid-column: 1; grid-row: 2; }
+.sheet-group .sa { grid-column: 2; grid-row: 2; text-align: right; }
+.sheet-group h2 { margin-bottom: 2px; }
+.sheet-ladder li, .sheet-watch li, .sheet-rules li { padding: 1.5px 0; }
+.hist-tick { font-size: 10.5px; } .hist-val { font-size: 11px; }
+/* three balanced columns: fits one A4 page */
+.sheet-grid { display: block; column-count: 3; column-gap: 14px; }
+.sheet-group { break-inside: avoid; margin-bottom: 9px; }
+.sheet-group .sa { grid-column: 1 / -1; grid-row: 3; text-align: left; }
+@media (max-width: 760px) { .sheet-grid { column-count: 1; } }
+.sheet-group .sheet-ladder li { grid-template-columns: 1fr auto auto; gap: 0 8px; }
