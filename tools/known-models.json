@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-05",
+ "updated": "2026-11-09",
  "litellm": [
   "claude-fable-5",
   "claude-fable-5-1",
@@ -13,6 +13,8 @@
   "deepseek/deepseek-chat",
   "deepseek/deepseek-coder",
   "deepseek/deepseek-flash",
+  "deepseek/deepseek-flash-latest",
+  "deepseek/deepseek-pro-latest",
   "deepseek/deepseek-r1",
   "deepseek/deepseek-reasoner",
   "deepseek/deepseek-v3",
@@ -72,6 +74,7 @@
   "gpt-5.6-terra",
   "gpt-6-astra",
   "gpt-6-astra-law",
+  "gpt-6-cyber",
   "gpt-6-luna",
   "gpt-6-rosalind",
   "gpt-6-sol",
@@ -90,6 +93,7 @@
   "mistral/mistral-large-4-0",
   "moonshot/kimi-k3",
   "moonshot/kimi-k3.1-pro",
+  "moonshot/kimi-k3.1-pro-highspeed",
   "xai/grok-4.20",
   "xai/grok-4.20-0309",
   "xai/grok-4.20-0309-non-reasoning",
@@ -197,6 +201,7 @@
   "alibaba/qwen3.7-flash",
   "alibaba/qwen3.7-max",
   "alibaba/qwen3.7-plus",
+  "alibaba/qwen3.7-text-embedding",
   "alibaba/qwen3.8-2.4t-a95b",
   "alibaba/qwen3.8-27b",
   "alibaba/qwen3.8-flash",
@@ -204,6 +209,8 @@
   "alibaba/qwen3.8-max-0902",
   "alibaba/qwen3.8-omni-flash",
   "alibaba/qwq-plus",
+  "alibaba/text-embedding-v3",
+  "alibaba/text-embedding-v4",
   "alibaba/wan2.7-image",
   "alibaba/wan2.7-image-pro",
   "anthropic/claude-fable-5",
@@ -505,11 +512,13 @@
   "DeepSeek V4.1 Flash Free",
   "Flint 40B Free",
   "GLM-5.3-Flash Free",
+  "Iceman Free",
+  "Inkling 2 Small Free",
   "Jev 1.13 Free",
+  "LongCat 2.5 Free",
   "MiMo-V2.6-Flash Free",
   "Nemotron 3 Ultra Free",
   "Nemotron 3.5 Lightning Free",
-  "Nemotron 3.5 Super VL Free",
-  "Pulse Alpha Free"
+  "Nemotron 3.5 Super VL Free"
  ]
 }
