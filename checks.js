@@ -1,12 +1,12 @@
 // Written by the weekly data check (tools/weekly-check.mjs). Do not edit by hand.
 window.MG_CHECKS = {
- "date": "2026-11-09",
+ "date": "2026-11-16",
  "prices": {
   "models": 31,
   "diffs": 0
  },
  "applied": 0,
- "findings": 10,
+ "findings": 46,
  "sources": {
   "LiteLLM": "ok",
   "models.dev": "ok",
