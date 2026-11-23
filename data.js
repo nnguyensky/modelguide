@@ -570,7 +570,7 @@ MG.models = {
   "b": "Legacy. Promo $4/$20 thru Nov 21. Use GPT-6.1 Sol",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-23",
   "iAfter": 5,
   "oAfter": 30,
   "priceChangeDate": "2026-11-22",
@@ -2435,6 +2435,7 @@ MG.dsw = [{"id": "gpt-6-astra", "n": "GPT-6 Astra", "p": "OpenAI", "e": "xhigh",
 
 // Price & launch timeline, newest first. n:1 = new since the last refresh.
 MG.timeline = [
+    {d:'Nov 23, 2026', iso:'2026-11-23', added:'2026-11-23', p:'OpenAI', c:'gray', t:'GPT-5.6 Sol price change', b:'<strong>$5/$30 → $4/$20</strong> per 1M tokens (in/out). Detected in LiteLLM and models.dev — confirm on the vendor page before merging.', n:1},
     {d:'Oct 26, 2026', iso:'2026-10-26', added:'2026-11-05', p:'OpenCode Zen', c:'gray', t:'⚫ Zen free list reshuffled', b:'DeepSeek V4 Flash deprecated on Zen. Free now: <strong>DeepSeek V4.1 Flash, GLM-5.3-Flash, MiMo V2.6 Flash</strong>, NVIDIA Nemotron trio, Beam, Flint 40B, Big Pickle. MiMo v2.5, North Mini Code, Hy3 no longer free.', n:1},
     {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'Google', c:'blue', t:'🔵 Gemini 4 Carbon', b:'<strong>$4/$20</strong>. AA #1 overall (60). Price via Artificial Analysis.', n:1},
     {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'OpenAI', c:'emerald', t:'🟢 GPT-6.1 Terra', b:'<strong>$1/$5</strong> — half of GPT-5.6 Terra ($2/$12). AA 51 @ max.', n:1},
@@ -2479,7 +2480,7 @@ MG.history = {
  gpt61sol: [['~2026-09-01', 2, 10, 'Launch']],
  gpt6luna: [['~2026-09-01', 0.1, 0.5, 'Launch']],
  gpt61terra: [['~2026-10-01', 1, 5, 'Launch']],
- gptSol: [['2026-07-09', 5, 30, 'GA'], ['2026-08-21', 4, 20, 'Promo price'], ['2026-11-22', 5, 30, 'Promo ends']],
+ gptSol: [['2026-07-09', 5, 30, 'GA'], ['2026-08-21', 4, 20, 'Promo price'], ['2026-11-22', 5, 30, 'Promo ends'], ['2026-11-23', 4, 20, 'Price change (auto-detected)']],
  gptTerra: [['2026-07-09', 2.5, 15, 'GA'], ['2026-07-30', 2, 12, 'Price cut']],
  gptLuna: [['2026-07-09', 1, 6, 'GA'], ['2026-07-30', 0.2, 1.2, 'Price cut −80%']],
  gemini4carbon: [['~2026-10-01', 4, 20, 'Launch']],

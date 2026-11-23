@@ -9,6 +9,14 @@
     <language>en</language>
     <lastBuildDate>Thu, 05 Nov 2026 12:00:00 GMT</lastBuildDate>
     <item>
+      <title>GPT-5.6 Sol price change (OpenAI)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-23-gpt-5-6-sol-price-change</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>OpenAI</category>
+      <description><![CDATA[<p><strong>Nov 23, 2026</strong> · OpenAI</p><p><strong>$5/$30 → $4/$20</strong> per 1M tokens (in/out). Detected in LiteLLM and models.dev — confirm on the vendor page before merging.</p>]]></description>
+    </item>
+    <item>
       <title>Zen free list reshuffled (OpenCode Zen)</title>
       <link>https://nnguyensky.github.io/modelguide/#changes</link>
       <guid isPermaLink="false">model-guide-2026-10-26-zen-free-list-reshuffled</guid>
