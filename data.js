@@ -12,7 +12,7 @@
 // Cursor docs / Artificial Analysis (used by tools/weekly-check.mjs).
 // ═══════════════════════════════════════════════════════════════════
 var MG = window.MG = {};
-MG.checked = '2026-11-05';
+MG.checked = '2026-11-24';
 // Show a warning on the page when the data is older than this many days
 MG.staleDays = 30;
 // Public address of the site (used for links in the RSS feed, feed.xml)
@@ -27,7 +27,7 @@ MG.models = {
   "b": "Best Claude. AA #2 (max). Fast mode $8/$40",
   "t": "AA #2",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "Sep 22",
   "legacy": false,
   "ctx": "1M",
@@ -81,7 +81,7 @@ MG.models = {
   "b": "Best daily Claude. Writing, analysis",
   "t": "Best daily",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "~Sep 28",
   "legacy": false,
   "ctx": "1M",
@@ -130,13 +130,13 @@ MG.models = {
   "p": "Anthropic",
   "i": 10,
   "o": 50,
-  "aa": 50,
-  "b": "Costliest Claude. Scores below Opus 5.5 on AA",
-  "t": "Premium",
+  "aa": null,
+  "b": "Legacy. Fable 5.2 costs less ($8/$40) and scores higher",
+  "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
-  "sn": "Sep 1",
-  "legacy": false,
+  "v": "2026-11-24",
+  "sn": "legacy",
+  "legacy": true,
   "ctx": "1M",
   "open": false,
   "ladder": [
@@ -170,13 +170,14 @@ MG.models = {
   "official": true,
   "srcs": 3,
   "notes": [
-   "Scores below Opus 5.5 on AA at 2–5× the price"
+   "Newer model at the same or lower price — move off this ID"
   ],
   "mono": "F5",
   "ref": {
    "lit": "claude-fable-5-1",
    "md": "anthropic/models/claude-fable-5-1"
-  }
+  },
+  "c": "gray"
  },
  "haiku55": {
   "n": "Haiku 5.5",
@@ -187,7 +188,7 @@ MG.models = {
   "b": "Cheapest Claude. $0.50/$2.50 past 100K prompt",
   "t": "Budget",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "≤100K prompt; $0.50/$2.50 above",
   "legacy": false,
   "ctx": "1M",
@@ -245,7 +246,7 @@ MG.models = {
   "b": "Legacy. Opus 5.5 is cheaper and better",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "legacy",
   "legacy": true,
   "ctx": "1M",
@@ -268,7 +269,7 @@ MG.models = {
   "b": "Legacy. Use Fable 5.1 (same price)",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "legacy",
   "legacy": true,
   "ctx": "1M",
@@ -291,7 +292,7 @@ MG.models = {
   "b": "Legacy. Use Sonnet 5.5 (same price)",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "legacy",
   "legacy": true,
   "ctx": "1M",
@@ -329,13 +330,13 @@ MG.models = {
   "p": "OpenAI",
   "i": 10,
   "o": 50,
-  "aa": 57,
-  "b": "Top OpenAI. DeepSWE #1 (74.1%). $20/$75 past 272K",
-  "t": "DeepSWE #1",
+  "aa": null,
+  "b": "Legacy. GPT-6.2 Astra costs less ($8/$40) and scores higher. DeepSWE #1 (74.1%)",
+  "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
-  "sn": "Sep · $20/$75 &gt;272K",
-  "legacy": false,
+  "v": "2026-11-24",
+  "sn": "legacy",
+  "legacy": true,
   "ctx": "1M",
   "open": false,
   "ladder": [
@@ -370,6 +371,7 @@ MG.models = {
   "official": false,
   "srcs": 4,
   "notes": [
+   "Newer model at the same or lower price — move off this ID",
    "DeepSWE #1 (74.1%, ~29 agent steps)",
    "Above 272K tokens: $20 / $75"
   ],
@@ -382,20 +384,21 @@ MG.models = {
    "over": 272000,
    "i": 20,
    "o": 75
-  }
+  },
+  "c": "gray"
  },
  "gpt61sol": {
   "n": "GPT-6.1 Sol",
   "p": "OpenAI",
   "i": 2,
   "o": 10,
-  "aa": 55,
-  "b": "Best value at the top: AA 55 for ~$1.27/task. $4/$15 past 272K",
-  "t": "Best value",
+  "aa": null,
+  "b": "Legacy. GPT-6.2 Sol costs the same and scores higher",
+  "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
-  "sn": "Sep · $4/$15 &gt;272K",
-  "legacy": false,
+  "v": "2026-11-24",
+  "sn": "legacy",
+  "legacy": true,
   "ctx": "1M",
   "open": false,
   "ladder": [
@@ -429,6 +432,7 @@ MG.models = {
   "official": false,
   "srcs": 4,
   "notes": [
+   "Newer model at the same or lower price — move off this ID",
    "Not on DeepSWE yet — coding score is AA only",
    "Above 272K tokens: $4 / $15"
   ],
@@ -441,7 +445,8 @@ MG.models = {
    "over": 272000,
    "i": 4,
    "o": 15
-  }
+  },
+  "c": "gray"
  },
  "gpt61terra": {
   "n": "GPT-6.1 Terra",
@@ -452,7 +457,7 @@ MG.models = {
   "b": "Budget OpenAI. AA 51 for ~$0.96/task. $2/$7.50 past 272K",
   "t": "Budget",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "Oct · $2/$7.50 &gt;272K",
   "legacy": false,
   "ctx": "1M",
@@ -511,7 +516,7 @@ MG.models = {
   "b": "Cheapest OpenAI. Bulk, classify",
   "t": "Cheapest",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "Sep · $0.20/$0.75 &gt;272K",
   "legacy": false,
   "ctx": "1M",
@@ -567,16 +572,11 @@ MG.models = {
   "i": 4,
   "o": 20,
   "aa": null,
-  "b": "Legacy. Promo $4/$20 thru Nov 21. Use GPT-6.1 Sol",
+  "b": "Legacy. Still $4/$20 (promo extended). Use GPT-6.2 Sol",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
-  "iAfter": 5,
-  "oAfter": 30,
-  "priceChangeDate": "2026-11-22",
-  "bAfter": "Legacy. $5/$30 (promo ended Nov 21). Use GPT-6.1 Sol",
-  "sn": "legacy · promo thru Nov 21 → $5/$30",
-  "snAfter": "legacy · promo ended Nov 21",
+  "v": "2026-11-24",
+  "sn": "legacy · $4/$20",
   "legacy": true,
   "ctx": "1M",
   "open": false,
@@ -584,7 +584,7 @@ MG.models = {
   "official": false,
   "srcs": 4,
   "notes": [
-   "Promo $4 / $20 ends Nov 21 → $5 / $30"
+   "Promo price $4/$20 has no end date on OpenCode and Cursor"
   ],
   "mono": "S5",
   "ref": {
@@ -606,7 +606,7 @@ MG.models = {
   "b": "Legacy. GPT-6.1 Terra is cheaper",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "legacy",
   "legacy": true,
   "ctx": "1M",
@@ -634,7 +634,7 @@ MG.models = {
   "b": "Legacy. GPT-6 Luna is cheaper",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "legacy",
   "legacy": true,
   "ctx": "1M",
@@ -656,14 +656,14 @@ MG.models = {
  "gemini4carbon": {
   "n": "Gemini 4 Carbon",
   "p": "Google",
-  "i": 4,
-  "o": 20,
+  "i": 2,
+  "o": 10,
   "aa": 60,
-  "b": "AA #1 overall",
-  "t": "AA #1",
+  "b": "Promo $2/$10 thru Nov 30, then $4/$20. AA 60",
+  "t": "Flagship",
   "fr": 0,
-  "v": "2026-11-05",
-  "sn": "Oct",
+  "v": "2026-11-24",
+  "sn": "promo thru Nov 30 → $4/$20",
   "legacy": false,
   "ctx": "1M",
   "open": false,
@@ -685,13 +685,24 @@ MG.models = {
    ]
   ],
   "aaCost": 7.76,
-  "official": false,
-  "srcs": 1,
+  "official": true,
+  "srcs": 4,
   "notes": [
-   "Price from one source (not on the Google Cloud page)",
+   "Promo price ends Nov 30 → $4 / $20",
    "Completions over 32K tokens are billed even if they fail"
   ],
-  "mono": "C4"
+  "mono": "C4",
+  "iAfter": 4,
+  "oAfter": 20,
+  "priceChangeDate": "2026-12-01",
+  "c": "blue",
+  "bAfter": "Google flagship tier. AA 60",
+  "snAfter": "standard since Dec 1",
+  "ref": {
+   "lit": "gemini/gemini-4-carbon",
+   "md": "google/models/gemini-4-carbon",
+   "cursor": "Gemini 4 Carbon"
+  }
  },
  "gemini4argon": {
   "n": "Gemini 4 Argon",
@@ -702,7 +713,7 @@ MG.models = {
   "b": "Promo $2/$10 thru Nov 30, then $4/$20",
   "t": "Flagship",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "iAfter": 4,
   "oAfter": 20,
   "priceChangeDate": "2026-12-01",
@@ -734,7 +745,7 @@ MG.models = {
   "b": "Coding value: DeepSWE 73.8% (#2) at $2.36/task. Computer use, audio/video in",
   "t": "Coding value",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "iAfter": 1.5,
   "oAfter": 7.5,
   "priceChangeDate": "2027-01-01",
@@ -762,12 +773,14 @@ MG.models = {
   "notes": [
    "Intro price ends Dec 31 — doubles to $1.50 / $7.50",
    "DeepSWE #2 (73.8%) despite a low AA score",
-   "Text, image, video and audio input; built-in computer use"
+   "Text, image, video and audio input; built-in computer use",
+   "No longer on Artificial Analysis’s current list"
   ],
   "mono": "F3",
   "ref": {
    "lit": "gemini-3.8-flash",
-   "md": "google/models/gemini-3.8-flash"
+   "md": "google/models/gemini-3.8-flash",
+   "noAA": true
   }
  },
  "gemini37f": {
@@ -868,7 +881,7 @@ MG.models = {
   "b": "xAI flagship. 500K ctx. In Cursor plan pool",
   "t": "xAI flagship",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "Sep · $4/$12 &gt;200K",
   "legacy": false,
   "ctx": "500K",
@@ -890,7 +903,7 @@ MG.models = {
     7.77
    ]
   ],
-  "aaCost": 6.18,
+  "aaCost": 7.77,
   "official": true,
   "srcs": 3,
   "notes": [
@@ -966,7 +979,7 @@ MG.models = {
   "b": "Cheapest Cursor coding model. Cursor only (not on AA)",
   "t": "Cursor $/task",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "Cursor only",
   "cu": 1,
   "legacy": false,
@@ -992,7 +1005,7 @@ MG.models = {
   "b": "Strong non-US alternative. Proprietary",
   "t": "Alt family",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "Oct 23",
   "legacy": false,
   "ctx": "1M",
@@ -1018,7 +1031,7 @@ MG.models = {
   "b": "Meta flagship (API). Full version AA 50, no public price",
   "t": "Meta",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1037,13 +1050,13 @@ MG.models = {
   "p": "Alibaba",
   "i": 2,
   "o": 6,
-  "aa": 34,
-  "b": "Alibaba flagship. Pricey per task",
-  "t": "Alibaba",
+  "aa": null,
+  "b": "Legacy. Use Qwen4 Max",
+  "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
-  "sn": "",
-  "legacy": false,
+  "v": "2026-11-24",
+  "sn": "legacy",
+  "legacy": true,
   "ctx": "1M",
   "open": false,
   "aaCost": 10.02,
@@ -1053,7 +1066,8 @@ MG.models = {
   "mono": "QM",
   "ref": {
    "md": "alibaba/models/qwen3.8-max"
-  }
+  },
+  "c": "gray"
  },
  "dsV41Flash": {
   "n": "DeepSeek V4.1 Flash",
@@ -1064,7 +1078,7 @@ MG.models = {
   "b": "Open weights. Off-peak half price ($0.15/$0.60). Free on Zen (limited time)",
   "t": "Open value",
   "fr": 2,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "peak price · off-peak $0.15/$0.60",
   "legacy": false,
   "ctx": "1M",
@@ -1108,7 +1122,7 @@ MG.models = {
   "b": "Open weights, MIT. Off-peak $0.66/$1.98. Flash scores higher",
   "t": "MIT",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "peak price · off-peak $0.66/$1.98",
   "legacy": false,
   "ctx": "1M",
@@ -1147,7 +1161,7 @@ MG.models = {
   "b": "Top open-weight coder on DeepSWE (69%)",
   "t": "Open coder",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1180,10 +1194,10 @@ MG.models = {
   "i": 0.15,
   "o": 0.5,
   "aa": 28,
-  "b": "DeepSWE 63.4% at $0.24/task. MIT. Free on Zen (limited time)",
+  "b": "DeepSWE 63.4% at $0.24/task. MIT",
   "t": "Budget open",
-  "fr": 2,
-  "v": "2026-11-05",
+  "fr": 0,
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1195,8 +1209,7 @@ MG.models = {
   "mono": "GF",
   "ref": {
    "lit": "zai/glm-5.3-flash",
-   "md": "zai/models/glm-5.3-flash",
-   "zen": "GLM-5.3-Flash Free"
+   "md": "zai/models/glm-5.3-flash"
   }
  },
  "glm52": {
@@ -1208,7 +1221,7 @@ MG.models = {
   "b": "Legacy. Use GLM-5.3 (same price)",
   "t": "Legacy",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "legacy",
   "legacy": true,
   "ctx": "1M",
@@ -1231,7 +1244,7 @@ MG.models = {
   "b": "Open weights. AA 30 for $0.26/task",
   "t": "Open value",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1254,7 +1267,7 @@ MG.models = {
   "b": "Open weights. Free on Zen (limited time; data may be used for training)",
   "t": "Open budget",
   "fr": 2,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1281,7 +1294,7 @@ MG.models = {
   "b": "Open weights, 1M ctx",
   "t": "Open",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1303,7 +1316,7 @@ MG.models = {
   "b": "Open weights (EU lab)",
   "t": "EU open",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "1M",
@@ -1357,7 +1370,7 @@ MG.models = {
   "b": "Open weights, 256K ctx. Best local-size model on AA",
   "t": "Local",
   "fr": 0,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "sn": "",
   "legacy": false,
   "ctx": "256K",
@@ -1390,17 +1403,17 @@ MG.models = {
  "nemotron35svl": {
   "n": "Nemotron 3.5 Super VL",
   "p": "NVIDIA",
-  "i": 0.2,
+  "i": 0.15,
   "o": 0.5,
   "aa": 14,
   "b": "Vision-language. Free on Zen (trial — no personal data)",
   "t": "Free vision",
   "fr": 2,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "legacy": false,
   "ctx": "1M",
   "open": true,
-  "aaCost": 0.54,
+  "aaCost": 0.48,
   "official": true,
   "srcs": 3,
   "notes": [
@@ -1420,7 +1433,7 @@ MG.models = {
   "b": "Free on Zen. Not used for training; kept 30 days",
   "t": "Free",
   "fr": 2,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "legacy": false,
   "ctx": "1M",
   "open": true,
@@ -1441,7 +1454,7 @@ MG.models = {
   "b": "Stealth model. Free on Zen; data may be used for training",
   "t": "Smoke tests",
   "fr": 2,
-  "v": "2026-11-05",
+  "v": "2026-11-24",
   "legacy": false,
   "ctx": "1M",
   "open": false,
@@ -1488,6 +1501,253 @@ MG.models = {
   "official": false,
   "srcs": 1,
   "mono": "G3"
+ },
+ "fable52": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "1M",
+  "v": "2026-11-24",
+  "n": "Fable 5.2",
+  "p": "Anthropic",
+  "i": 8,
+  "o": 40,
+  "aa": 65,
+  "e": [
+   "low",
+   "med",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "b": "Highest AA score (65), but $26.54 a task at max. Cheaper than Fable 5.1",
+  "t": "AA #1",
+  "c": "purple",
+  "sn": "Nov 2026",
+  "aaCost": 26.54,
+  "official": true,
+  "srcs": 4,
+  "mono": "F2",
+  "notes": [
+   "$26.54 a task at max: +6 AA over Opus 5.5 for 2.6× the cost",
+   "Not on DeepSWE yet"
+  ],
+  "ref": {
+   "lit": "claude-fable-5-2",
+   "md": "anthropic/models/claude-fable-5-2",
+   "cursor": "Claude Fable 5.2"
+  }
+ },
+ "gpt62astra": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "1M",
+  "v": "2026-11-24",
+  "n": "GPT-6.2 Astra",
+  "p": "OpenAI",
+  "i": 8,
+  "o": 40,
+  "aa": 62,
+  "e": [
+   "low",
+   "med",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "b": "Top OpenAI. AA 62 for $4.00/task. $16/$60 past 272K",
+  "t": "Top OpenAI",
+  "c": "blue",
+  "sn": "Nov 2026 · $16/$60 &gt;272K",
+  "aaCost": 4.0,
+  "official": false,
+  "srcs": 4,
+  "mono": "A2",
+  "long": {
+   "over": 272000,
+   "i": 16,
+   "o": 60
+  },
+  "notes": [
+   "Not on DeepSWE yet (GPT-6 Astra scored 74.1%)",
+   "Above 272K tokens: $16 / $60"
+  ],
+  "ref": {
+   "lit": "gpt-6.2-astra",
+   "md": "openai/models/gpt-6.2-astra"
+  }
+ },
+ "gpt62sol": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "1M",
+  "v": "2026-11-24",
+  "n": "GPT-6.2 Sol",
+  "p": "OpenAI",
+  "i": 2,
+  "o": 10,
+  "aa": 57,
+  "e": [
+   "low",
+   "med",
+   "high",
+   "xhigh",
+   "max"
+  ],
+  "b": "Best value at the top: AA 57 for $1.01/task. $4/$15 past 272K",
+  "t": "Best value",
+  "c": "green",
+  "sn": "Nov 2026 · $4/$15 &gt;272K",
+  "aaCost": 1.01,
+  "official": false,
+  "srcs": 4,
+  "mono": "S2",
+  "long": {
+   "over": 272000,
+   "i": 4,
+   "o": 15
+  },
+  "notes": [
+   "Not on DeepSWE yet — coding score is AA only",
+   "Above 272K tokens: $4 / $15",
+   "AA by effort: low 41 · medium 53 · high 55 · xhigh 56 · max 57 (cost per effort not published)"
+  ],
+  "ref": {
+   "lit": "gpt-6.2-sol",
+   "md": "openai/models/gpt-6.2-sol"
+  }
+ },
+ "gemini4neon": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "1M",
+  "v": "2026-11-24",
+  "n": "Gemini 4 Neon",
+  "p": "Google",
+  "i": 3,
+  "o": 15,
+  "aa": 61,
+  "e": [
+   "low",
+   "med",
+   "high",
+   "xhigh"
+  ],
+  "b": "Top Google: AA 61 for $6.44/task, cheaper and better than Carbon",
+  "t": "Top Google",
+  "c": "blue",
+  "sn": "Nov 2026",
+  "aaCost": 6.44,
+  "official": true,
+  "srcs": 4,
+  "mono": "N4",
+  "notes": [
+   "AA by effort: low 44 · medium 55 · high 60 · xhigh 61",
+   "Completions over 32K tokens are billed even if they fail"
+  ],
+  "ref": {
+   "lit": "gemini/gemini-4-neon",
+   "md": "google/models/gemini-4-neon",
+   "cursor": "Gemini 4 Neon"
+  }
+ },
+ "gemini4hydrogen": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "1M",
+  "v": "2026-11-24",
+  "n": "Gemini 4 Hydrogen",
+  "p": "Google",
+  "i": 1.5,
+  "o": 7.5,
+  "aa": 54,
+  "e": [
+   "low",
+   "med",
+   "high",
+   "xhigh"
+  ],
+  "b": "Mid-tier Gemini 4: AA 54 for $3.16/task",
+  "t": "Google mid",
+  "c": "cyan",
+  "sn": "Nov 2026",
+  "aaCost": 3.16,
+  "official": true,
+  "srcs": 4,
+  "mono": "H4",
+  "notes": [
+   "Completions over 32K tokens are billed even if they fail"
+  ],
+  "ref": {
+   "lit": "gemini/gemini-4-hydrogen",
+   "md": "google/models/gemini-4-hydrogen",
+   "cursor": "Gemini 4 Hydrogen"
+  }
+ },
+ "qwen4max": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "984K",
+  "v": "2026-11-24",
+  "n": "Qwen4 Max",
+  "p": "Alibaba",
+  "i": 1.5,
+  "o": 4.5,
+  "aa": 43,
+  "e": [],
+  "b": "Alibaba flagship (replaces Qwen3.8 Max). AA 43 for $3.27/task",
+  "t": "Alibaba",
+  "c": "cyan",
+  "sn": "Nov 2026",
+  "aaCost": 3.27,
+  "official": false,
+  "srcs": 3,
+  "mono": "Q4",
+  "notes": [
+   "Proprietary (not open weights)"
+  ],
+  "ref": {
+   "lit": "dashscope/qwen4-max",
+   "aaName": "Qwen4 Max"
+  }
+ },
+ "museEmber": {
+  "open": false,
+  "fr": 0,
+  "legacy": false,
+  "ctx": "1M",
+  "v": "2026-11-24",
+  "n": "Muse Ember",
+  "p": "Meta",
+  "i": 0.1,
+  "o": 0.5,
+  "aa": 36,
+  "e": [],
+  "b": "Cheap Meta model: AA 36 for $0.14/task (same score as Haiku 5.5). $0.30/$1.50 past 200K",
+  "t": "Cheap",
+  "c": "blue",
+  "sn": "Nov 2026 · $0.30/$1.50 &gt;200K",
+  "aaCost": 0.14,
+  "official": false,
+  "srcs": 4,
+  "mono": "ME",
+  "long": {
+   "over": 200000,
+   "i": 0.3,
+   "o": 1.5
+  },
+  "notes": [
+   "Above 200K tokens: $0.30 / $1.50"
+  ],
+  "ref": {
+   "lit": "meta/muse-ember-1.0",
+   "md": "meta/models/muse-ember-1.0"
+  }
  }
 };
 
@@ -1500,9 +1760,9 @@ MG.groups = [
    {
     "t": "Write routine code",
     "pr": {
-     "m": "gpt61sol",
-     "e": "high",
-     "c": "~$0.59"
+     "m": "gpt62sol",
+     "e": "max",
+     "c": "~$1.01"
     },
     "alts": [
      {
@@ -1537,34 +1797,34 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Near tier, 5× cheaper",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
-      "m": "gpt6astra",
-      "e": "xhigh",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 2,
-      "l": "DeepSWE #1",
-      "c": "~$3.66"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      },
      {
-      "m": "gemini4carbon",
-      "e": "high",
+      "m": "gemini4neon",
+      "e": "xhigh",
       "r": 3,
-      "l": "AA #1",
-      "c": "~$7.76"
+      "l": "Top Google",
+      "c": "~$6.44"
      }
     ]
    },
    {
     "t": "Pipeline-critical multi-file",
     "pr": {
-     "m": "gpt6astra",
-     "e": "xhigh",
-     "c": "~$4.43 (DeepSWE)"
+     "m": "gpt62astra",
+     "e": "max",
+     "c": "~$4.00"
     },
     "alts": [
      {
@@ -1575,11 +1835,11 @@ MG.groups = [
       "c": "~$2.36 (DeepSWE)"
      },
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 2,
       "l": "Budget",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
       "m": "opus55",
@@ -1606,18 +1866,18 @@ MG.groups = [
       "c": "~$0.60"
      },
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 2,
       "l": "Value",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
-      "m": "gpt6astra",
-      "e": "high",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 3,
-      "l": "Strong alt",
-      "c": "~$3.24"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      }
     ]
    },
@@ -1637,11 +1897,11 @@ MG.groups = [
       "c": "~$0.60"
      },
      {
-      "m": "gpt61sol",
-      "e": "xhigh",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 2,
       "l": "Second opinion",
-      "c": "~$0.76"
+      "c": "~$1.01"
      },
      {
       "m": "kimiK31pro",
@@ -1655,9 +1915,9 @@ MG.groups = [
    {
     "t": "Multi-step agent workflow",
     "pr": {
-     "m": "gpt61sol",
+     "m": "gpt62sol",
      "e": "max",
-     "c": "~$1.27"
+     "c": "~$1.01"
     },
     "alts": [
      {
@@ -1675,11 +1935,11 @@ MG.groups = [
       "c": "~$3.46"
      },
      {
-      "m": "gpt6astra",
-      "e": "xhigh",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 3,
-      "l": "Stronger",
-      "c": "~$3.66"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      }
     ]
    },
@@ -1736,11 +1996,11 @@ MG.groups = [
       "c": "~$0.16"
      },
      {
-      "m": "gpt61sol",
-      "e": "high",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 2,
       "l": "Cheaper",
-      "c": "~$0.59"
+      "c": "~$1.01"
      },
      {
       "m": "opus55",
@@ -1767,11 +2027,11 @@ MG.groups = [
       "c": "~$0.04"
      },
      {
-      "m": "mimoV26f",
+      "m": "museEmber",
       "e": "",
       "r": 2,
-      "l": "Open weights",
-      "c": "~$0.13"
+      "l": "Meta budget",
+      "c": "~$0.14"
      },
      {
       "m": "sonnet55",
@@ -1805,11 +2065,11 @@ MG.groups = [
       "c": "~$0.07"
      },
      {
-      "m": "mimoV26f",
+      "m": "museEmber",
       "e": "",
       "r": 3,
-      "l": "Open weights",
-      "c": "~$0.13"
+      "l": "Meta budget",
+      "c": "~$0.14"
      }
     ]
    },
@@ -1829,11 +2089,11 @@ MG.groups = [
       "c": "~$0.16"
      },
      {
-      "m": "gpt61sol",
-      "e": "high",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 2,
       "l": "Alt voice",
-      "c": "~$0.59"
+      "c": "~$1.01"
      },
      {
       "m": "opus55",
@@ -1853,9 +2113,9 @@ MG.groups = [
    {
     "t": "Analyze data / statistics",
     "pr": {
-     "m": "gpt61sol",
+     "m": "gpt62sol",
      "e": "max",
-     "c": "~$1.27"
+     "c": "~$1.01"
     },
     "alts": [
      {
@@ -1890,11 +2150,11 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Budget",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
       "m": "kimiK31pro",
@@ -1904,11 +2164,11 @@ MG.groups = [
       "c": "~$3.68"
      },
      {
-      "m": "gemini4carbon",
-      "e": "high",
+      "m": "gemini4neon",
+      "e": "xhigh",
       "r": 3,
-      "l": "AA #1",
-      "c": "~$7.76"
+      "l": "Top Google",
+      "c": "~$6.44"
      }
     ]
    },
@@ -1928,11 +2188,11 @@ MG.groups = [
       "c": "~$0.04"
      },
      {
-      "m": "mimoV26f",
+      "m": "museEmber",
       "e": "",
       "r": 2,
-      "l": "Open weights",
-      "c": "~$0.13"
+      "l": "Meta budget",
+      "c": "~$0.14"
      },
      {
       "m": "glm53f",
@@ -1983,24 +2243,24 @@ MG.groups = [
    {
     "t": "Math proof / hard reasoning",
     "pr": {
-     "m": "gemini4carbon",
-     "e": "high",
-     "c": "~$7.76"
+     "m": "gemini4neon",
+     "e": "xhigh",
+     "c": "~$6.44"
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Budget",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
-      "m": "gpt6astra",
+      "m": "gpt62astra",
       "e": "max",
       "r": 2,
-      "l": "Strong alt",
-      "c": "~$6.24"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      },
      {
       "m": "opus55",
@@ -2020,11 +2280,11 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Value",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
       "m": "sonnet55",
@@ -2045,9 +2305,9 @@ MG.groups = [
    {
     "t": "Logic / puzzle solving",
     "pr": {
-     "m": "gpt61sol",
+     "m": "gpt62sol",
      "e": "max",
-     "c": "~$1.27"
+     "c": "~$1.01"
     },
     "alts": [
      {
@@ -2058,11 +2318,11 @@ MG.groups = [
       "c": "~$0.60"
      },
      {
-      "m": "gpt6astra",
-      "e": "high",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 2,
-      "l": "Stronger",
-      "c": "~$3.24"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      },
      {
       "m": "opus55",
@@ -2088,42 +2348,42 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Value",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
-      "m": "gpt6astra",
-      "e": "xhigh",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 2,
-      "l": "DeepSWE #1",
-      "c": "~$3.66"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      },
      {
-      "m": "fable51",
-      "e": "xhigh",
+      "m": "fable52",
+      "e": "max",
       "r": 3,
-      "l": "Long runs",
-      "c": "~$10.85"
+      "l": "AA #1",
+      "c": "~$26.54"
      }
     ]
    },
    {
     "t": "Vulnerability research / CVE",
     "pr": {
-     "m": "gpt6astra",
+     "m": "gpt62astra",
      "e": "max",
-     "c": "~$6.24"
+     "c": "~$4.00"
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Budget",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
       "m": "kimiK31pro",
@@ -2157,11 +2417,11 @@ MG.groups = [
       "c": "~$0.46"
      },
      {
-      "m": "gpt61sol",
-      "e": "high",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 2,
       "l": "Cheaper",
-      "c": "~$0.59"
+      "c": "~$1.01"
      },
      {
       "m": "opus55",
@@ -2181,25 +2441,25 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Value",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
-      "m": "gpt6astra",
-      "e": "high",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 2,
-      "l": "Strong alt",
-      "c": "~$3.24"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      },
      {
-      "m": "gemini4carbon",
-      "e": "medium",
+      "m": "gemini4neon",
+      "e": "xhigh",
       "r": 3,
-      "l": "AA #1",
-      "c": "~$6.59"
+      "l": "Top Google",
+      "c": "~$6.44"
      }
     ]
    }
@@ -2225,18 +2485,18 @@ MG.groups = [
       "c": "~$0.26"
      },
      {
-      "m": "gpt61sol",
-      "e": "high",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 2,
       "l": "Cheaper",
-      "c": "~$0.59"
+      "c": "~$1.01"
      },
      {
-      "m": "gemini4carbon",
-      "e": "medium",
+      "m": "gemini4neon",
+      "e": "xhigh",
       "r": 3,
       "l": "Top Google",
-      "c": "~$6.59"
+      "c": "~$6.44"
      }
     ]
    },
@@ -2263,11 +2523,11 @@ MG.groups = [
       "c": "~$0.26"
      },
      {
-      "m": "gpt61sol",
-      "e": "high",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 3,
       "l": "Cheaper",
-      "c": "~$0.59"
+      "c": "~$1.01"
      }
     ]
    },
@@ -2280,11 +2540,11 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
+      "m": "gpt62sol",
       "e": "max",
       "r": 1,
       "l": "Value",
-      "c": "~$1.27"
+      "c": "~$1.01"
      },
      {
       "m": "gemini38f",
@@ -2294,11 +2554,11 @@ MG.groups = [
       "c": "~$2.36 (DeepSWE)"
      },
      {
-      "m": "gpt6astra",
-      "e": "high",
+      "m": "gpt62astra",
+      "e": "max",
       "r": 3,
-      "l": "Strong alt",
-      "c": "~$3.24"
+      "l": "Top OpenAI",
+      "c": "~$4.00"
      }
     ]
    },
@@ -2311,11 +2571,11 @@ MG.groups = [
     },
     "alts": [
      {
-      "m": "gpt61sol",
-      "e": "high",
+      "m": "gpt62sol",
+      "e": "max",
       "r": 1,
       "l": "Cheaper",
-      "c": "~$0.59"
+      "c": "~$1.01"
      },
      {
       "m": "opus55",
@@ -2342,11 +2602,11 @@ MG.groups = [
       "c": "~$0"
      },
      {
-      "m": "gemini4carbon",
-      "e": "medium",
+      "m": "gemini4neon",
+      "e": "xhigh",
       "r": 2,
       "l": "Top Google",
-      "c": "~$6.59"
+      "c": "~$6.44"
      },
      {
       "m": "opus55",
@@ -2435,6 +2695,15 @@ MG.dsw = [{"id": "gpt-6-astra", "n": "GPT-6 Astra", "p": "OpenAI", "e": "xhigh",
 
 // Price & launch timeline, newest first. n:1 = new since the last refresh.
 MG.timeline = [
+    {d:'Nov 2026', iso:'2026-11-24', added:'2026-11-24', p:'Anthropic', c:'violet', t:'🟣 Fable 5.2', b:'<strong>$8/$40</strong> — cheaper than Fable 5.1 ($10/$50) and now <strong>#1 on AA (65)</strong>. $26.54 a task at max. Fable 5.1 becomes legacy.', n:1},
+    {d:'Nov 2026', iso:'2026-11-23', added:'2026-11-24', p:'OpenAI', c:'emerald', t:'🟢 GPT-6.2 Astra · GPT-6.2 Sol', b:'<strong>Astra $8/$40</strong> (AA 62, $4.00/task; was $10/$50) · <strong>Sol $2/$10</strong> (AA 57, $1.01/task). GPT-6 Astra and GPT-6.1 Sol become legacy.', n:1},
+    {d:'Nov 2026', iso:'2026-11-22', added:'2026-11-24', p:'Google', c:'blue', t:'🔵 Gemini 4 Neon · Gemini 4 Hydrogen', b:'<strong>Neon $3/$15</strong> (AA 61, $6.44/task) · <strong>Hydrogen $1.50/$7.50</strong> (AA 54, $3.16/task). Neon beats Carbon on score and price.', n:1},
+    {d:'Nov 24, 2026', iso:'2026-11-24', added:'2026-11-24', p:'Google', c:'blue', t:'🔵 Gemini 4 Carbon promo price', b:'Google Cloud now shows <strong>$2/$10</strong> through Nov 30, then <strong>$4/$20</strong> (same promo as Argon).', n:1},
+    {d:'Nov 21, 2026', iso:'2026-11-21', added:'2026-11-24', p:'OpenAI', c:'emerald', t:'🟢 GPT-5.6 Sol promo extended', b:'The $4/$20 price did not end on Nov 21 — OpenCode, Cursor, LiteLLM and models.dev all still show <strong>$4/$20</strong>. GPT-5.6 Sol is legacy.', n:1},
+    {d:'Nov 2026', iso:'2026-11-15', added:'2026-11-24', p:'Alibaba', c:'gray', t:'⚫ Qwen4 Max', b:'<strong>$1.50/$4.50</strong>, AA 43 ($3.27/task), proprietary. Replaces Qwen3.8 Max.', n:1},
+    {d:'Nov 2026', iso:'2026-11-15', added:'2026-11-24', p:'Meta', c:'blue', t:'🔵 Muse Ember', b:'<strong>$0.10/$0.50</strong>, AA 36 for $0.14/task — same score as Haiku 5.5 at a third of the cost.', n:1},
+    {d:'Nov 2026', iso:'2026-11-24', added:'2026-11-24', p:'OpenCode Zen', c:'gray', t:'⚫ Zen free list changed', b:'GLM-5.3-Flash is <strong>no longer free</strong> ($0.15/$0.50). New free models: Tidepool Alpha, Iceman, Hy4 Flash.', n:1},
+    {d:'Nov 2026', iso:'2026-11-24', added:'2026-11-24', p:'Z.ai', c:'gray', t:'⚫ GLM-5.4 announced', b:'Loop Transformer architecture; available to GLM Coding Plan users. <strong>No API price yet</strong> (waiting on a security assessment).', n:1},
     {d:'Oct 26, 2026', iso:'2026-10-26', added:'2026-11-05', p:'OpenCode Zen', c:'gray', t:'⚫ Zen free list reshuffled', b:'DeepSeek V4 Flash deprecated on Zen. Free now: <strong>DeepSeek V4.1 Flash, GLM-5.3-Flash, MiMo V2.6 Flash</strong>, NVIDIA Nemotron trio, Beam, Flint 40B, Big Pickle. MiMo v2.5, North Mini Code, Hy3 no longer free.', n:1},
     {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'Google', c:'blue', t:'🔵 Gemini 4 Carbon', b:'<strong>$4/$20</strong>. AA #1 overall (60). Price via Artificial Analysis.', n:1},
     {d:'Oct 2026', iso:'2026-10-01', added:'2026-11-05', p:'OpenAI', c:'emerald', t:'🟢 GPT-6.1 Terra', b:'<strong>$1/$5</strong> — half of GPT-5.6 Terra ($2/$12). AA 51 @ max.', n:1},
@@ -2479,10 +2748,17 @@ MG.history = {
  gpt61sol: [['~2026-09-01', 2, 10, 'Launch']],
  gpt6luna: [['~2026-09-01', 0.1, 0.5, 'Launch']],
  gpt61terra: [['~2026-10-01', 1, 5, 'Launch']],
- gptSol: [['2026-07-09', 5, 30, 'GA'], ['2026-08-21', 4, 20, 'Promo price'], ['2026-11-22', 5, 30, 'Promo ends']],
+ gptSol: [['2026-07-09', 5, 30, 'GA'], ['2026-08-21', 4, 20, 'Promo price (extended past Nov 21)']],
  gptTerra: [['2026-07-09', 2.5, 15, 'GA'], ['2026-07-30', 2, 12, 'Price cut']],
  gptLuna: [['2026-07-09', 1, 6, 'GA'], ['2026-07-30', 0.2, 1.2, 'Price cut −80%']],
- gemini4carbon: [['~2026-10-01', 4, 20, 'Launch']],
+ gemini4carbon: [['~2026-10-01', 4, 20, 'Launch'], ['2026-11-24', 2, 10, 'Promo price on Google Cloud'], ['2026-12-01', 4, 20, 'Promo ends']],
+ gemini4neon: [['~2026-11-22', 3, 15, 'Launch']],
+ gemini4hydrogen: [['~2026-11-22', 1.5, 7.5, 'Launch']],
+ fable52: [['~2026-11-24', 8, 40, 'Launch']],
+ gpt62astra: [['~2026-11-23', 8, 40, 'Launch']],
+ gpt62sol: [['~2026-11-23', 2, 10, 'Launch']],
+ museEmber: [['~2026-11-15', 0.1, 0.5, 'Launch']],
+ qwen4max: [['~2026-11-15', 1.5, 4.5, 'Launch']],
  gemini4argon: [['~2026-10-13', 2, 10, 'Launch (promo)'], ['2026-12-01', 4, 20, 'Promo ends']],
  gemini38f: [['~2026-09-02', 0.75, 3.75, 'Launch (intro price)'], ['2027-01-01', 1.5, 7.5, 'Intro price ends']],
  gemini37f: [['2026-08-13', 0.75, 3.75, 'Launch (intro price)'], ['2027-01-01', 1.5, 7.5, 'Intro price ends']],
@@ -2498,43 +2774,44 @@ MG.history = {
 
 // Upcoming changes: shown until their date passes.
 MG.watch = [
- {until:'2026-11-22', d:'Nov 21', t:'GPT-5.6 Sol promo ends', b:'$4/$20 → $5/$30'},
- {until:'2026-12-01', d:'Nov 30', t:'Gemini 4 Argon promo ends', b:'$2/$10 → $4/$20'},
- {until:'2027-01-01', d:'Dec 31', t:'Gemini Flash intro price ends', b:'$0.75/$3.75 → $1.50/$7.50 (3.8 / 3.7 / 3.6)'},
+ {until:'2026-12-01', d:'Nov 30', t:'Gemini 4 Carbon and Argon promo ends', b:'$2/$10 → $4/$20'},
+ {until:'2027-01-01', d:'Dec 31', t:'Gemini Flash intro price ends', b:'$0.75/$3.75 → $1.50/$7.50 (3.8 / 3.7)'},
 ];
 MG.gotchas = [
  'DeepSeek peak pricing is live: 2× price 01:00–04:00 and 06:00–10:00 UTC, Mon–Fri. Run batch jobs off-peak.',
- 'Long-context surcharge: GPT-6 above 272K tokens ($4/$15 for 6.1 Sol, $20/$75 for Astra); Grok 4.7 above 200K ($4/$12).',
+ 'Long-context surcharge: GPT-6.2 above 272K tokens ($4/$15 for Sol, $16/$60 for Astra); Grok 4.7 above 200K ($4/$12); Muse Ember above 200K ($0.30/$1.50).',
+ 'Fable 5.2 leads AA (65) but costs $26.54 a task at max — 2.6× Opus 5.5 for +6 points. Check your own tasks before paying for it.',
+ 'GLM-5.4 is announced but has no API price yet (Coding Plan only).',
  'Gemini 4: completions over 32K tokens are billed even if the request fails (from Nov 13).',
- 'Zen free models are limited-time and some use your data for training (MiMo, Big Pickle, Flint, Pulse).',
- 'Not on DeepSWE yet: Claude 5.5, GPT-6.1, Gemini 4, Grok 4.7 — coding picks for them use AA only.',
+ 'Zen free models are limited-time and some use your data for training (MiMo, Big Pickle, Flint, Pulse). GLM-5.3-Flash is no longer free.',
+ 'Not on DeepSWE yet: Claude 5.5 / Fable 5.2, GPT-6.1 / 6.2, Gemini 4, Grok 4.7 — coding picks for them use AA only.',
 ];
 
 // Router simulator presets. Each tier: [model, effort, share %]. Tier 1 gets whatever is left.
 MG.routerPresets = [
- {id:'escalate', name:'Cheap first, escalate', tiers:[['gpt61sol','high',80],['opus55','xhigh',20]]},
- {id:'three', name:'Three-step ladder', tiers:[['gpt6luna','medium',60],['gpt61sol','max',30],['opus55','xhigh',10]]},
+ {id:'escalate', name:'Cheap first, escalate', tiers:[['gpt62sol','best',80],['opus55','xhigh',20]]},
+ {id:'three', name:'Three-step ladder', tiers:[['gpt6luna','medium',60],['gpt62sol','best',30],['opus55','xhigh',10]]},
  {id:'claude', name:'All Claude', tiers:[['haiku55','high',70],['sonnet55','high',25],['opus55','xhigh',5]]},
- {id:'open', name:'Open weights first', tiers:[['dsV41Flash','max',75],['gpt61sol','max',25]]},
+ {id:'open', name:'Open weights first', tiers:[['dsV41Flash','max',75],['gpt62sol','best',25]]},
 ];
 
 MG.rules = [
- ['Never let a thread validate its own work.', 'Write with one family (e.g. GPT-6.1 Sol), review with another (Opus 5.5).'],
+ ['Never let a thread validate its own work.', 'Write with one family (e.g. GPT-6.2 Sol), review with another (Opus 5.5).'],
  ['Escalate model, not effort.', 'Sonnet 5.5 at max costs $10.02 a task — the same as Opus 5.5 at max, for a lower score.'],
- ['Start with GPT-6.1 Sol at max.', 'AA 55 for about $1.27 a task beats almost everything per dollar; move up only when it fails.'],
+ ['Start with GPT-6.2 Sol at max.', 'AA 57 for about $1.01 a task beats almost everything per dollar; move up only when it fails.'],
  ['Set effort on every call.', 'Cost per task can change 10× between effort levels.'],
- ['Move off legacy IDs.', 'Opus 5 / 4.8, GPT-5.6, Gemini 3.7 / 3.6, Grok 4.6 all have a newer model at the same or lower price.'],
+ ['Move off legacy IDs.', 'Opus 5 / 4.8, Fable 5.1, GPT-5.6, GPT-6.1 Sol, GPT-6 Astra, Gemini 3.7 / 3.6, Grok 4.6 all have a newer model at the same or lower price.'],
  ['Coding is not the AA score.', 'Gemini 3.8 Flash has AA 31 but is #2 on DeepSWE (73.8%).'],
  ['Run DeepSeek off-peak.', 'Prices halve outside the peak hours.'],
  ['Free is good, not dependable.', 'Free tiers change without notice; don\u2019t rely on them in production.'],
 ];
 
 MG.insights = [
- {stat:'6×', title:'One model owns the value spot', text:'GPT-6.1 Sol reaches AA 50 for $0.59 a task — about 6× cheaper than the next lab (Opus 5.5 at high, $3.46).'},
- {stat:'57–60', title:'The top is crowded', text:'Gemini 4 Carbon, Opus 5.5 and GPT-6 Astra sit within 3 points; the last few points cost $6–10 a task.'},
- {stat:'5×', title:'Coding ties, bills don\u2019t', text:'Three models tie on DeepSWE (~74%) but cost $2.36 to $11.84 a task.'},
- {stat:'−67%', title:'Prices drop every quarter', text:'OpenAI\u2019s value-tier output price went from $30 to $10 per 1M tokens in three months.'},
- {stat:'~25', title:'Open weights trail', text:'The best open-weight model (DeepSeek V4.1 Flash, AA 33) is about 25 points behind the top — but free on Zen right now.'},
+ {stat:'$26.54', title:'The new #1 is expensive', text:'Claude Fable 5.2 leads AA (65) but costs $26.54 a task at max. GPT-6.2 Astra scores 62 for $4.00 — 6.6× cheaper.'},
+ {stat:'3×', title:'OpenAI owns the value spot', text:'GPT-6.1 Terra ($0.96) and GPT-6.2 Sol ($1.01) reach AA 50+. The cheapest route from another lab (Gemini 4 Hydrogen, $3.16) costs 3× more.'},
+ {stat:'5×', title:'Coding ties, bills don\u2019t', text:'Three models tie on DeepSWE (~74%) but cost $2.36 to $11.84 a task. None of the November models are on DeepSWE yet.'},
+ {stat:'−20%', title:'Flagship prices keep falling', text:'GPT-6.2 Astra is $8/$40 (was $10/$50) and Fable 5.2 is $8/$40 (was $10/$50) — and both score higher than the model they replace.'},
+ {stat:'~32', title:'Open weights trail', text:'The best open-weight model (DeepSeek V4.1 Flash, AA 33) is about 32 points behind the top — but free on Zen right now.'},
 ];
 
 // Output $ per 1M for each lab's value tier, by month (May..Sep 2026)
@@ -2548,12 +2825,12 @@ MG.trend = [
 MG.strengths = {
  cols:['Top AA','$ to reach AA 50','DeepSWE best','Open weights','Free option','Price verified'],
  rows:[
-  ['OpenAI',[['57',3],['$0.59',3],['74.1%',3],['No',0],['No',0],['3 sources',1]]],
-  ['Anthropic',[['59',3],['$3.46',2],['73.6%',3],['No',0],['No',0],['Official',3]]],
-  ['Google',[['60',3],['$6.59',1],['73.8%',3],['Gemma',1],['No',0],['Official*',2]]],
-  ['Moonshot',[['46',2],['—',0],['68.5%',2],['K3 only',1],['No',0],['2 sources',1]]],
+  ['OpenAI',[['62',3],['$0.96',3],['74.1%',3],['No',0],['No',0],['4 sources',2]]],
+  ['Anthropic',[['65',3],['$3.46',2],['73.6%',3],['No',0],['No',0],['Official',3]]],
+  ['Google',[['61',3],['$3.16',2],['73.8%',3],['Gemma',1],['No',0],['Official',3]]],
+  ['Moonshot',[['46',2],['—',0],['68.5%',2],['K3 only',1],['No',0],['3 sources',2]]],
   ['DeepSeek',[['33',1],['—',0],['62.8%',1],['MIT',3],['Zen',3],['Official',3]]],
-  ['Z.ai',[['32',1],['—',0],['69.0%',2],['MIT',3],['Zen',3],['Official',3]]],
+  ['Z.ai',[['32',1],['—',0],['69.0%',2],['MIT',3],['No',0],['Official',3]]],
  ]};
 
 MG.sources = [

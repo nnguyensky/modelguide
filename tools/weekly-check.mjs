@@ -177,7 +177,7 @@ for (const [k, m] of Object.entries(M)) {
   if (mp && mp.i != null) seen.push({ src: 'models.dev', i: mp.i, o: mp.o });
   if (m.aa != null && !m.legacy) {
     const rows = aaRowsFor(m);
-    if (aa && !rows.length) notFound.push(`${m.n}: not found in the Artificial Analysis API (set \`ref.aaName\` if AA names it differently)`);
+    if (aa && !rows.length && !m.ref?.noAA) notFound.push(`${m.n}: not found in the Artificial Analysis API (set \`ref.aaName\` if AA names it differently)`);
     if (rows.length) {
       const pr = rows.find((r) => r.pricing?.price_1m_input_tokens != null);
       if (pr) seen.push({ src: 'Artificial Analysis', i: pr.pricing.price_1m_input_tokens, o: pr.pricing.price_1m_output_tokens });

@@ -125,9 +125,9 @@ if (!errors.length) {
   const calc = await page.evaluate(() => window.MGApp.routerCalc());
   if (!(calc.month > 0) || !(calc.aa > 0)) errors.push('router: calculation returned no cost or score');
 
-  await page.evaluate(() => { location.hash = 'explore/gptSol'; });
+  await page.evaluate(() => { location.hash = 'explore/gemini36f'; });
   await page.waitForSelector('#detail .hist svg');
-  if ((await page.$$('#detail .hist-dot')).length < 3) errors.push('price history: GPT-5.6 Sol should show 3 price points');
+  if ((await page.$$('#detail .hist-dot')).length < 3) errors.push('price history: Gemini 3.6 Flash should show 3 price points');
   if (!(await page.$('#detail .hist-dot.future'))) errors.push('price history: scheduled change not marked');
 
   await page.evaluate(() => { location.hash = 'sheet'; });

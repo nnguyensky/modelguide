@@ -257,7 +257,7 @@ select.select { height: 40px; padding: 0 10px; border-radius: 10px; border: 1px 
 .ladder-list li { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: baseline; font-size: 14px; }
 
 /* ── Insights ── */
-.podium { margin-top: 26px; height: 310px; display: flex; align-items: flex-end; justify-content: center; gap: 30px; overflow-x: auto; }
+.podium { margin-top: 26px; height: 350px; display: flex; align-items: flex-end; justify-content: center; gap: 30px; overflow-x: auto; }
 .pod { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 132px; flex: none; }
 .pod .name { font-weight: 600; font-size: 14px; text-align: center; }
 .pod-block { position: relative; width: 110px; margin-right: 20px; }
