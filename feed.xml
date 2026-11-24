@@ -7,7 +7,79 @@
     <atom:link href="https://nnguyensky.github.io/modelguide/feed.xml" rel="self" type="application/rss+xml"/>
     <description>Launches, price cuts, promos and scheduled price changes for AI models (Claude, GPT, Gemini, Grok, open-weight).</description>
     <language>en</language>
-    <lastBuildDate>Thu, 05 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 24 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Fable 5.2 (Anthropic)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-24-fable-5-2</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Anthropic</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · Anthropic</p><p><strong>$8/$40</strong> — cheaper than Fable 5.1 ($10/$50) and now <strong>#1 on AA (65)</strong>. $26.54 a task at max. Fable 5.1 becomes legacy.</p>]]></description>
+    </item>
+    <item>
+      <title>Gemini 4 Carbon promo price (Google)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-24-gemini-4-carbon-promo-price</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Google</category>
+      <description><![CDATA[<p><strong>Nov 24, 2026</strong> · Google</p><p>Google Cloud now shows <strong>$2/$10</strong> through Nov 30, then <strong>$4/$20</strong> (same promo as Argon).</p>]]></description>
+    </item>
+    <item>
+      <title>Zen free list changed (OpenCode Zen)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-24-zen-free-list-changed</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>OpenCode Zen</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · OpenCode Zen</p><p>GLM-5.3-Flash is <strong>no longer free</strong> ($0.15/$0.50). New free models: Tidepool Alpha, Iceman, Hy4 Flash.</p>]]></description>
+    </item>
+    <item>
+      <title>GLM-5.4 announced (Z.ai)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-24-glm-5-4-announced</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Z.ai</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · Z.ai</p><p>Loop Transformer architecture; available to GLM Coding Plan users. <strong>No API price yet</strong> (waiting on a security assessment).</p>]]></description>
+    </item>
+    <item>
+      <title>GPT-6.2 Astra · GPT-6.2 Sol (OpenAI)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-23-gpt-6-2-astra-gpt-6-2-sol</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>OpenAI</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · OpenAI</p><p><strong>Astra $8/$40</strong> (AA 62, $4.00/task; was $10/$50) · <strong>Sol $2/$10</strong> (AA 57, $1.01/task). GPT-6 Astra and GPT-6.1 Sol become legacy.</p>]]></description>
+    </item>
+    <item>
+      <title>Gemini 4 Neon · Gemini 4 Hydrogen (Google)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-22-gemini-4-neon-gemini-4-hydrogen</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Google</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · Google</p><p><strong>Neon $3/$15</strong> (AA 61, $6.44/task) · <strong>Hydrogen $1.50/$7.50</strong> (AA 54, $3.16/task). Neon beats Carbon on score and price.</p>]]></description>
+    </item>
+    <item>
+      <title>GPT-5.6 Sol promo extended (OpenAI)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-21-gpt-5-6-sol-promo-extended</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>OpenAI</category>
+      <description><![CDATA[<p><strong>Nov 21, 2026</strong> · OpenAI</p><p>The $4/$20 price did not end on Nov 21 — OpenCode, Cursor, LiteLLM and models.dev all still show <strong>$4/$20</strong>. GPT-5.6 Sol is legacy.</p>]]></description>
+    </item>
+    <item>
+      <title>Qwen4 Max (Alibaba)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-15-qwen4-max</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Alibaba</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · Alibaba</p><p><strong>$1.50/$4.50</strong>, AA 43 ($3.27/task), proprietary. Replaces Qwen3.8 Max.</p>]]></description>
+    </item>
+    <item>
+      <title>Muse Ember (Meta)</title>
+      <link>https://nnguyensky.github.io/modelguide/#changes</link>
+      <guid isPermaLink="false">model-guide-2026-11-15-muse-ember</guid>
+      <pubDate>Tue, 24 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Meta</category>
+      <description><![CDATA[<p><strong>Nov 2026</strong> · Meta</p><p><strong>$0.10/$0.50</strong>, AA 36 for $0.14/task — same score as Haiku 5.5 at a third of the cost.</p>]]></description>
+    </item>
     <item>
       <title>Zen free list reshuffled (OpenCode Zen)</title>
       <link>https://nnguyensky.github.io/modelguide/#changes</link>

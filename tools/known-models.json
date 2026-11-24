@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-16",
+ "updated": "2026-11-24",
  "litellm": [
   "claude-fable-5",
   "claude-fable-5-1",
@@ -71,6 +71,7 @@
   "gemini/gemini-4-argon",
   "gemini/gemini-4-carbon",
   "gemini/gemini-4-hydrogen",
+  "gemini/gemini-4-neon",
   "gpt-5.6",
   "gpt-5.6-cyber",
   "gpt-5.6-luna",
@@ -84,6 +85,9 @@
   "gpt-6-sol",
   "gpt-6.1-sol",
   "gpt-6.1-terra",
+  "gpt-6.2-astra",
+  "gpt-6.2-astra-law",
+  "gpt-6.2-sol",
   "meta/muse-ember-1.0",
   "meta/muse-image-1.0",
   "meta/muse-spark-1.1",
@@ -554,16 +558,12 @@
   "Big Pickle",
   "DeepSeek V4.1 Flash Free",
   "Flint 40B Free",
-  "GLM-5.3-Flash Free",
   "Hy4 flash Free",
   "Iceman Free",
-  "Inkling 2 Small Free",
   "Jev 1.13 Free",
-  "LongCat 2.5 Free",
   "MiMo-V2.6-Flash Free",
-  "MiniMax M3.1 Flash Free",
-  "Nemotron 3 Ultra Free",
   "Nemotron 3.5 Lightning Free",
-  "Nemotron 3.5 Super VL Free"
+  "Nemotron 3.5 Super VL Free",
+  "Tidepool Alpha Free"
  ]
 }
