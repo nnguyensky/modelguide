@@ -2,7 +2,7 @@
 // Same-origin files: serve from cache at once, refresh the cache in the background
 // (stale-while-revalidate), so new data shows up on the next visit.
 // VERSION is set by tools/build.mjs (hash of the cached files) — do not edit by hand.
-const VERSION = 'mg-ec50f18f5e';
+const VERSION = 'mg-7bfe794bb9';
 const CORE = ['./', 'index.html', 'styles.css', 'data.js', 'app.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png', 'feed.xml', 'checks.js'];
 
 self.addEventListener('install', (e) => {
