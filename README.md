@@ -19,7 +19,7 @@ Plain **HTML, CSS and JavaScript**. No framework, no build step, no runtime depe
 | `tools/build.mjs`, `feed.xml` | Builds the RSS feed from the timeline and stamps the offline-cache version in `sw.js`. The Build workflow runs it after every push and commits the result. |
 | `tests/smoke.mjs` | Headless test: every page renders, every task/mode works, share links, CSV export, Compare + calculator, phone layout, stale-data banner, accessibility (axe-core, light and dark), data references, and each scheduled price-change date. |
 | `.github/workflows/check.yml` | Runs syntax checks and the smoke + accessibility test on every push and pull request. |
-| `.github/workflows/weekly-check.yml` | Every Monday (or by hand from the Actions tab): runs the weekly check. Agreed price changes → a pull request to review. Anything else → a `data-check` issue (closed again when all is clear). Records the run on `main`, which also keeps the schedule alive. |
+| `.github/workflows/weekly-check.yml` | Every Monday (or by hand from the Actions tab): runs the weekly check. Agreed price changes → a pull request, merged into `main` automatically when its checks pass (it stays open if they fail). Anything else → a `data-check` issue (closed again when all is clear). Records the run on `main`, which also keeps the schedule alive. |
 | `.github/workflows/build.yml` | After each push: rebuilds `feed.xml` and `sw.js` and commits them. |
 | `tests/weekly-check.test.mjs` | Offline test of the weekly check (fake sources built from `data.js`). Runs in CI. |
 

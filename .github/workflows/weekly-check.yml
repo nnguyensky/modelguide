@@ -2,7 +2,8 @@ name: Weekly data check
 
 # Every Monday: compare data.js with outside sources (prices, long-prompt tiers,
 # AA scores, DeepSWE, OpenCode Zen free list, new model IDs).
-#  - Price changes that two or more sources agree on → a pull request to review
+#  - Price changes that two or more sources agree on → a pull request; when its checks pass,
+#    it is merged into main automatically (if they fail, the PR stays open for review)
 #  - Anything else to look at → an issue labelled "data-check" (closed again when all clear)
 #  - The run is recorded on main (checks.js + tools/known-models.json); that commit also
 #    keeps this schedule alive (GitHub pauses scheduled workflows after 60 days without commits)
@@ -86,12 +87,34 @@ jobs:
         continue-on-error: true   # e.g. branch protection on main; the report and issue above still go out
         run: |
           node tools/build.mjs
-          git add checks.js tools/known-models.json sw.js
+          git add checks.js tools/known-models.json
           if git diff --cached --quiet; then
             echo "Nothing new to record"
           else
             git commit -m "Weekly data check $(date -u +%F)"
             git push origin HEAD:main
+          fi
+
+      - name: Merge the price-update PR when its checks pass
+        if: steps.chk.outputs.applied != '0'
+        continue-on-error: true   # the PR stays open if anything here fails
+        run: |
+          br="auto/price-update-$(date -u +%F)"
+          sleep 20
+          id=$(gh run list --workflow check.yml --branch "$br" --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId')
+          if [ -z "$id" ]; then echo "No check run found — leaving the PR open"; exit 0; fi
+          if gh run watch "$id" --exit-status >/dev/null; then
+            gh pr merge "$br" --squash --delete-branch
+            git switch main
+            git pull --ff-only origin main
+            node tools/build.mjs
+            git add feed.xml sw.js
+            if ! git diff --cached --quiet; then
+              git commit -m "Rebuild feed and service worker"
+              git push origin HEAD:main
+            fi
+          else
+            echo "Checks failed — leaving the PR open for review"
           fi
 
       - name: Add the report to the run summary
