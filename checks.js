@@ -6,7 +6,7 @@ window.MG_CHECKS = {
   "diffs": 0
  },
  "applied": 0,
- "findings": 23,
+ "findings": 0,
  "sources": {
   "LiteLLM": "ok",
   "models.dev": "ok",
