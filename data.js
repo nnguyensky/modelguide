@@ -2793,6 +2793,7 @@ MG.routerPresets = [
  {id:'escalate', name:'Cheap first, escalate', tiers:[['gpt62sol','best',80],['opus55','xhigh',20]]},
  {id:'three', name:'Three-step ladder', tiers:[['gpt6luna','medium',60],['gpt62sol','best',30],['opus55','xhigh',10]]},
  {id:'claude', name:'All Claude', tiers:[['haiku55','high',70],['sonnet55','high',25],['opus55','xhigh',5]]},
+ {id:'kimi', name:'Kimi first, Opus last', tiers:[['kimiK31pro','best',75],['opus55','xhigh',25]]},
  {id:'open', name:'Open weights first', tiers:[['dsV41Flash','max',75],['gpt62sol','best',25]]},
 ];
 
